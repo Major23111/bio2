@@ -8,9 +8,9 @@
         content="@yield('meta_description', 'Biogenix Healthcare Solutions - Precision diagnostics, innovative life science research tools, and medical instruments for laboratories and healthcare professionals.')">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Biogenix')</title>
-    <link rel="icon" type="image/jpeg" href="{{ asset('upload/icons/logo.jpg') }}?v=20260309">
-    <link rel="shortcut icon" href="{{ asset('upload/icons/logo.jpg') }}?v=20260309">
-    <link rel="apple-touch-icon" href="{{ asset('upload/icons/logo.jpg') }}?v=20260309">
+    <link rel="icon" type="image/png" href="{{ asset('upload/icons/biogenixlogo6.PNG') }}?v=20260309">
+    <link rel="shortcut icon" href="{{ asset('upload/icons/biogenixlogo6.PNG') }}?v=20260309">
+    <link rel="apple-touch-icon" href="{{ asset('upload/icons/biogenixlogo6.PNG') }}?v=20260309">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,7 @@
     @php($suppressShellAlerts = request()->routeIs('login', 'forgot.password', 'signup', 'b2b.signup'))
     @php($isMinimalCustomerWorkspace = trim($__env->yieldContent('customer_minimal')) === 'minimal')
     @php($loaderLogoPath = public_path('upload/icons/biogenix3D.png'))
-    @php($loaderLogoSrc = file_exists($loaderLogoPath) ? 'data:image/jpeg;base64,' . base64_encode(file_get_contents($loaderLogoPath)) : asset('upload/icons/logo.jpg'))
+    @php($loaderLogoSrc = file_exists($loaderLogoPath) ? 'data:image/jpeg;base64,' . base64_encode(file_get_contents($loaderLogoPath)) : asset('upload/icons/biogenixlogo6.PNG'))
     @php($supportWidgetCategoryOptions = app(\App\Services\SupportTicket\SupportTicketService::class)->availableCategorySlugs())
     @php($supportWidgetDefaultPriority = \App\Services\SupportTicket\SupportTicketService::PRIORITIES[1] ?? 'medium')
     @php($supportWidgetShouldOpen = session('support_ticket_widget_open') || old('support_ticket_form_source') === 'layout_widget')

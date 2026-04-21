@@ -7,7 +7,7 @@
         $numericAmount = (float) $amount;
 
         if ($currency === 'INR') {
-            return 'Rs. '.number_format($numericAmount, 2);
+            return '₹ '.number_format($numericAmount, 2);
         }
 
         return $currency.' '.number_format($numericAmount, 2);

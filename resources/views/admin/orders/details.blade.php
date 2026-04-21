@@ -23,7 +23,7 @@
                 <div>
                     <div class="flex flex-wrap items-center gap-3">
                         <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Order #ORD-7742</h1>
-                        <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-600 text-[11px] font-bold rounded-full uppercase tracking-wider">Processing</span>
+                        <span id="headerStatusBadge" class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-600 text-[11px] font-bold rounded-full uppercase tracking-wider">Processing</span>
                     </div>
                     <div class="flex flex-wrap items-center gap-3">
                         <p class="text-[13px] text-slate-500 font-medium mt-1">Placed on Oct 24, 2023 &bull; 2:45 PM</p>
@@ -112,6 +112,19 @@
                 <div class="mt-3">
                     <h4 class="step-label text-[13px] font-bold text-slate-400 transition-colors duration-300">Payment Received</h4>
                     <p class="text-[11px] font-medium text-slate-400 mt-0.5 whitespace-nowrap">● COD orders only</p>
+                </div>
+            </div>
+
+            <div class="hidden md:block text-slate-200 text-xl font-light">▶</div>
+
+            <!-- Step 7 -->
+            <div id="step-node-7" class="flex-1 flex flex-col items-center text-center group">
+                <div class="step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </div>
+                <div class="mt-3">
+                    <h4 class="step-label text-[13px] font-bold text-slate-400 transition-colors duration-300">Cancelled</h4>
+                    <p class="text-[11px] font-medium text-slate-400 mt-0.5 whitespace-nowrap">● Order Cancelled</p>
                 </div>
             </div>
         </div>
@@ -362,12 +375,10 @@ United States</textarea>
     </div>
 </div>
 
-@endsection
-
-@push('scripts')
 <script>
+(() => {
 // ─── Dynamic Status Tracker ───
-const updateStepper = () => {
+window.updateStepper = () => {
     const status = document.getElementById('orderStatus').value;
     const isPrepaid = true; // Hardcoded for demo. In production this would be dynamically set.
     
@@ -377,15 +388,16 @@ const updateStepper = () => {
         {id: 3, label: 'Processing'},
         {id: 4, label: 'Dispatched'},
         {id: 5, label: 'Delivered'},
-        {id: 6, label: 'Payment Received (COD)', condition: !isPrepaid}
+        {id: 6, label: 'Payment Received (COD)', condition: !isPrepaid},
+        {id: 7, label: 'Cancelled'}
     ];
 
-    // Determine current step index
-    let currentStepIndex = steps.findIndex(s => status.includes(s.label.split(' (')[0]));
-    if (currentStepIndex === -1 && status === 'Cancelled') currentStepIndex = -1;
+    // Determine current step index with exact match to fix COD marking step 2
+    let currentStepIndex = steps.findIndex(s => s.label === status);
 
     steps.forEach((step, index) => {
         const node = document.getElementById(`step-node-${step.id}`);
+        if (!node) return;
         const icon = node.querySelector('.step-icon');
         const label = node.querySelector('.step-label');
         
@@ -395,40 +407,60 @@ const updateStepper = () => {
             node.style.filter = step.condition ? 'none' : 'grayscale(1)';
         }
 
-        // Handle active/completed/pending states
-        if (index < currentStepIndex) {
-            // Completed
-            icon.className = 'step-icon h-10 w-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-emerald-100 transition-all duration-300';
-            icon.innerHTML = '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>';
-            label.className = 'step-label text-[13px] font-bold text-emerald-600 transition-colors duration-300';
-        } else if (index === currentStepIndex) {
-            // Active
-            icon.className = 'step-icon h-10 w-10 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-sm shadow-xl shadow-primary-600/30 z-10 border-4 border-white ring-1 ring-primary-100 transition-all duration-300 scale-110';
-            icon.innerHTML = step.id;
-            label.className = 'step-label text-[13px] font-extrabold text-primary-800 transition-colors duration-300';
+        if (status === 'Cancelled') {
+            if (step.id === 7) {
+                icon.className = 'step-icon h-10 w-10 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-sm shadow-xl shadow-rose-600/30 z-10 border-4 border-white ring-1 ring-rose-100 transition-all duration-300 scale-110';
+                icon.innerHTML = '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                label.className = 'step-label text-[13px] font-extrabold text-rose-600 transition-colors duration-300';
+            } else {
+                icon.className = 'step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300';
+                icon.innerHTML = step.id;
+                label.className = 'step-label text-[13px] font-bold text-slate-400 transition-colors duration-300';
+            }
         } else {
-            // Pending
-            icon.className = 'step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300';
-            icon.innerHTML = step.id;
-            label.className = 'step-label text-[13px] font-bold text-slate-400 transition-colors duration-300';
+            // Normal Flow
+            if (step.id === 7) {
+                icon.className = 'step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300';
+                icon.innerHTML = '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                label.className = 'step-label text-[13px] font-bold text-slate-400 transition-colors duration-300';
+            } else if (index < currentStepIndex) {
+                // Completed
+                icon.className = 'step-icon h-10 w-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-emerald-100 transition-all duration-300';
+                icon.innerHTML = '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>';
+                label.className = 'step-label text-[13px] font-bold text-emerald-600 transition-colors duration-300';
+            } else if (index === currentStepIndex) {
+                // Active
+                icon.className = 'step-icon h-10 w-10 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-sm shadow-xl shadow-primary-600/30 z-10 border-4 border-white ring-1 ring-primary-100 transition-all duration-300 scale-110';
+                icon.innerHTML = step.id;
+                label.className = 'step-label text-[13px] font-extrabold text-primary-800 transition-colors duration-300';
+            } else {
+                // Pending
+                icon.className = 'step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300';
+                icon.innerHTML = step.id;
+                label.className = 'step-label text-[13px] font-bold text-slate-400 transition-colors duration-300';
+            }
         }
     });
 
     // Update Header Badge
-    const badge = document.querySelector('.inline-flex.items-center.px-2.5.py-1.bg-primary-50');
-    if (badge) badge.textContent = status;
+    const badge = document.getElementById('headerStatusBadge');
+    if (badge) {
+        badge.textContent = status;
+        if (status === 'Cancelled') {
+            badge.className = 'inline-flex items-center px-2.5 py-1 bg-rose-50 text-rose-600 text-[11px] font-bold rounded-full uppercase tracking-wider';
+        } else {
+            badge.className = 'inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-600 text-[11px] font-bold rounded-full uppercase tracking-wider';
+        }
+    }
 };
 
-document.getElementById('orderStatus').addEventListener('change', updateStepper);
+const orderStatusSelect = document.getElementById('orderStatus');
+if (orderStatusSelect) {
+    orderStatusSelect.addEventListener('change', window.updateStepper);
+}
 
 // Initial run
-document.addEventListener('DOMContentLoaded', updateStepper);
-// Re-run for AJAX navigation
-if (typeof initCustomSelects === 'function') {
-    setTimeout(updateStepper, 300);
-} else {
-    updateStepper();
-}
+window.updateStepper();
 
 // ─── Add Note ───
 document.getElementById('addNoteBtn')?.addEventListener('click', () => {
@@ -457,5 +489,7 @@ document.getElementById('addNoteBtn')?.addEventListener('click', () => {
 document.getElementById('noteInput')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('addNoteBtn').click();
 });
+})();
 </script>
-@endpush
+
+@endsection

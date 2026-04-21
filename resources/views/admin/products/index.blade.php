@@ -34,7 +34,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <input type="text" id="productSearchInput" placeholder="Search product name, SKU, or category..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input type="text" id="productSearchInput" placeholder="Search product name, CAT No, or category..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
 
                     <!-- Category Pills -->
@@ -52,7 +52,7 @@
                         <thead>
                             <tr class="bg-white border-b border-slate-100">
                                 <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Product</th>
-                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">SKU</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">CAT No</th>
                                 <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Category</th>
                                 <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Price</th>
                                 <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Stock</th>

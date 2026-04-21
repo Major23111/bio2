@@ -75,7 +75,7 @@
                         </span>
                         <div>
                             <p id="shippingProgressMsg" class="text-sm font-semibold text-emerald-800">Loading...</p>
-                            <p class="text-xs text-primary-600">Free same-day delivery on orders above <span class="font-bold">Rs. {{ number_format($freeShippingThreshold) }}</span></p>
+                            <p class="text-xs text-primary-600">Free same-day delivery on orders above <span class="font-bold">₹ {{ number_format($freeShippingThreshold) }}</span></p>
                         </div>
                     </div>
                     <span id="shippingProgressBadge" class="inline-flex w-fit items-center rounded-full bg-primary-600 px-3 py-1 text-xs font-bold text-white">Calculating...</span>
@@ -202,7 +202,7 @@
                         <div class="mt-4 space-y-3 border-t border-slate-100 pt-4 text-sm text-slate-600">
                             <div class="flex items-center justify-between">
                                 <span>Subtotal</span>
-                                <span id="cartSummarySubtotal" class="font-medium text-slate-900">Rs. 0.00</span>
+                                <span id="cartSummarySubtotal" class="font-medium text-slate-900">₹ 0.00</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span>Shipping</span>
@@ -210,11 +210,11 @@
                             </div>
                             <div class="flex items-center justify-between">
                                 <span>GST (18%)</span>
-                                <span id="cartSummaryTax" class="font-medium text-slate-900">Rs. 0.00</span>
+                                <span id="cartSummaryTax" class="font-medium text-slate-900">₹ 0.00</span>
                             </div>
                             <div class="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-bold text-secondary-600">
                                 <span>Estimated Total</span>
-                                <span id="cartSummaryTotal">Rs. 0.00</span>
+                                <span id="cartSummaryTotal">₹ 0.00</span>
                             </div>
                         </div>
 
@@ -292,8 +292,8 @@
                 /* -- formatInr -- */
                 const formatInr = function (value) {
                     const n = Number(value);
-                    if (!Number.isFinite(n)) return 'Rs. 0.00';
-                    return 'Rs. ' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    if (!Number.isFinite(n)) return '₹ 0.00';
+                    return '₹ ' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 };
 
                 /* -- parseVariant -- */
@@ -325,7 +325,7 @@
                         progressBadge.className = 'inline-flex w-fit items-center rounded-full bg-primary-600 px-3 py-1 text-xs font-bold text-white';
                     } else {
                         const fmt = remaining.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-                        progressMsg.textContent = 'Add Rs. ' + fmt + ' more for FREE delivery';
+                        progressMsg.textContent = 'Add ₹ ' + fmt + ' more for FREE delivery';
                         progressBadge.textContent = Math.round(pct) + '% there';
                         progressBadge.className = 'inline-flex w-fit items-center rounded-full bg-slate-700 px-3 py-1 text-xs font-bold text-white';
                     }
@@ -601,9 +601,9 @@
                         emptyState.classList.remove('hidden');
                         emptyState.classList.add('flex');
                         if (itemCount) itemCount.textContent = '0 items';
-                        if (subtotalEl) subtotalEl.innerHTML = 'Rs. 0.00';
-                        if (taxEl)      taxEl.innerHTML      = 'Rs. 0.00';
-                        if (totalEl)    totalEl.innerHTML    = 'Rs. 0.00';
+                        if (subtotalEl) subtotalEl.innerHTML = '₹ 0.00';
+                        if (taxEl)      taxEl.innerHTML      = '₹ 0.00';
+                        if (totalEl)    totalEl.innerHTML    = '₹ 0.00';
                         if (checkoutButton) checkoutButton.classList.add('opacity-70');
                         updateShippingProgress(0);
                         renderSaved();

@@ -41,7 +41,7 @@
                 $integerPart = $remaining . ',' . $lastThree;
             }
 
-            return ($negative ? '-' : '') . '<span class="text-base font-medium opacity-60">Rs.</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
+            return ($negative ? '-' : '') . '<span class="text-base font-medium opacity-60">₹</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
         };
 
         $productTitle = trim((string) ($product->name ?? 'Product Details'));
@@ -714,7 +714,7 @@
                         integerPart = rest + ',' + lastThree;
                     }
 
-                    return 'Rs. ' + integerPart + '.' + fractionPart;
+                    return '₹ ' + integerPart + '.' + fractionPart;
                 };
 
                 const resolveActiveTierRow = function (qty) {

@@ -73,8 +73,9 @@
                 <tbody class="divide-y divide-slate-100">
                     
                     <!-- Row 1 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ $adminOrderLinks[0] }}'">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer relative" onclick="this.querySelector('.row-ajax-link').click()">
                         <td class="px-5 lg:px-6 py-4">
+                            <a href="{{ $adminOrderLinks[0] }}" class="ajax-link row-ajax-link hidden"></a>
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99281</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
@@ -97,7 +98,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ $adminOrderLinks[0] }}'">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); this.closest('tr').querySelector('.row-ajax-link').click()">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -105,8 +106,9 @@
                     </tr>
 
                     <!-- Row 2 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ $adminOrderLinks[1] }}'">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer relative" onclick="this.querySelector('.row-ajax-link').click()">
                         <td class="px-5 lg:px-6 py-4">
+                            <a href="{{ $adminOrderLinks[1] }}" class="ajax-link row-ajax-link hidden"></a>
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99280</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
@@ -129,7 +131,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ $adminOrderLinks[1] }}'">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); this.closest('tr').querySelector('.row-ajax-link').click()">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -137,8 +139,9 @@
                     </tr>
 
                     <!-- Row 3 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ $adminOrderLinks[2] }}'">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer relative" onclick="this.querySelector('.row-ajax-link').click()">
                         <td class="px-5 lg:px-6 py-4">
+                            <a href="{{ $adminOrderLinks[2] }}" class="ajax-link row-ajax-link hidden"></a>
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99279</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
@@ -161,7 +164,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ $adminOrderLinks[2] }}'">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); this.closest('tr').querySelector('.row-ajax-link').click()">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -169,8 +172,9 @@
                     </tr>
 
                     <!-- Row 4 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ $adminOrderLinks[3] }}'">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer relative" onclick="this.querySelector('.row-ajax-link').click()">
                         <td class="px-5 lg:px-6 py-4">
+                            <a href="{{ $adminOrderLinks[3] }}" class="ajax-link row-ajax-link hidden"></a>
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99278</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
@@ -193,7 +197,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ $adminOrderLinks[3] }}'">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); this.closest('tr').querySelector('.row-ajax-link').click()">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -201,8 +205,9 @@
                     </tr>
 
                     <!-- Row 5 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ $adminOrderLinks[4] }}'">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer relative" onclick="this.querySelector('.row-ajax-link').click()">
                         <td class="px-5 lg:px-6 py-4">
+                            <a href="{{ $adminOrderLinks[4] }}" class="ajax-link row-ajax-link hidden"></a>
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99277</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
@@ -225,7 +230,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ $adminOrderLinks[4] }}'">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); this.closest('tr').querySelector('.row-ajax-link').click()">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -259,9 +264,6 @@
 
 </div>
 
-@endsection
-
-@push('scripts')
 <script>
 // ─── Status pill filter ───
 document.querySelectorAll('.status-pill').forEach(pill => {
@@ -340,4 +342,5 @@ function exportOrdersCSV() {
     AdminToast.show('Orders exported successfully!', 'success');
 }
 </script>
-@endpush
+
+@endsection

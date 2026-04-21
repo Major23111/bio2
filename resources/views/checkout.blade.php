@@ -413,7 +413,7 @@
                         <div class="mt-4 space-y-3 border-t border-slate-100 pt-4 text-sm text-slate-600">
                             <div class="flex items-center justify-between">
                                 <span>Subtotal</span>
-                                <span id="checkoutSubtotal" class="font-medium text-slate-900">Rs. 0.00</span>
+                                <span id="checkoutSubtotal" class="font-medium text-slate-900">₹ 0.00</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span>Shipping (Same-Day)</span>
@@ -421,15 +421,15 @@
                             </div>
                             <div class="hidden items-center justify-between" id="couponDiscountRow">
                                 <span class="text-primary-600">Coupon Discount</span>
-                                <span id="couponDiscountAmount" class="font-semibold text-primary-600">– Rs. 0.00</span>
+                                <span id="couponDiscountAmount" class="font-semibold text-primary-600">– ₹ 0.00</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span>GST</span>
-                                <span id="checkoutTax" class="font-medium text-slate-900">Rs. 0.00</span>
+                                <span id="checkoutTax" class="font-medium text-slate-900">₹ 0.00</span>
                             </div>
                             <div class="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-bold text-secondary-600">
                                 <span>Total</span>
-                                <span id="checkoutTotal">Rs. 0.00</span>
+                                <span id="checkoutTotal">₹ 0.00</span>
                             </div>
                         </div>
 
@@ -1389,8 +1389,8 @@
 
                 const formatInr = function (value) {
                     const numeric = Number(value);
-                    if (!Number.isFinite(numeric)) return 'Rs. 0.00';
-                    return 'Rs. ' + numeric.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    if (!Number.isFinite(numeric)) return '₹ 0.00';
+                    return '₹ ' + numeric.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 };
 
                 /* ── render summary row ── */
@@ -1531,9 +1531,9 @@
                         if (emptyState) emptyState.classList.remove('hidden');
                         if (summaryItems) summaryItems.classList.add('hidden');
                         hideCouponDiscountRow();
-                        if (subtotalEl) subtotalEl.innerHTML = 'Rs. 0.00';
-                        if (taxEl)      taxEl.innerHTML      = 'Rs. 0.00';
-                        if (totalEl)    totalEl.innerHTML    = 'Rs. 0.00';
+                        if (subtotalEl) subtotalEl.innerHTML = '₹ 0.00';
+                        if (taxEl)      taxEl.innerHTML      = '₹ 0.00';
+                        if (totalEl)    totalEl.innerHTML    = '₹ 0.00';
                         syncReOrderItemsField();
                         return;
                     }

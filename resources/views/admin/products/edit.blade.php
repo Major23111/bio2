@@ -28,7 +28,7 @@
     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
         <div>
             <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Edit Product</h1>
-            <p class="text-sm text-slate-500 mt-1">Update details, visibility, and pricing for #BGX-7700.</p>
+            <p class="text-sm text-slate-500 mt-1">Update details for #BGX-7700.</p>
         </div>
         <div class="flex items-center gap-3">
             <a href="{{ route('admin.products') }}" class="ajax-link px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm cursor-pointer">
@@ -62,7 +62,7 @@
                     
                     <!-- SKU -->
                     <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-700">SKU / Catalog ID <span class="text-rose-500">*</span></label>
+                        <label class="block text-[13px] font-bold text-slate-700">CAT No <span class="text-rose-500">*</span></label>
                         <input id="productSku" type="text" required class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                 </div>
@@ -104,10 +104,8 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-6 gap-6">
-            
-            <!-- 3. Category Mapping -->
-            <div class="lg:col-span-3 bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
+        <!-- 3. Category Mapping -->
+            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-visible">
                 <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
                     <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
@@ -116,107 +114,33 @@
                 </div>
                 <div class="p-6 space-y-5">
                     
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-700">Select Categories <span class="text-rose-500">*</span></label>
-                        <div class="relative">
-                            <select class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium appearance-none cursor-pointer pr-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label class="block text-[13px] font-bold text-slate-700">Select Categories <span class="text-rose-500">*</span></label>
+                            <select id="productCategory" name="category_id" required
+                                class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium cursor-pointer">
                                 <option value="1" selected>Biotechnology</option>
                                 <option value="2">Research Tools</option>
                             </select>
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="block text-[13px] font-bold text-slate-700">Sub Category</label>
+                            <input id="productSubCategory" type="text" placeholder="e.g. Molecular Biology" value="Molecular Biology" 
+                                class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap gap-2 pt-2">
+                    <div id="categoryTagsContainer" class="flex flex-wrap gap-2 pt-2">
                         <!-- Tags will be managed dynamically -->
                     </div>
 
                 </div>
             </div>
 
-            <!-- 4. Pricing & Visibility -->
-            <div class="lg:col-span-3 bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
-                <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
-                    <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
-                    </div>
-                    <h3 class="text-base font-bold text-slate-900">Pricing & Visibility</h3>
-                </div>
-                <div class="p-6 space-y-6">
-                    
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-700">Base Price ($) <span class="text-rose-500">*</span></label>
-                        <input id="productPrice" type="number" required class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                    </div>
 
-                    <div class="space-y-3">
-                        <label class="block text-[13px] font-bold text-slate-700">Visibility Scope</label>
-                        <div class="flex items-center gap-6">
-                            <label class="flex items-center gap-2 cursor-pointer group">
-                                <div class="relative flex items-center justify-center w-5 h-5">
-                                    <input type="radio" name="visibility" value="all" class="peer appearance-none w-5 h-5 rounded-full border-2 border-slate-300 checked:border-primary-600 transition cursor-pointer" checked>
-                                    <div class="absolute w-2.5 h-2.5 bg-primary-600 rounded-full opacity-0 peer-checked:opacity-100 transition pointer-events-none"></div>
-                                </div>
-                                <span class="text-[13px] font-semibold text-slate-700 group-hover:text-slate-900">All</span>
-                            </label>
 
-                            <label class="flex items-center gap-2 cursor-pointer group">
-                                <div class="relative flex items-center justify-center w-5 h-5">
-                                    <input type="radio" name="visibility" value="b2b" class="peer appearance-none w-5 h-5 rounded-full border-2 border-slate-300 checked:border-primary-600 transition cursor-pointer">
-                                    <div class="absolute w-2.5 h-2.5 bg-primary-600 rounded-full opacity-0 peer-checked:opacity-100 transition pointer-events-none"></div>
-                                </div>
-                                <span class="text-[13px] font-semibold text-slate-700 group-hover:text-slate-900">B2B</span>
-                            </label>
 
-                            <label class="flex items-center gap-2 cursor-pointer group">
-                                <div class="relative flex items-center justify-center w-5 h-5">
-                                    <input type="radio" name="visibility" value="b2c" class="peer appearance-none w-5 h-5 rounded-full border-2 border-slate-300 checked:border-primary-600 transition cursor-pointer">
-                                    <div class="absolute w-2.5 h-2.5 bg-primary-600 rounded-full opacity-0 peer-checked:opacity-100 transition pointer-events-none"></div>
-                                </div>
-                                <span class="text-[13px] font-semibold text-slate-700 group-hover:text-slate-900">B2C</span>
-                            </label>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-        <!-- 5. Product Specifications -->
-        <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
-                    </div>
-                    <h3 class="text-base font-bold text-slate-900">Product Specifications</h3>
-                </div>
-                <button id="addSpecBtn" type="button" class="text-[12px] font-bold text-primary-800 hover:text-primary-800 transition flex items-center gap-1.5 cursor-pointer">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                    Add Specification
-                </button>
-            </div>
-            
-            <div id="specRows" class="p-6 space-y-4">
-                <!-- Single Row -->
-                <div class="flex items-end gap-4">
-                    <div class="flex-1 space-y-2">
-                        <label class="block text-[10px] uppercase tracking-widest font-bold text-slate-500">Attribute Key</label>
-                        <input type="text" placeholder="e.g. Storage Temp" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                    </div>
-                    <div class="flex-1 space-y-2">
-                        <label class="block text-[10px] uppercase tracking-widest font-bold text-slate-500">Attribute Value</label>
-                        <input type="text" placeholder="-20°C to 4°C" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                    </div>
-                    <button type="button" class="h-11 w-11 flex-shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600 transition flex items-center justify-center border border-rose-100 cursor-pointer">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                    </button>
-                </div>
-            </div>
-        </div>
 
         <!-- 6. Media Assets -->
         <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
@@ -327,32 +251,28 @@
     const fields = {
         'productName': 'name',
         'productSku': 'sku',
-        'productPrice': 'price',
         'productStock': 'stock'
     };
 
     for (const [id, param] of Object.entries(fields)) {
         const el = document.getElementById(id);
         if (el && params.has(param)) {
-            let val = params.get(param);
-            if (id === 'productPrice') val = val.replace(/,/g, '');
-            el.value = val;
+            el.value = params.get(param);
         }
     }
     
     const subTitle = document.querySelector('p.text-sm.text-slate-500.mt-1');
     if (subTitle && params.has('sku')) {
-        subTitle.textContent = `Update details, visibility, and pricing for #${params.get('sku')}.`;
+        subTitle.textContent = `Update details for #${params.get('sku')}.`;
     }
 })();
 
 // ─── Form Validation ───
 const requiredFields = [
     {id:'productName', label:'Product Name'},
-    {id:'productSku', label:'SKU'},
+    {id:'productSku', label:'CAT No'},
     {id:'productDesc', label:'Description'},
-    {id:'productStock', label:'Stock Qty'},
-    {id:'productPrice', label:'Base Price'}
+    {id:'productStock', label:'Stock Qty'}
 ];
 
 function validateProductForm() {

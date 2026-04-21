@@ -30,7 +30,7 @@
     <meta name="description" content="@yield('meta_description', 'Biogenix — Browse precision diagnostics, reagents, lab instruments, and life science research tools. Trusted by hospitals and laboratories across India.')">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Biogenix')</title>
-    <link rel="icon" type="image/jpeg" href="{{ asset('upload/icons/logo.jpg') }}?v=20260309">
+    <link rel="icon" type="image/png" href="{{ asset('upload/icons/biogenixlogo6.PNG') }}?v=20260309">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">

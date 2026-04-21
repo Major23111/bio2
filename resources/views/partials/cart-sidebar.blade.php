@@ -56,11 +56,11 @@
             <div class="space-y-2.5 text-sm">
                 <div class="flex items-center justify-between text-slate-600">
                     <span>Subtotal</span>
-                    <span id="cartSidebarSubtotal" class="font-semibold text-slate-900">Rs. 0.00</span>
+                    <span id="cartSidebarSubtotal" class="font-semibold text-slate-900">₹ 0.00</span>
                 </div>
                 <div class="flex items-center justify-between text-slate-600">
                     <span>GST (18%)</span>
-                    <span id="cartSidebarTax" class="font-semibold text-slate-900">Rs. 0.00</span>
+                    <span id="cartSidebarTax" class="font-semibold text-slate-900">₹ 0.00</span>
                 </div>
                 <div class="flex items-center justify-between text-slate-600">
                     <span>Delivery Charge</span>
@@ -72,7 +72,7 @@
                 <div class="flex items-baseline justify-between">
                     <span class="text-sm font-bold text-secondary-600">Estimated Total</span>
                     <div class="text-right">
-                        <span id="cartSidebarTotal" class="text-2xl font-extrabold tracking-tight text-secondary-600">Rs. 0.00</span>
+                        <span id="cartSidebarTotal" class="text-2xl font-extrabold tracking-tight text-secondary-600">₹ 0.00</span>
                         <p class="mt-0.5 text-[10px] text-slate-400">Tax calculated for Other Product</p>
                     </div>
                 </div>
@@ -168,8 +168,8 @@
 
         const formatInr = function (value) {
             const amount = Number(value);
-            if (!Number.isFinite(amount)) return 'Rs. 0.00';
-            return 'Rs. ' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            if (!Number.isFinite(amount)) return '₹ 0.00';
+            return '₹ ' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         };
 
         const parseVariant = function (value) {

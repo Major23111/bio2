@@ -48,8 +48,9 @@ class BrevoEmailProvider implements EmailProviderContract
     // Build a payload that Brevo API expects.
     private function buildBrevoPayload(Mailable $email): array
     {
+        // Render the email first so Laravel prepares the body and attachments.
+        $htmlContent = $email->render();
         $envelope = $email->envelope();
-        $content = $email->content();
 
         // Get the recipient email and name from the Mailable.
         $recipient = $email->to[0] ?? [];
@@ -59,9 +60,6 @@ class BrevoEmailProvider implements EmailProviderContract
         $recipientName = is_array($recipient)
             ? ($recipient['name'] ?? '')
             : ($recipient->name ?? '');
-
-        // Extract the HTML content by rendering the view.
-        $htmlContent = view($content->view, $content->with)->render();
 
         // Create plain text version by removing HTML tags.
         $textContent = trim(strip_tags($htmlContent));
@@ -81,7 +79,27 @@ class BrevoEmailProvider implements EmailProviderContract
             'textContent' => $textContent,
         ];
 
+        // Add prepared raw attachments when the email includes them.
+        if ($email->rawAttachments !== []) {
+            $payload['attachment'] = $this->buildBrevoAttachments($email);
+        }
+
         return $payload;
+    }
+
+    // Convert Laravel raw attachments into the Brevo attachment format.
+    private function buildBrevoAttachments(Mailable $email): array
+    {
+        $attachments = [];
+
+        foreach ($email->rawAttachments as $attachment) {
+            $attachments[] = [
+                'name' => $attachment['name'] ?? 'attachment.pdf',
+                'content' => base64_encode((string) ($attachment['data'] ?? '')),
+            ];
+        }
+
+        return $attachments;
     }
 
     // Call the Brevo SMTP email API.

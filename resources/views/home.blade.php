@@ -742,8 +742,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
                             </svg>
                         </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">$ 720 Mn <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Syndicated across the portfolio</p>
+                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">10,000 <span class="text-xl">+</span></h4>
+                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Laboratories & Hospitals Served</p>
                     </div>
 
                     <!-- Item 2 -->
@@ -753,8 +753,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
                             </svg>
                         </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">400 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Startups</p>
+                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">18 <span class="text-xl">+</span></h4>
+                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Years in Diagnostics Industry</p>
                     </div>
 
                     <!-- Item 3 -->
@@ -764,8 +764,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.58 1.838-1.589-5.06-5.044 1.636 1.838-2.58-5.074-1.353 5.06-1.589-.016-.016c.4-.413.916-.704 1.488-.847L12.5 7.5m1.184 9.1l3.529-5.07 5.06 1.589-1.353-5.074 2.58-1.838-5.044 1.636-1.589-5.06-2.58 1.838-4.996-1.332m0 0a9.003 9.003 0 00-4.088 14.887M9.25 5L7 7" />
                             </svg>
                         </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">200 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Exits & Up rounds</p>
+                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">500 <span class="text-xl">+</span></h4>
+                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Diagnostic Products & Instruments</p>
                     </div>
 
                     <!-- Item 4 -->
@@ -775,8 +775,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">33000 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Startups Evaluated</p>
+                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">650 <span class="text-xl">+</span></h4>
+                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Channels and Distributor Partners</p>
                     </div>
 
                     <!-- Item 5 -->
@@ -787,8 +787,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 10.5l8-8.5 4.5 4.5 7.5-7.5" />
                             </svg>
                         </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">$ 480 Mn<span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">AUM</p>
+                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">150 <span class="text-xl">+</span></h4>
+                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Government & Institutional Clients</p>
                     </div>
 
                     <!-- Item 6 -->
@@ -798,8 +798,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                             </svg>
                         </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">4500 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Investor Community</p>
+                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">50 Million <span class="text-xl">+</span></h4>
+                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Test Kits Produced Annually</p>
                     </div>
                 </div>
                 </div>
@@ -1046,18 +1046,22 @@
         </section>
 
         <section class="home-newsletter bg-transparent py-12 md:py-16">
-            <div class="mx-auto grid w-full max-w-none   grid-cols-1 gap-5 px-4 sm:px-6 xl:grid-cols-12 lg:px-8 xl:px-10">
-                <article
-                    class="home-delivery-card home-reveal rounded-[var(--ui-radius-card)] p-5 text-white shadow-[0_24px_55px_rgba(255,106,0,0.25)] xl:col-span-7 md:p-6">
-                    <div class="home-delivery-content">
-                        <span
-                            class="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur">Lucknow
-                            local support</span>
-                        <h2 class="mt-3 text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow
-                        </h2>
-                        <p class="mt-2.5 max-w-2xl text-sm text-primary-50 md:text-base">For select products and serviceable
-                            pincodes, our local operations network enables faster diagnostics fulfillment.</p>
-
+            <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-5 px-4 sm:px-6 xl:grid-cols-12 lg:px-8 xl:px-10">
+                <article class="home-quiz-card home-reveal overflow-hidden rounded-[var(--ui-radius-card)] bg-primary-600 px-6 py-8 shadow-[0_24px_55px_rgba(26,77,46,0.25)] xl:col-span-7 md:flex md:items-center md:justify-between md:p-10">
+                    <div class="max-w-xl">
+                        <h2 class="font-display text-2xl font-semibold tracking-tight text-white lg:text-3xl">
+                            Test Your Diagnostic<br>Precision</h2>
+                        <p class="mt-3 text-sm leading-6 text-white/80 md:text-[15px] md:leading-7">
+                            Take our 4-minute kit assessment and unlock a 15% discount code on your first clinical order.
+                        </p>
+                    </div>
+                    <div class="mt-6 md:mt-0 md:pl-6 md:shrink-0 flex items-center">
+                        <a href="{{ route('diagnostic-quiz') }}" class="inline-flex items-center gap-2.5 rounded-xl border border-secondary-700/20 bg-secondary-600 px-7 py-3.5 text-sm font-semibold text-primary-800 shadow-sm transition hover:scale-105 hover:bg-secondary-500 glow-orange">
+                            Start Quiz
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </a>
                     </div>
                 </article>
 
@@ -1162,31 +1166,7 @@
             </div>
         </section>
 
-        <section class="home-quiz-cta bg-transparent py-6 md:py-8">
-            <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-                <div
-                    class="home-reveal overflow-hidden rounded-[var(--ui-radius-card)] bg-primary-600 px-6 py-10 shadow-[0_24px_55px_rgba(26,77,46,0.25)] sm:px-10 md:flex md:items-center md:justify-between md:px-12 md:py-12 lg:px-16">
-                    <div class="max-w-xl">
-                        <h2
-                            class="font-display text-2xl font-semibold tracking-tight text-white md:text-3xl lg:text-[2rem]">
-                            Test Your Diagnostic<br>Precision</h2>
-                        <p class="mt-3 text-sm leading-6 text-white/80 md:text-[15px] md:leading-7">
-                            Take our 4-minute kit assessment and unlock a 15% discount code on your first clinical order.
-                        </p>
-                    </div>
-                    <div class="mt-6 md:mt-0 md:ml-8 md:shrink-0">
-                        <a href="{{ route('diagnostic-quiz') }}"
-                            class="inline-flex items-center gap-2.5 rounded-xl border border-secondary-700/20 bg-secondary-600 px-7 py-3.5 text-sm font-semibold text-primary-800 shadow-sm transition hover:scale-105 hover:bg-secondary-500 glow-orange">
-                            Start Quiz
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
+
 
         <section class="bg-transparent py-12 text-white md:py-14">
             <div class="mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">

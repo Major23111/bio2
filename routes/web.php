@@ -5,7 +5,7 @@ use App\Http\Controllers\BookMeeting\BookMeetingController;
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Checkout\CheckoutController;
 use App\Http\Controllers\ContactUs\ContactUsController;
-use App\Http\Controllers\AdminPanel\DashboardController as AdminDashboardController;
+use App\Http\Controllers\AdminPanel\AdminDashboardController;
 use App\Http\Controllers\Faq\FaqController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Authorization\RoleAndPermissionController;
@@ -91,6 +91,19 @@ Route::get('/book-meeting', [BookMeetingController::class, 'index'])->middleware
 Route::post('/book-meeting', [BookMeetingController::class, 'store'])->middleware(['auth', 'permission:book-meeting.store'])->name('book-meeting.store');
 Route::view('/about', 'information.about')->middleware('permission:about')->name('about');
 Route::view('/meet-team', 'information.meet-team')->name('meet-team');
+Route::get('/meet-team/{id}', function ($id) {
+    if (!is_numeric($id)) abort(404);
+    $idx = (int)$id;
+    $teamData = config('team.members');
+    if (!isset($teamData[$idx])) {
+        abort(404);
+    }
+    return view('information.team-member', [
+        'member' => $teamData[$idx],
+        'idx' => $idx,
+        'teamData' => $teamData
+    ]);
+})->name('meet-team.show');
 Route::view('/portfolio', 'information.portfolio')->name('portfolio');
 Route::get('/contact', [ContactUsController::class, 'index'])->middleware('permission:contact')->name('contact');
 Route::post('/contact', [ContactUsController::class, 'store'])->middleware('permission:contact.store')->name('contact.store');
@@ -119,6 +132,7 @@ Route::view('/order-confirmation', 'order-confirmation')->middleware(['auth', 'p
 
 //TODO: Under development - Admin panel routes pointing to view directly for now, will connect to controllers after the views are ready.
 Route::get('/adminPanel/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+Route::view('/adminPanel/categories', 'admin.categories.index')->name('admin.categories');
 Route::get('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'index'])->name('admin.products');
 Route::get('/adminPanel/products/create', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'create'])->name('admin.products.create');
 Route::post('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'store'])->name('admin.products.store');

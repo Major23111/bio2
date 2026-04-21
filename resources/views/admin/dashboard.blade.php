@@ -4,13 +4,7 @@
 
 @section('admin_content')
 @php
-    $dashboardOrderLinks = [];
-    foreach (($recentOrders ?? collect())->take(3) as $order) {
-        $dashboardOrderLinks[] = route('admin.orders.view', ['orderId' => $order['id']]);
-    }
-    while (count($dashboardOrderLinks) < 3) {
-        $dashboardOrderLinks[] = route('admin.orders');
-    }
+    $metrics = $dashboardMetrics ?? [];
 @endphp
             
 
@@ -48,7 +42,7 @@
                     </div>
                     <div class="mt-2">
                         <p class="text-[12px] lg:text-[13px] font-semibold text-[var(--ui-text-muted)] mb-0.5">Total Orders</p>
-                        <h3 class="text-2xl lg:text-3xl font-extrabold text-[var(--ui-text)] tracking-tight">1,284</h3>
+                        <h3 class="text-2xl lg:text-3xl font-extrabold text-[var(--ui-text)] tracking-tight">{{ number_format($metrics['totalOrders'] ?? 0) }}</h3>
                     </div>
                 </a>
 
@@ -65,7 +59,7 @@
                     </div>
                     <div class="mt-2">
                         <p class="text-[12px] lg:text-[13px] font-semibold text-slate-500 mb-0.5">Today's Orders</p>
-                        <h3 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">142</h3>
+                        <h3 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($metrics['todayOrders'] ?? 0) }}</h3>
                     </div>
                 </a>
 
@@ -79,7 +73,7 @@
                     </div>
                     <div class="mt-2">
                         <p class="text-[12px] lg:text-[13px] font-semibold text-slate-500 mb-0.5">Pending Dispatch</p>
-                        <h3 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">48</h3>
+                        <h3 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($metrics['pendingOrders'] ?? 0) }}</h3>
                     </div>
                 </a>
 
@@ -94,7 +88,7 @@
                             <h3 class="text-lg font-bold text-[var(--ui-text)]">Revenue Snapshot</h3>
                             <p class="text-[11px] lg:text-xs font-semibold text-[var(--ui-text-muted)] mt-1">Global performance tracking</p>
                             <div class="mt-4 flex flex-wrap items-center gap-3 lg:gap-4">
-                                <h2 class="text-3xl lg:text-4xl font-extrabold text-primary-800 tracking-tight">$248,590.00</h2>
+                                <h2 class="text-3xl lg:text-4xl font-extrabold text-primary-800 tracking-tight">₹{{ number_format($metrics['totalRevenue'] ?? 0, 2) }}</h2>
                                 <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-primary-600 bg-primary-50 px-2.5 py-1 rounded-md h-fit">
                                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                                     18.2%
@@ -153,59 +147,39 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[var(--ui-border)] text-[12px] lg:text-[13px] font-semibold text-[var(--ui-text)]">
-                            <tr class="hover:bg-[var(--ui-surface-subtle)]/50 transition-colors cursor-pointer" onclick="window.location.href='{{ $dashboardOrderLinks[0] }}'">
-                                <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-9012</td>
+                            @forelse($recentOrders ?? [] as $order)
+                            <tr class="hover:bg-[var(--ui-surface-subtle)]/50 transition-colors cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view', $order['id']) }}'">
+                                <td class="px-5 lg:px-7 py-4 lg:py-5">{{ $order['orderNumber'] }}</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">
-                                        <div class="h-6 w-6 lg:h-7 lg:w-7 rounded bg-primary-50 text-primary-600 font-bold flex items-center justify-center text-[10px] lg:text-[11px]">M</div>
-                                        MetroLabs Inc.
+                                        <div class="h-6 w-6 lg:h-7 lg:w-7 rounded bg-primary-50 text-primary-600 font-bold flex items-center justify-center text-[10px] lg:text-[11px]">{{ $order['clientInitial'] }}</div>
+                                        {{ $order['clientName'] }}
                                     </div>
                                 </td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5 text-slate-600 font-medium">Reagent Kit Alpha</td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5">$4,290</td>
+                                <td class="px-5 lg:px-7 py-4 lg:py-5 text-slate-600 font-medium">{{ $order['primaryItemName'] }}</td>
+                                <td class="px-5 lg:px-7 py-4 lg:py-5">₹{{ number_format($order['orderValue'], 2) }}</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
-                                    <span class="inline-flex items-center px-2 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">Dispatching</span>
+                                    @php
+                                        $statusClass = match(strtolower($order['status'])) {
+                                            'submitted' => 'bg-amber-50 text-amber-700 border-amber-200/60',
+                                            'completed' => 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
+                                            'cancelled' => 'bg-rose-50 text-rose-700 border-rose-200/60',
+                                            default => 'bg-slate-50 text-slate-700 border-slate-200/60',
+                                        };
+                                    @endphp
+                                    <span class="inline-flex items-center px-2 py-1 border text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded {{ $statusClass }}">
+                                        {{ $order['statusLabel'] }}
+                                    </span>
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
-                                    <button onclick="event.stopPropagation();AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-9012.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer" title="Cancel Order"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                    <button onclick="event.stopPropagation();AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order {{ $order['orderNumber'] }}.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer" title="Cancel Order"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
                                 </td>
                             </tr>
-                            
-                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer" onclick="window.location.href='{{ $dashboardOrderLinks[1] }}'">
-                                <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-8994</td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-6 w-6 lg:h-7 lg:w-7 rounded bg-primary-50 text-primary-600 font-bold flex items-center justify-center text-[10px] lg:text-[11px]">G</div>
-                                        GenTech Solutions
-                                    </div>
-                                </td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5 text-slate-600 font-medium">Synthetic Enzyme B2</td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5">$12,800</td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5">
-                                    <span class="inline-flex items-center px-2 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">In Transit</span>
-                                </td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
-                                    <button onclick="event.stopPropagation();AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-8994.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer" title="Cancel Order"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
-                                </td>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="px-5 lg:px-7 py-10 text-center text-slate-400 font-medium italic">No recent orders available.</td>
                             </tr>
-
-                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer" onclick="window.location.href='{{ $dashboardOrderLinks[2] }}'">
-                                <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-8851</td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-6 w-6 lg:h-7 lg:w-7 rounded bg-indigo-50 text-indigo-600 font-bold flex items-center justify-center text-[10px] lg:text-[11px]">U</div>
-                                        University Hospital
-                                    </div>
-                                </td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5 text-slate-600 font-medium">Rapid Test Sets</td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5">$840</td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5">
-                                    <span class="inline-flex items-center px-2 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">Delivered</span>
-                                </td>
-                                <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
-                                    <button onclick="event.stopPropagation();AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-8851.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer" title="Cancel Order"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
-                                </td>
-                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

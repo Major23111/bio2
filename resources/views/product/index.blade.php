@@ -73,7 +73,7 @@
             $integerPart = $remaining . ',' . $lastThree;
         }
 
-        return ($negative ? '-' : '') . 'Rs. ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
+        return ($negative ? '-' : '') . '₹ ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
     };
 
     $currentQuery = request()->query();
@@ -163,7 +163,7 @@
             $integerPart = $remaining . ',' . $lastThree;
         }
 
-        return ($negative ? '-' : '') . '<span class="text-[13px] font-medium opacity-60 mr-1.5">Rs.</span>' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
+        return ($negative ? '-' : '') . '<span class="text-[13px] font-medium opacity-60 mr-1.5">₹</span>' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
     };
 
     $resolveVisualVariant = function ($product, int $index): string {
@@ -682,7 +682,7 @@
                     formattedValue = remainingDigits + ',' + lastThreeDigits;
                 }
 
-                return '<span class="text-[13px] font-medium opacity-60 mr-1.5">Rs.</span>' + formattedValue;
+                return '<span class="text-[13px] font-medium opacity-60 mr-1.5">₹</span>' + formattedValue;
             };
 
             const setLoadingState = function (isLoading) {

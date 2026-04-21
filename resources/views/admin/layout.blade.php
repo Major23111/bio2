@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('customer_minimal', 'minimal')
+
 @section('content')
 <div class="min-h-screen bg-[var(--ui-page-bg)] py-4 lg:py-8">
     <div class="mx-auto flex w-full max-w-[96rem] gap-0 lg:gap-8 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
@@ -179,31 +181,53 @@
 
             e.preventDefault();
             
-            const isSidebarLink = !!e.target.closest('#admin-sidebar a');
+            // 1. Determine which sidebar item should be active
+            const destPath = url.pathname;
+            const sidebarLinks = document.querySelectorAll('#admin-sidebar a');
+            let targetSidebarLink = null;
 
-            if (isSidebarLink) {
-                // Close mobile sidebar
-                closeSidebar();
+            sidebarLinks.forEach(sLink => {
+                const href = sLink.getAttribute('href');
+                if (!href || href === '#' || href.startsWith('javascript:')) return;
 
-                // Update sidebar active state
-                document.querySelectorAll('#admin-sidebar a').forEach(aEl => {
-                    aEl.classList.remove('bg-primary-600', 'text-white', 'font-bold');
-                    aEl.classList.add('text-[var(--ui-text-muted)]', 'hover:bg-[var(--ui-surface-subtle)]', 'hover:text-[var(--ui-text)]');
-                    const indicator = aEl.querySelector('div.bg-white.rounded-r-md');
-                    if (indicator) indicator.remove();
-                    const svg = aEl.querySelector('svg');
-                    if (svg) { svg.classList.remove('text-indigo-200'); svg.classList.add('text-[var(--ui-text-muted)]'); }
-                });
+                const sUrl = new URL(sLink.href);
+                const sPath = sUrl.pathname;
 
-                link.classList.remove('text-slate-500', 'hover:bg-slate-50', 'hover:text-slate-800');
-                link.classList.add('bg-primary-600', 'text-white', 'font-bold');
+                // Priority 1: Exact match
+                if (destPath === sPath) {
+                    targetSidebarLink = sLink;
+                } 
+                // Priority 2: Sub-path match (if no exact match found yet)
+                else if (!targetSidebarLink && destPath.startsWith(sPath) && sPath !== '/adminPanel/dashboard' && sPath !== '/adminPanel') {
+                    targetSidebarLink = sLink;
+                }
+            });
+
+            // 2. Update sidebar highlight
+            sidebarLinks.forEach(aEl => {
+                aEl.classList.remove('bg-primary-600', 'text-white', 'font-bold');
+                aEl.classList.add('text-[var(--ui-text-muted)]', 'hover:bg-[var(--ui-surface-subtle)]', 'hover:text-[var(--ui-text)]');
+                const indicator = aEl.querySelector('div.bg-white.rounded-r-md');
+                if (indicator) indicator.remove();
+                const svg = aEl.querySelector('svg');
+                if (svg) { svg.classList.remove('text-indigo-200'); svg.classList.add('text-[var(--ui-text-muted)]'); }
+            });
+
+            if (targetSidebarLink) {
+                targetSidebarLink.classList.remove('text-[var(--ui-text-muted)]', 'hover:bg-[var(--ui-surface-subtle)]', 'hover:text-[var(--ui-text)]');
+                targetSidebarLink.classList.add('bg-primary-600', 'text-white', 'font-bold');
                 
                 const indicatorDiv = document.createElement('div');
                 indicatorDiv.className = 'absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-md';
-                link.prepend(indicatorDiv);
+                targetSidebarLink.prepend(indicatorDiv);
                 
-                const linkSvg = link.querySelector('svg');
-                if (linkSvg) { linkSvg.classList.remove('text-slate-400'); linkSvg.classList.add('text-indigo-200'); }
+                const linkSvg = targetSidebarLink.querySelector('svg');
+                if (linkSvg) { linkSvg.classList.remove('text-[var(--ui-text-muted)]'); linkSvg.classList.add('text-indigo-200'); }
+            }
+
+            // 3. Close mobile sidebar if applicable
+            if (sidebar.classList.contains('sidebar-open')) {
+                closeSidebar();
             }
 
             await loadPage(link.href);

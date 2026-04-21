@@ -10,18 +10,18 @@
         : strtoupper($guestProfileType === 'b2b' ? 'B2B Preview' : 'Customer Preview');
     $navItems = [
         ['label' => 'Home', 'route' => 'home', 'href' => route('home')],
-        ['label' => 'Our Products & Solutions', 'route' => 'products.index', 'href' => route('products.index')],
+        ['label' => 'Products & Solutions', 'route' => 'products.index', 'href' => route('products.index')],
         ['label' => 'Generate Quotation', 'route' => 'quotation.create', 'href' => route('quotation.create')],
-        ['label' => 'Proforma Invoice', 'route' => 'pi-quotation.generate', 'href' => route('pi-quotation.generate')],
+        ['label' => 'PI', 'route' => 'pi-quotation.generate', 'href' => route('pi-quotation.generate')],
         ['label' => 'Book Meeting', 'route' => 'book-meeting', 'href' => route('book-meeting')],
         ['label' => 'Meet our Team', 'route' => 'meet-team', 'href' => route('meet-team')],
         ['label' => 'About Us', 'route' => 'about', 'href' => route('about')],
         ['label' => 'Contact Us', 'route' => 'contact', 'href' => route('contact')],
     ];
-    
+
     // Check if the user is an admin to customize the UI
     $isAdmin = $authUser && (in_array($authUser->user_type, ['admin', 'delegated_admin'], true));
-    
+
     // If admin, clear nav items or filter out storefront-heavy links if desired
     // For now, following request to remove the entire menu bar
     if ($isAdmin) {
@@ -34,7 +34,7 @@
         ['label' => 'Generate Quote', 'href' => route('quotation.create'), 'icon' => 'quote'],
         ['label' => 'Support', 'href' => route('contact'), 'icon' => 'support'],
     ];
-    
+
     if ($isAdmin) {
         // Remove View Cart from mobile quick actions for admins
         $mobileQuickActions = array_values(array_filter($mobileQuickActions, fn($a) => $a['label'] !== 'View Cart'));
@@ -48,121 +48,122 @@
             padding: clamp(0.35rem, 0.45vw, 0.5rem) clamp(0.4rem, 0.65vw, 0.75rem);
             font-size: clamp(0.68rem, 0.72vw, 0.875rem);
         }
+
         #headerMainNav {
             gap: clamp(0rem, 0.18vw, 0.25rem);
         }
+
         @media (min-width: 1280px) and (max-width: 1535px) {
             #headerDesktopActions {
                 gap: 0.5rem;
             }
+
             .header-nav-link {
                 padding: 0.4rem 0.4rem;
                 font-size: 0.74rem;
             }
-            .header-auth-button, .header-cart-button, .header-profile-button {
+
+            .header-auth-button,
+            .header-cart-button,
+            .header-profile-button {
                 height: 2.5rem;
                 min-height: 2.5rem;
             }
+
             .header-auth-button {
                 padding-inline: 1rem;
                 font-size: 0.8125rem;
             }
+
             .header-cart-button {
                 gap: 0.45rem;
                 padding-inline: 0.8rem;
             }
+
             .header-cart-label {
                 font-size: 0.8125rem;
             }
+
             .header-profile-button {
                 width: 2.5rem;
             }
         }
     </style>
-    <div class="relative mx-auto flex min-h-[64px] w-full max-w-none items-center gap-4 px-4 py-1 sm:px-6 sm:py-1.5 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10"
-    >
+    <div
+        class="relative mx-auto flex min-h-[64px] w-full max-w-none items-center gap-4 px-4 py-1 sm:px-6 sm:py-1.5 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10">
         <a href="{{ route('home') }}" class="shrink-0 xl:col-start-1">
-            <img src="{{ asset('upload/icons/biogenixlogo5.PNG') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-12 w-auto xl:h-14 2xl:h-16">
+            <img src="{{ asset('upload/icons/biogenixlogo6.PNG') }}" alt="Biogenix Logo" width="120" height="64"
+                decoding="async" class="h-12 w-auto xl:h-14 2xl:h-16">
         </a>
 
         {{-- Mobile hamburger --}}
         <button
             class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-slate-600 shadow-sm transition hover:bg-[var(--ui-surface-subtle)] xl:hidden"
-            data-menu-toggle
-            aria-label="Open navigation menu"
-            aria-expanded="false"
-            aria-controls="mobileMenuDrawer"
-        >
+            data-menu-toggle aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenuDrawer">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </button>
 
         {{-- Desktop nav --}}
-        <nav
-            id="headerMainNav"
-            class="hidden items-center justify-self-center xl:col-start-2 xl:flex xl:min-w-0"
-            aria-label="Main Navigation"
-        >
+        <nav id="headerMainNav" class="hidden items-center justify-self-center xl:col-start-2 xl:flex xl:min-w-0"
+            aria-label="Main Navigation">
             @foreach ($navItems as $nav)
-                <a
-                    href="{{ $nav['href'] }}"
-                    class="header-nav-link relative whitespace-nowrap rounded-lg font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-[var(--ui-text-muted)] hover:bg-[var(--ui-surface-subtle)] hover:text-[var(--ui-text)]' }}"
-                >
+                <a href="{{ $nav['href'] }}"
+                    class="header-nav-link relative whitespace-nowrap rounded-lg font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-[var(--ui-text-muted)] hover:bg-[var(--ui-surface-subtle)] hover:text-[var(--ui-text)]' }}">
                     {{ $nav['label'] }}
                 </a>
             @endforeach
         </nav>
 
         {{-- Desktop auth & cart --}}
-        <div id="headerDesktopActions" class="ml-auto hidden items-center gap-2 xl:col-start-3 xl:flex xl:justify-self-end">
+        <div id="headerDesktopActions"
+            class="ml-auto hidden items-center gap-2 xl:col-start-3 xl:flex xl:justify-self-end">
             @auth
-                <span class="hidden max-w-[12rem] truncate text-sm text-slate-600 2xl:inline-block 2xl:max-w-[14rem]">{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})</span>
-                
+                <span
+                    class="hidden max-w-[12rem] truncate text-sm text-slate-600 2xl:inline-block 2xl:max-w-[14rem]">{{ auth()->user()->name }}
+                    ({{ strtoupper(auth()->user()->user_type) }})</span>
+
                 @if($isAdmin)
-                    <a href="{{ route('admin.dashboard') }}" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-primary-700 2xl:h-11 2xl:px-5 2xl:text-sm">Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-primary-700 2xl:h-11 2xl:px-5 2xl:text-sm">Dashboard</a>
                 @endif
 
                 <form method="POST" action="{{ route('logout') }}" class="inline-block">
                     @csrf
-                    <button type="submit" id="logoutBtn" class="header-auth-button hover-lift inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-4 text-[13px] font-semibold text-[var(--ui-text)] shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/20 2xl:h-11 2xl:px-5 2xl:text-sm">Logout</button>
+                    <button type="submit" id="logoutBtn"
+                        class="header-auth-button hover-lift inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-4 text-[13px] font-semibold text-[var(--ui-text)] shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/20 2xl:h-11 2xl:px-5 2xl:text-sm">Logout</button>
                 </form>
             @else
-                <a href="{{ route('login') }}" id="loginBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-primary-700 2xl:h-11 2xl:px-5 2xl:text-sm">Login</a>
-                <a href="{{ route('signup') }}" id="signupBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-4 text-[13px] font-semibold text-[var(--ui-text)] shadow-sm transition hover:bg-[var(--ui-surface-subtle)] hover:border-[var(--ui-text-muted)] 2xl:h-11 2xl:px-5 2xl:text-sm">Sign Up</a>
+                <a href="{{ route('login') }}" id="loginBtn"
+                    class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-primary-700 2xl:h-11 2xl:px-5 2xl:text-sm">Login</a>
+                <a href="{{ route('signup') }}" id="signupBtn"
+                    class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-4 text-[13px] font-semibold text-[var(--ui-text)] shadow-sm transition hover:bg-[var(--ui-surface-subtle)] hover:border-[var(--ui-text-muted)] 2xl:h-11 2xl:px-5 2xl:text-sm">Sign
+                    Up</a>
             @endauth
 
             @if(!$isAdmin)
-            <button
-                type="button"
-                onclick="if(typeof openCartSidebar==='function')openCartSidebar()"
-                class="header-cart-button inline-flex h-10 items-center gap-2 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-3 text-[var(--ui-text)] shadow-sm transition hover:-translate-y-0.5 hover:bg-[var(--ui-surface-subtle)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer 2xl:h-11 2xl:gap-2.5 2xl:px-3.5"
-                aria-label="View cart"
-            >
-                <span class="relative inline-flex h-7 w-7 items-center justify-center text-inherit">
-                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                        <circle cx="9" cy="21" r="1.4"></circle>
-                        <circle cx="17" cy="21" r="1.4"></circle>
-                        <path d="M5 6h2l1.4 8h12.1l1.5-6H8"></path>
-                    </svg>
-                    <span
-                        data-cart-count
-                        class="absolute -right-2 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-rose-600 px-1.5 text-xs font-bold leading-none text-white shadow-sm"
-                        aria-live="polite"
-                        aria-atomic="true"
-                    >0</span>
-                </span>
-                <span class="header-cart-label text-[13px] font-bold leading-none text-inherit 2xl:text-sm">Cart</span>
-            </button>
+                <button type="button" onclick="if(typeof openCartSidebar==='function')openCartSidebar()"
+                    class="header-cart-button inline-flex h-10 items-center gap-2 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-3 text-[var(--ui-text)] shadow-sm transition hover:-translate-y-0.5 hover:bg-[var(--ui-surface-subtle)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer 2xl:h-11 2xl:gap-2.5 2xl:px-3.5"
+                    aria-label="View cart">
+                    <span class="relative inline-flex h-7 w-7 items-center justify-center text-inherit">
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                            <circle cx="9" cy="21" r="1.4"></circle>
+                            <circle cx="17" cy="21" r="1.4"></circle>
+                            <path d="M5 6h2l1.4 8h12.1l1.5-6H8"></path>
+                        </svg>
+                        <span data-cart-count
+                            class="absolute -right-2 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-rose-600 px-1.5 text-xs font-bold leading-none text-white shadow-sm"
+                            aria-live="polite" aria-atomic="true">0</span>
+                    </span>
+                    <span class="header-cart-label text-[13px] font-bold leading-none text-inherit 2xl:text-sm">Cart</span>
+                </button>
             @endif
 
             {{-- Profile icon --}}
-            <a
-                href="{{ $profileHref }}"
+            <a href="{{ $profileHref }}"
                 class="header-profile-button hover-lift inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text)] no-underline shadow-sm transition hover:bg-[var(--ui-surface-subtle)] hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
-                aria-label="{{ $authUser ? 'Open account profile' : 'Open account preview' }}"
-                title="Profile"
-            >
+                aria-label="{{ $authUser ? 'Open account profile' : 'Open account preview' }}" title="Profile">
                 <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
                     <circle cx="12" cy="8" r="4"></circle>
                     <path d="M5.5 21a7.5 7.5 0 0113 0"></path>
@@ -173,30 +174,27 @@
 </header>
 
 <div id="mobileMenuOverlay" class="fixed inset-0 z-[70] hidden xl:hidden" aria-hidden="true">
-    <button id="mobileMenuBackdrop" type="button" class="absolute inset-0 bg-primary-950/45 opacity-0 backdrop-blur-sm transition duration-300" aria-label="Close mobile menu"></button>
+    <button id="mobileMenuBackdrop" type="button"
+        class="absolute inset-0 bg-primary-950/45 opacity-0 backdrop-blur-sm transition duration-300"
+        aria-label="Close mobile menu"></button>
 
-    <aside
-        id="mobileMenuDrawer"
+    <aside id="mobileMenuDrawer"
         class="absolute inset-y-0 right-0 flex w-[min(92vw,25rem)] max-w-full translate-x-full flex-col bg-[var(--ui-surface)] shadow-[0_24px_80px_rgba(26,77,46,0.15)] transition duration-300 ease-out"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="mobileMenuTitle"
-    >
+        role="dialog" aria-modal="true" aria-labelledby="mobileMenuTitle">
         <div class="flex items-center justify-between border-b border-[var(--ui-border)] px-5 py-4">
             <div class="flex items-center gap-3">
-                <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Biogenix Logo" width="40" height="40" decoding="async" class="h-10 w-10 rounded-2xl object-cover">
+                <img src="{{ asset('upload/icons/biogenixlogo6.PNG') }}" alt="Biogenix Logo" width="40" height="40"
+                    decoding="async" class="h-10 w-10 rounded-2xl object-cover">
                 <div>
-                    <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-[var(--ui-text)]">Biogenix Menu</p>
+                    <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-[var(--ui-text)]">
+                        Biogenix Menu</p>
                     <p class="text-xs font-medium text-[var(--ui-text-muted)]">Mobile navigation</p>
                 </div>
             </div>
 
-            <button
-                id="mobileMenuClose"
-                type="button"
+            <button id="mobileMenuClose" type="button"
                 class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text-muted)] shadow-sm transition hover:bg-[var(--ui-surface-subtle)]"
-                aria-label="Close mobile menu"
-            >
+                aria-label="Close mobile menu">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -204,18 +202,25 @@
         </div>
 
         <div class="flex-1 space-y-4 overflow-y-auto px-4 py-4">
-            <section class="rounded-[28px] border border-primary-100 bg-[linear-gradient(145deg,#f0faf4_0%,#d1f0dd_100%)] p-4 shadow-sm">
+            <section
+                class="rounded-[28px] border border-primary-100 bg-[linear-gradient(145deg,#f0faf4_0%,#d1f0dd_100%)] p-4 shadow-sm">
                 <div class="flex items-start gap-3">
-                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-primary-700 shadow-sm">
+                    <span
+                        class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-primary-700 shadow-sm">
                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
                             <circle cx="12" cy="8" r="4"></circle>
                             <path d="M5.5 21a7.5 7.5 0 0113 0"></path>
                         </svg>
                     </span>
                     <div class="min-w-0 flex-1">
-                        <p class="truncate text-base font-semibold text-[var(--ui-text)]">{{ $authUser?->name ?? 'Welcome to Biogenix' }}</p>
-                        <p class="mt-1 truncate text-sm text-[var(--ui-text-muted)]">{{ $authUser?->email ?? 'Browse products, quotes, and support from one place.' }}</p>
-                        <span class="mt-3 inline-flex rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary-700">
+                        <p class="truncate text-base font-semibold text-[var(--ui-text)]">
+                            {{ $authUser?->name ?? 'Welcome to Biogenix' }}
+                        </p>
+                        <p class="mt-1 truncate text-sm text-[var(--ui-text-muted)]">
+                            {{ $authUser?->email ?? 'Browse products, quotes, and support from one place.' }}
+                        </p>
+                        <span
+                            class="mt-3 inline-flex rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary-700">
                             {{ $accountTypeLabel }}
                         </span>
                     </div>
@@ -223,20 +228,24 @@
 
                 <div class="mt-4 grid gap-2 sm:grid-cols-2">
                     @auth
-                        <a href="{{ $profileHref }}" class="inline-flex h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
+                        <a href="{{ $profileHref }}"
+                            class="inline-flex h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
                             Open Profile
                         </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="hover-lift inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 hover:shadow-md">
+                            <button type="submit"
+                                class="hover-lift inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 hover:shadow-md">
                                 Logout
                             </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-2xl bg-primary-600 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
+                        <a href="{{ route('login') }}"
+                            class="inline-flex h-11 items-center justify-center rounded-2xl bg-primary-600 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
                             Login
                         </a>
-                        <a href="{{ route('signup') }}" class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-50 hover:text-slate-900">
+                        <a href="{{ route('signup') }}"
+                            class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-50 hover:text-slate-900">
                             Sign Up
                         </a>
                     @endauth
@@ -245,18 +254,18 @@
 
             <section class="rounded-[26px] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-sm">
                 <div class="mb-3 flex items-center justify-between px-1">
-                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--ui-text-muted)]">Navigate</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--ui-text-muted)]">Navigate
+                    </p>
                     <span class="text-xs font-medium text-[var(--ui-text-muted)]">{{ count($navItems) }} links</span>
                 </div>
 
                 <div class="space-y-2">
                     @foreach ($navItems as $nav)
-                        <a
-                            href="{{ $nav['href'] }}"
-                            class="flex items-center justify-between rounded-2xl px-3 py-3 text-sm font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 hover:text-primary-700' : 'bg-[var(--ui-surface-subtle)] text-[var(--ui-text)] hover:bg-[var(--ui-border)] hover:text-[var(--ui-text)]' }}"
-                        >
+                        <a href="{{ $nav['href'] }}"
+                            class="flex items-center justify-between rounded-2xl px-3 py-3 text-sm font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 hover:text-primary-700' : 'bg-[var(--ui-surface-subtle)] text-[var(--ui-text)] hover:bg-[var(--ui-border)] hover:text-[var(--ui-text)]' }}">
                             <span>{{ $nav['label'] }}</span>
-                            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
                                 <path d="m9 6 6 6-6 6"></path>
                             </svg>
                         </a>
@@ -266,63 +275,79 @@
 
             <section class="rounded-[26px] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-sm">
                 <div class="mb-3 flex items-center justify-between px-1">
-                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--ui-text-muted)]">Quick Actions</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--ui-text-muted)]">Quick
+                        Actions</p>
                     <span class="text-xs font-medium text-[var(--ui-text-muted)]">Fast access</span>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     @foreach ($mobileQuickActions as $action)
                         @if (isset($action['onclick']))
-                            <button type="button" onclick="if(typeof openCartSidebar==='function'){openCartSidebar();}var cm=document.getElementById('mobileMenuClose');if(cm){cm.click();}" class="rounded-[22px] border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-primary-200 hover:bg-primary-50 hover:text-slate-900 cursor-pointer">
+                            <button type="button"
+                                onclick="if(typeof openCartSidebar==='function'){openCartSidebar();}var cm=document.getElementById('mobileMenuClose');if(cm){cm.click();}"
+                                class="rounded-[22px] border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-primary-200 hover:bg-primary-50 hover:text-slate-900 cursor-pointer">
                         @else
-                            <a href="{{ $action['href'] }}" class="rounded-[22px] border border-[var(--ui-border)] bg-[var(--ui-surface-subtle)] p-3 text-left no-underline transition hover:border-primary-200 hover:bg-primary-50 hover:text-[var(--ui-text)]">
-                        @endif
-                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary-700 shadow-sm">
-                                @if ($action['icon'] === 'profile')
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                                        <circle cx="12" cy="8" r="4"></circle>
-                                        <path d="M5.5 21a7.5 7.5 0 0113 0"></path>
-                                    </svg>
-                                @elseif ($action['icon'] === 'cart')
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                                        <circle cx="9" cy="20" r="1.4"></circle>
-                                        <circle cx="17" cy="20" r="1.4"></circle>
-                                        <path d="M5 6h2l1.4 8h12.1l1.5-6H8"></path>
-                                    </svg>
-                                @elseif ($action['icon'] === 'quote')
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                                        <path d="M3 5h18"></path>
-                                        <path d="M7 3v4"></path>
-                                        <path d="M17 3v4"></path>
-                                        <rect x="4" y="7" width="16" height="13" rx="2"></rect>
-                                        <path d="M8 11h8"></path>
-                                    </svg>
+                                <a href="{{ $action['href'] }}"
+                                    class="rounded-[22px] border border-[var(--ui-border)] bg-[var(--ui-surface-subtle)] p-3 text-left no-underline transition hover:border-primary-200 hover:bg-primary-50 hover:text-[var(--ui-text)]">
+                            @endif
+                                <span
+                                    class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary-700 shadow-sm">
+                                    @if ($action['icon'] === 'profile')
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1.9">
+                                            <circle cx="12" cy="8" r="4"></circle>
+                                            <path d="M5.5 21a7.5 7.5 0 0113 0"></path>
+                                        </svg>
+                                    @elseif ($action['icon'] === 'cart')
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1.9">
+                                            <circle cx="9" cy="20" r="1.4"></circle>
+                                            <circle cx="17" cy="20" r="1.4"></circle>
+                                            <path d="M5 6h2l1.4 8h12.1l1.5-6H8"></path>
+                                        </svg>
+                                    @elseif ($action['icon'] === 'quote')
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1.9">
+                                            <path d="M3 5h18"></path>
+                                            <path d="M7 3v4"></path>
+                                            <path d="M17 3v4"></path>
+                                            <rect x="4" y="7" width="16" height="13" rx="2"></rect>
+                                            <path d="M8 11h8"></path>
+                                        </svg>
+                                    @else
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1.9">
+                                            <path d="M8 10h8"></path>
+                                            <path d="M8 14h5"></path>
+                                            <path
+                                                d="M12 3c4.97 0 9 3.58 9 8 0 1.95-.78 3.74-2.07 5.16L20 21l-5.04-1.68A10.5 10.5 0 0 1 12 20c-4.97 0-9-3.58-9-8s4.03-9 9-9Z">
+                                            </path>
+                                        </svg>
+                                    @endif
+                                </span>
+                                <span
+                                    class="mt-3 block text-sm font-semibold text-[var(--ui-text)]">{{ $action['label'] }}</span>
+                                @if (isset($action['onclick']))
+                                    </button>
                                 @else
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                                        <path d="M8 10h8"></path>
-                                        <path d="M8 14h5"></path>
-                                        <path d="M12 3c4.97 0 9 3.58 9 8 0 1.95-.78 3.74-2.07 5.16L20 21l-5.04-1.68A10.5 10.5 0 0 1 12 20c-4.97 0-9-3.58-9-8s4.03-9 9-9Z"></path>
-                                    </svg>
-                                @endif
-                            </span>
-                            <span class="mt-3 block text-sm font-semibold text-[var(--ui-text)]">{{ $action['label'] }}</span>
-                        @if (isset($action['onclick']))
-                            </button>
-                        @else
                             </a>
                         @endif
                     @endforeach
                 </div>
             </section>
 
-            <section class="rounded-[26px] border border-[var(--ui-border)] bg-[var(--ui-surface-subtle)] p-4 shadow-sm">
+            <section
+                class="rounded-[26px] border border-[var(--ui-border)] bg-[var(--ui-surface-subtle)] p-4 shadow-sm">
                 <p class="text-sm font-semibold text-[var(--ui-text)]">Need procurement help?</p>
-                <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Talk to our team about availability, delivery windows, or commercial quotations.</p>
+                <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Talk to our team about availability,
+                    delivery windows, or commercial quotations.</p>
                 <div class="mt-4 flex flex-col gap-2">
-                    <a href="tel:+91180024643649" class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-100 hover:text-slate-900">
+                    <a href="tel:+91180024643649"
+                        class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-100 hover:text-slate-900">
                         Call Support
                     </a>
-                    <a href="mailto:support@biogenix.local" class="inline-flex h-11 items-center justify-center rounded-2xl bg-primary-600 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
+                    <a href="mailto:support@biogenix.local"
+                        class="inline-flex h-11 items-center justify-center rounded-2xl bg-primary-600 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
                         Email Support
                     </a>
                 </div>
