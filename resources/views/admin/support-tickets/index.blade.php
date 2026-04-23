@@ -15,7 +15,7 @@
     </div>
 
     {{-- ─── Active Ticket Inbox ─── --}}
-    <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden mb-5">
+    <div class="bg-[var(--ui-surface)] rounded-2xl shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] overflow-hidden mb-5">
 
         {{-- Toolbar --}}
         <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -138,7 +138,7 @@
     <div class="grid grid-cols-1 gap-5">
 
         {{-- Left: Ticket Detail --}}
-        <div id="ticket-detail-panel" class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden flex flex-col">
+        <div id="ticket-detail-panel" class="bg-[var(--ui-surface)] rounded-2xl shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] overflow-hidden flex flex-col">
 
             {{-- Ticket Header --}}
             <div class="px-6 py-4 border-b border-slate-100">
@@ -336,19 +336,27 @@
         }
     };
 
-    // ─── Add Category ───
+    // ─── Add Category — themed modal ───
     window.addCategory = function() {
-        const name = prompt('New category name:');
-        if (!name?.trim()) return;
-        const list = document.getElementById('categories-list');
-        const div = document.createElement('div');
-        div.className = 'flex items-center justify-between py-2 border-b border-slate-50';
-        div.innerHTML = `<span class="text-[13px] font-semibold text-slate-800">${name.trim()}</span><span class="text-[11px] font-bold bg-slate-100 text-slate-600 rounded-full px-2 py-0.5">0</span>`;
-        list.appendChild(div);
+        document.getElementById('add-category-modal').classList.remove('hidden');
+        document.getElementById('add-category-modal').classList.add('flex');
+        document.getElementById('new-category-input').focus();
     };
 
-    // ─── Escape key ───
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNewTicketModal(); });
+    window.closeNewTicketModal = function() {
+        // Stub: no new-ticket modal currently rendered — keeping as a no-op to avoid JS errors
+        const modal = document.getElementById('new-ticket-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        // Also close the add-category modal if open
+        const catModal = document.getElementById('add-category-modal');
+        if (catModal) {
+            catModal.classList.add('hidden');
+            catModal.classList.remove('flex');
+        }
+    };
 
     // ─── Enter to send message ───
     document.getElementById('reply-input')?.addEventListener('keydown', e => {
@@ -357,6 +365,43 @@
             sendMessage(); 
         }
     });
+})();
+</script>
+
+{{-- ─── Add Category Modal ─── --}}
+<div id="add-category-modal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-950/50 backdrop-blur-[2px]">
+    <div class="relative w-full max-w-sm rounded-2xl bg-white border border-slate-200 shadow-2xl p-6 mx-4">
+        <div class="flex items-start justify-between mb-5">
+            <h3 class="text-[15px] font-extrabold text-slate-900">Add Support Category</h3>
+            <button onclick="closeNewTicketModal()" class="text-slate-400 hover:text-slate-600 transition cursor-pointer">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <input id="new-category-input" type="text" placeholder="Category name..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-2.5 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 outline-none text-slate-800 font-medium placeholder:text-slate-400 mb-5">
+        <div class="flex justify-end gap-3">
+            <button onclick="closeNewTicketModal()" class="px-4 py-2 text-sm font-bold text-slate-600 hover:text-slate-800 transition cursor-pointer">Cancel</button>
+            <button onclick="submitNewCategory()" class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 transition shadow-sm cursor-pointer">Add Category</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    window.submitNewCategory = function() {
+        const input = document.getElementById('new-category-input');
+        const name = input?.value?.trim();
+        if (!name) return;
+        const list = document.getElementById('categories-list');
+        if (list) {
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between py-2 border-b border-slate-50';
+            div.innerHTML = `<span class="text-[13px] font-semibold text-slate-800">${name}</span><span class="text-[11px] font-bold bg-slate-100 text-slate-600 rounded-full px-2 py-0.5">0</span>`;
+            list.appendChild(div);
+        }
+        if (window.AdminToast) window.AdminToast.show(`Category "${name}" added`, 'success');
+        input.value = '';
+        closeNewTicketModal();
+    };
 })();
 </script>
 

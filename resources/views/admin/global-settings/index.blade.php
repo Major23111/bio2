@@ -79,26 +79,26 @@
             <p class="mb-6 text-[11px] font-bold uppercase tracking-widest text-[var(--ui-text-muted)]">Select a preset palette</p>
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 lg:gap-6">
-                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border-2 border-primary-600 bg-white p-3.5 text-left shadow-sm">
-                    <div class="relative h-8 w-8 flex-shrink-0 rounded-full bg-slate-100">
+                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border-2 border-primary-600 bg-[var(--ui-surface)] p-3.5 text-left shadow-sm">
+                    <div class="relative h-8 w-8 flex-shrink-0 rounded-full" style="background:#1A4D2E">
                         <span class="absolute inset-[-5px] rounded-full border-2 border-primary-600"></span>
                         <span class="absolute inset-[-9px] rounded-full border border-slate-200"></span>
                     </div>
-                    <span class="text-[13px] font-bold text-primary-800">Biogenix Blue</span>
+                    <span class="text-[13px] font-bold text-primary-800">Biogenix Green</span>
                 </button>
 
-                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-white p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
-                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-slate-100 shadow-sm"></span>
+                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-[var(--ui-surface)] p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
+                    <span class="h-8 w-8 flex-shrink-0 rounded-full shadow-sm" style="background:#16a34a"></span>
                     <span class="text-[13px] font-bold text-slate-700">Forest Green</span>
                 </button>
 
-                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-white p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
-                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-slate-100 shadow-sm"></span>
+                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-[var(--ui-surface)] p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
+                    <span class="h-8 w-8 flex-shrink-0 rounded-full shadow-sm" style="background:#4f46e5"></span>
                     <span class="text-[13px] font-bold text-slate-700">Modern Indigo</span>
                 </button>
 
-                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-white p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
-                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-slate-100 shadow-sm"></span>
+                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-[var(--ui-surface)] p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
+                    <span class="h-8 w-8 flex-shrink-0 rounded-full shadow-sm" style="background:#0f172a"></span>
                     <span class="text-[13px] font-bold text-slate-700">Midnight Black</span>
                 </button>
             </div>

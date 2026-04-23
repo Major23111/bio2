@@ -20,6 +20,7 @@
         <!-- Main Content -->
         <main id="admin-main-content" class="flex-1 min-w-0 space-y-6 pb-12 transition-opacity duration-200">
             @yield('admin_content')
+            @stack('scripts')
         </main>
     </div>
 </div>
@@ -333,5 +334,4 @@
 
     });
 </script>
-@stack('scripts')
 @endsection

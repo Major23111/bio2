@@ -12,7 +12,7 @@
         ['label' => 'Home', 'route' => 'home', 'href' => route('home')],
         ['label' => 'Products & Solutions', 'route' => 'products.index', 'href' => route('products.index')],
         ['label' => 'Generate Quotation', 'route' => 'quotation.create', 'href' => route('quotation.create')],
-        ['label' => 'PI', 'route' => 'pi-quotation.generate', 'href' => route('pi-quotation.generate')],
+        ['label' => 'Request PI', 'route' => 'pi-quotation.generate', 'href' => route('pi-quotation.generate')],
         ['label' => 'Book Meeting', 'route' => 'book-meeting', 'href' => route('book-meeting')],
         ['label' => 'Meet our Team', 'route' => 'meet-team', 'href' => route('meet-team')],
         ['label' => 'About Us', 'route' => 'about', 'href' => route('about')],
@@ -21,6 +21,7 @@
 
     // Check if the user is an admin to customize the UI
     $isAdmin = $authUser && (in_array($authUser->user_type, ['admin', 'delegated_admin'], true));
+    $brandHref = $isAdmin ? route('admin.dashboard') : route('home');
 
     // If admin, clear nav items or filter out storefront-heavy links if desired
     // For now, following request to remove the entire menu bar
@@ -91,19 +92,21 @@
     </style>
     <div
         class="relative mx-auto flex min-h-[64px] w-full max-w-none items-center gap-4 px-4 py-1 sm:px-6 sm:py-1.5 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10">
-        <a href="{{ route('home') }}" class="shrink-0 xl:col-start-1">
+        <a href="{{ $brandHref }}" class="shrink-0 xl:col-start-1">
             <img src="{{ asset('upload/icons/biogenixlogo6.PNG') }}" alt="Biogenix Logo" width="120" height="64"
                 decoding="async" class="h-12 w-auto xl:h-14 2xl:h-16">
         </a>
 
-        {{-- Mobile hamburger --}}
-        <button
-            class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-slate-600 shadow-sm transition hover:bg-[var(--ui-surface-subtle)] xl:hidden"
-            data-menu-toggle aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenuDrawer">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-        </button>
+        @unless ($isAdmin)
+            {{-- Mobile hamburger --}}
+            <button
+                class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-slate-600 shadow-sm transition hover:bg-[var(--ui-surface-subtle)] xl:hidden"
+                data-menu-toggle aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenuDrawer">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        @endunless
 
         {{-- Desktop nav --}}
         <nav id="headerMainNav" class="hidden items-center justify-self-center xl:col-start-2 xl:flex xl:min-w-0"
@@ -160,46 +163,49 @@
                 </button>
             @endif
 
-            {{-- Profile icon --}}
-            <a href="{{ $profileHref }}"
-                class="header-profile-button hover-lift inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text)] no-underline shadow-sm transition hover:bg-[var(--ui-surface-subtle)] hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
-                aria-label="{{ $authUser ? 'Open account profile' : 'Open account preview' }}" title="Profile">
-                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                    <circle cx="12" cy="8" r="4"></circle>
-                    <path d="M5.5 21a7.5 7.5 0 0113 0"></path>
-                </svg>
-            </a>
+            @unless ($isAdmin)
+                {{-- Profile icon --}}
+                <a href="{{ $profileHref }}"
+                    class="header-profile-button hover-lift inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text)] no-underline shadow-sm transition hover:bg-[var(--ui-surface-subtle)] hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
+                    aria-label="{{ $authUser ? 'Open account profile' : 'Open account preview' }}" title="Profile">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M5.5 21a7.5 7.5 0 0113 0"></path>
+                    </svg>
+                </a>
+            @endunless
         </div>
     </div>
 </header>
 
-<div id="mobileMenuOverlay" class="fixed inset-0 z-[70] hidden xl:hidden" aria-hidden="true">
-    <button id="mobileMenuBackdrop" type="button"
-        class="absolute inset-0 bg-primary-950/45 opacity-0 backdrop-blur-sm transition duration-300"
-        aria-label="Close mobile menu"></button>
+@unless ($isAdmin)
+    <div id="mobileMenuOverlay" class="fixed inset-0 z-[70] hidden xl:hidden" aria-hidden="true">
+        <button id="mobileMenuBackdrop" type="button"
+            class="absolute inset-0 bg-primary-950/45 opacity-0 backdrop-blur-sm transition duration-300"
+            aria-label="Close mobile menu"></button>
 
-    <aside id="mobileMenuDrawer"
-        class="absolute inset-y-0 right-0 flex w-[min(92vw,25rem)] max-w-full translate-x-full flex-col bg-[var(--ui-surface)] shadow-[0_24px_80px_rgba(26,77,46,0.15)] transition duration-300 ease-out"
-        role="dialog" aria-modal="true" aria-labelledby="mobileMenuTitle">
-        <div class="flex items-center justify-between border-b border-[var(--ui-border)] px-5 py-4">
-            <div class="flex items-center gap-3">
-                <img src="{{ asset('upload/icons/biogenixlogo6.PNG') }}" alt="Biogenix Logo" width="40" height="40"
-                    decoding="async" class="h-10 w-10 rounded-2xl object-cover">
-                <div>
-                    <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-[var(--ui-text)]">
-                        Biogenix Menu</p>
-                    <p class="text-xs font-medium text-[var(--ui-text-muted)]">Mobile navigation</p>
+        <aside id="mobileMenuDrawer"
+            class="absolute inset-y-0 right-0 flex w-[min(92vw,25rem)] max-w-full translate-x-full flex-col bg-[var(--ui-surface)] shadow-[0_24px_80px_rgba(26,77,46,0.15)] transition duration-300 ease-out"
+            role="dialog" aria-modal="true" aria-labelledby="mobileMenuTitle">
+            <div class="flex items-center justify-between border-b border-[var(--ui-border)] px-5 py-4">
+                <div class="flex items-center gap-3">
+                    <img src="{{ asset('upload/icons/biogenixlogo6.PNG') }}" alt="Biogenix Logo" width="40" height="40"
+                        decoding="async" class="h-10 w-10 rounded-2xl object-cover">
+                    <div>
+                        <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-[var(--ui-text)]">
+                            Biogenix Menu</p>
+                        <p class="text-xs font-medium text-[var(--ui-text-muted)]">Mobile navigation</p>
+                    </div>
                 </div>
-            </div>
 
-            <button id="mobileMenuClose" type="button"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text-muted)] shadow-sm transition hover:bg-[var(--ui-surface-subtle)]"
-                aria-label="Close mobile menu">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
+                <button id="mobileMenuClose" type="button"
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text-muted)] shadow-sm transition hover:bg-[var(--ui-surface-subtle)]"
+                    aria-label="Close mobile menu">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
 
         <div class="flex-1 space-y-4 overflow-y-auto px-4 py-4">
             <section
@@ -353,8 +359,9 @@
                 </div>
             </section>
         </div>
-    </aside>
-</div>
+        </aside>
+    </div>
+@endunless
 
 <script>
     window.CartStore = (function () {

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('designation')->nullable();
             $table->string('phone', 20)->nullable();
             $table->string('alt_phone', 20)->nullable();
+            $table->string('employee_id', 50)->nullable();
             $table->foreignId('company_id')->nullable();
             $table->string('status', 20)->default('active');
             $table->timestamp('approved_at')->nullable();

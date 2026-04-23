@@ -4,6 +4,7 @@
 
 @section('admin_content')
 
+            <div data-quiz-create-page>
             <!-- Header -->
             <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -35,9 +36,9 @@
             <!-- Tabs -->
             <div class="mt-6 border-b border-[var(--ui-border)]">
                 <nav class="-mb-px flex space-x-8">
-                    <button class="quiz-tab border-primary-600 text-[var(--ui-text)] whitespace-nowrap pb-4 px-1 border-b-2 font-bold text-sm" data-target="common-questions">Common Questions</button>
-                    <button class="quiz-tab border-transparent text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] hover:border-slate-300 whitespace-nowrap pb-4 px-1 border-b-2 font-semibold text-sm transition" data-target="b2b-questions">B2B Questions</button>
-                    <button class="quiz-tab border-transparent text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] hover:border-slate-300 whitespace-nowrap pb-4 px-1 border-b-2 font-semibold text-sm transition" data-target="b2c-questions">B2C Questions</button>
+                    <button type="button" class="quiz-tab border-primary-600 text-[var(--ui-text)] whitespace-nowrap pb-4 px-1 border-b-2 font-bold text-sm" data-target="common-questions">Common Questions</button>
+                    <button type="button" class="quiz-tab border-transparent text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] hover:border-slate-300 whitespace-nowrap pb-4 px-1 border-b-2 font-semibold text-sm transition" data-target="b2b-questions">B2B Questions</button>
+                    <button type="button" class="quiz-tab border-transparent text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] hover:border-slate-300 whitespace-nowrap pb-4 px-1 border-b-2 font-semibold text-sm transition" data-target="b2c-questions">B2C Questions</button>
                 </nav>
             </div>
 
@@ -651,42 +652,67 @@
             <button class="fixed bottom-12 right-12 h-14 w-14 rounded-2xl bg-primary-900 border border-primary-800 text-white flex items-center justify-center shadow-lg hover:bg-primary-800 transition shadow-[0_0_30px_rgba(15,23,42,0.3)] hidden md:flex">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
             </button>
+            </div>
 
 @endsection
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const tabs = document.querySelectorAll('.quiz-tab');
-        
-        tabs.forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Reset all tabs
-                tabs.forEach(t => {
-                    t.classList.remove('border-primary-600', 'text-[var(--ui-text)]', 'font-bold');
-                    t.classList.add('border-transparent', 'text-[var(--ui-text-muted)]', 'font-semibold');
+    (function () {
+        function initQuizCreatePage(root) {
+            const scope = root || document;
+            const page = scope.querySelector('[data-quiz-create-page]');
+            if (!page || page.dataset.quizTabsReady === 'true') {
+                return;
+            }
+
+            page.dataset.quizTabsReady = 'true';
+
+            const tabs = page.querySelectorAll('.quiz-tab');
+            const panes = page.querySelectorAll('.tab-pane');
+
+            function activateTab(tab) {
+                tabs.forEach((item) => {
+                    item.classList.remove('border-primary-600', 'text-[var(--ui-text)]', 'font-bold');
+                    item.classList.add('border-transparent', 'text-[var(--ui-text-muted)]', 'font-semibold');
                 });
-                
-                // Activate clicked tab
-                tab.classList.remove('border-transparent', 'text-[var(--ui-text-muted)]', 'font-semibold');
-                tab.classList.add('border-primary-600', 'text-[var(--ui-text)]', 'font-bold');
-                
-                // Hide all panes
-                document.querySelectorAll('.tab-pane').forEach(pane => {
+
+                panes.forEach((pane) => {
                     pane.classList.add('hidden');
                     pane.classList.remove('block');
                 });
-                
-                // Show target pane
-                const target = document.getElementById(tab.dataset.target);
+
+                tab.classList.remove('border-transparent', 'text-[var(--ui-text-muted)]', 'font-semibold');
+                tab.classList.add('border-primary-600', 'text-[var(--ui-text)]', 'font-bold');
+
+                const target = page.querySelector('#' + tab.dataset.target);
                 if (target) {
                     target.classList.remove('hidden');
                     target.classList.add('block');
                 }
+            }
+
+            tabs.forEach((tab) => {
+                tab.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    activateTab(tab);
+                });
             });
-        });
-    });
+
+            const activeTab = Array.from(tabs).find((tab) => tab.classList.contains('border-primary-600')) || tabs[0];
+            if (activeTab) {
+                activateTab(activeTab);
+            }
+        }
+
+        window.initQuizCreatePage = initQuizCreatePage;
+        initQuizCreatePage(document);
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () {
+                initQuizCreatePage(document);
+            }, { once: true });
+        }
+    })();
 </script>
 @endpush

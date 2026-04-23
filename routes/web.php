@@ -6,13 +6,14 @@ use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Checkout\CheckoutController;
 use App\Http\Controllers\ContactUs\ContactUsController;
 use App\Http\Controllers\AdminPanel\AdminDashboardController;
+use App\Http\Controllers\ControlPanel\CategoryCrudController;
 use App\Http\Controllers\Faq\FaqController;
 use App\Http\Controllers\Home\HomeController;
-use App\Http\Controllers\Authorization\RoleAndPermissionController;
 use App\Http\Controllers\Authorization\SignupEmailOtpController;
 use App\Http\Controllers\Proforma\ProformaInvoiceController;
 use App\Http\Controllers\Quotation\QuotationController;
 use App\Http\Controllers\Order\OrderController;
+use App\Http\Controllers\AdminPanel\RolePermissionAdminCrudController;
 use App\Http\Controllers\Profile\CustomerAddressController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Product\ProductCrudController;
@@ -132,12 +133,15 @@ Route::view('/order-confirmation', 'order-confirmation')->middleware(['auth', 'p
 
 //TODO: Under development - Admin panel routes pointing to view directly for now, will connect to controllers after the views are ready.
 Route::get('/adminPanel/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-Route::view('/adminPanel/categories', 'admin.categories.index')->name('admin.categories');
+Route::get('/adminPanel/categories', [CategoryCrudController::class, 'index'])->name('admin.categories');
+Route::post('/adminPanel/categories', [CategoryCrudController::class, 'store'])->name('admin.categories.store');
+Route::post('/adminPanel/categories/update', [CategoryCrudController::class, 'update'])->name('admin.categories.update');
 Route::get('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'index'])->name('admin.products');
 Route::get('/adminPanel/products/create', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'create'])->name('admin.products.create');
 Route::post('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'store'])->name('admin.products.store');
 Route::get('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'edit'])->name('admin.products.edit');
 Route::put('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'update'])->name('admin.products.update');
+Route::delete('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'destroy'])->name('admin.products.destroy');
 Route::view('/adminPanel/pricing', 'admin.pricing.index')->name('admin.pricing');
 Route::get('/adminPanel/pi-quotation', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'index'])->name('admin.pi-quotation.index');
 Route::get('/adminPanel/pi-quotation/create', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'create'])->name('admin.pi-quotation.create');
@@ -159,7 +163,13 @@ Route::view('/adminPanel/quiz', 'admin.quiz.index')->name('admin.quiz.index');
 Route::view('/adminPanel/quiz/create', 'admin.quiz.create')->name('admin.quiz.create');
 
 Route::group(['prefix' => 'adminPanel', 'as' => 'admin.'], function () {
-    Route::view('/role-permission', 'admin.RolePermissions.index')->name('role-permission');
+    Route::get('/role-permission', [RolePermissionAdminCrudController::class, 'index'])->name('role-permission');
+    Route::post('/role-permission/roles', [RolePermissionAdminCrudController::class, 'storeRole'])->name('role-permission.roles.store');
+    Route::post('/role-permission/users', [RolePermissionAdminCrudController::class, 'storeUser'])->name('role-permission.users.store');
+    Route::post('/role-permission/matrix', [RolePermissionAdminCrudController::class, 'saveRolePermissions'])->name('role-permission.matrix.save');
+    Route::post('/role-permission/overrides', [RolePermissionAdminCrudController::class, 'storeUserOverride'])->name('role-permission.overrides.store');
+    Route::post('/role-permission/delegations', [RolePermissionAdminCrudController::class, 'storeDelegatedAccess'])->name('role-permission.delegations.store');
+    Route::post('/role-permission/impersonations', [RolePermissionAdminCrudController::class, 'storeImpersonationSession'])->name('role-permission.impersonations.store');
     Route::view('/role-permission/add-role', 'admin.RolePermissions.add-role')->name('role-permission.add-role');
     Route::view('/role-permission/add-permission', 'admin.RolePermissions.add-permission')->name('role-permission.add-permission');
     Route::view('/role-permission/assign-dept-role', 'admin.RolePermissions.assign-dept-role')->name('role-permission.assign-dept-role');

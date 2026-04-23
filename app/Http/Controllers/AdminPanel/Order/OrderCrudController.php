@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AdminPanel\Order;
 
 use App\Http\Controllers\Controller;
 use App\Services\AdminPanel\Order\OrderCrudService;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -21,19 +22,14 @@ class OrderCrudController extends Controller
         try {
             // Fetch all orders with basic information.
             $orders = $this->orderCrudService->getAllOrdersForAdminList();
-
-            // Return view with orders data.
-            return view('admin.orders.index', [
-                'orders' => $orders,
-            ]);
         } catch (Throwable $exception) {
             // Return view with empty orders if error occurs.
-            $orders = collect([]);
-
-            return view('admin.orders.index', [
-                'orders' => $orders,
-            ]);
+            $orders = new LengthAwarePaginator([], 0, 10);
         }
+
+        return view('admin.orders.index', [
+            'orders' => $orders,
+        ]);
     }
 
     // Display order details for viewing and editing.
@@ -42,49 +38,58 @@ class OrderCrudController extends Controller
         try {
             // Fetch order information for viewing.
             $order = $this->orderCrudService->getOrderForView($orderId);
-
-            // Abort if order not found.
-            if (!$order) {
-                abort(404);
-            }
-
-            // Return view with order data.
-            return view('admin.orders.details', [
-                'order' => $order,
-            ]);
         } catch (Throwable $exception) {
-            // Abort with error if order cannot be fetched.
+            // Abort with error when the page data cannot be loaded.
             abort(500);
         }
+
+        abort_if(! $order, 404);
+
+        $orderDetailsPage = view('admin.orders.details', [
+            'order' => $order,
+        ]);
+
+        return $orderDetailsPage;
     }
 
     // Update order from form submission.
     public function update(Request $request, int $orderId): RedirectResponse
     {
         try {
-            // Validate order information to update.
-            $validated = $request->validate([
-                'status' => 'required|string|max:50',
+            // Validate the order values submitted from the page.
+            $validatedOrderDetails = $request->validate([
+                'order_stage' => 'required|string|in:Order Received,Payment Received (Prepaid),Processing,Dispatched,Delivered,Payment Received (COD),Cancelled',
+                'tracking_number' => 'nullable|string|max:100',
+                'tracking_url' => 'nullable|url|max:255',
+                'customer_name' => 'nullable|string|max:255',
+                'customer_email' => 'nullable|email|max:255',
+                'customer_phone' => 'nullable|string|max:50',
+                'shipping_address_text' => 'nullable|string|max:500',
                 'notes' => 'nullable|string',
             ]);
 
-            // Update order record in database.
-            $isUpdated = $this->orderCrudService->updateOrder($orderId, $validated);
+            // Save the order changes in the service layer.
+            $isOrderUpdated = $this->orderCrudService->updateOrder($orderId, $validatedOrderDetails);
 
-            // Check if update was successful.
-            if (!$isUpdated) {
-                return redirect()->back()
-                    ->with('error', 'Order not found.');
+            // Redirect back to the same order when save is successful.
+            if ($isOrderUpdated) {
+                $response = redirect()->route('admin.orders.view', [
+                    'orderId' => $orderId,
+                ])->with('success', 'Order changes have been saved successfully.');
             }
 
-            // Redirect to orders list with success message.
-            return redirect()->route('admin.orders')
-                ->with('success', 'Order updated successfully.');
+            // Redirect back with an error when the order is missing.
+            if (! $isOrderUpdated) {
+                $response = redirect()->back()
+                    ->with('error', 'Order not found.');
+            }
         } catch (Throwable $exception) {
             // Redirect back to form with error message.
-            return redirect()->back()
+            $response = redirect()->back()
                 ->withInput()
                 ->with('error', 'Failed to update order. Please try again.');
         }
+
+        return $response;
     }
 }

@@ -159,6 +159,7 @@ return new class extends Migration
                 $table->string('shipment_number', 50);
                 $table->string('carrier', 100)->nullable();
                 $table->string('tracking_number', 100)->nullable();
+                $table->string('tracking_url')->nullable();
                 $table->string('status', 32)->default('pending'); // pending, packed, shipped, delivered, returned
                 $table->dateTime('shipped_at')->nullable();
                 $table->dateTime('delivered_at')->nullable();

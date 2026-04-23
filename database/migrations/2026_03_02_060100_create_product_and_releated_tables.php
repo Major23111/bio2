@@ -14,6 +14,7 @@ return new class extends Migration
                 $table->string('name');
                 $table->string('description')->nullable();
                 $table->string('application')->nullable();
+                $table->string('hsm_code')->nullable();
                 $table->string('slug')->unique();
                 $table->boolean('IsDisplayedOnHomePage')->default(false);
                 $table->string('default_image_path')->nullable();

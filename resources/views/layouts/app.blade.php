@@ -25,6 +25,8 @@
     class="min-h-screen bg-[var(--ui-page-bg-gradient)] font-sans text-slate-800 antialiased">
     @php($suppressShellAlerts = request()->routeIs('login', 'forgot.password', 'signup', 'b2b.signup'))
     @php($isMinimalCustomerWorkspace = trim($__env->yieldContent('customer_minimal')) === 'minimal')
+    @php($layoutAuthUser = auth()->user())
+    @php($isAdminShellUser = $layoutAuthUser && in_array($layoutAuthUser->user_type, ['admin', 'delegated_admin'], true))
     @php($loaderLogoPath = public_path('upload/icons/biogenix3D.png'))
     @php($loaderLogoSrc = file_exists($loaderLogoPath) ? 'data:image/jpeg;base64,' . base64_encode(file_get_contents($loaderLogoPath)) : asset('upload/icons/biogenixlogo6.PNG'))
     @php($supportWidgetCategoryOptions = app(\App\Services\SupportTicket\SupportTicketService::class)->availableCategorySlugs())
@@ -136,6 +138,7 @@
         </button>
 
         @auth
+            @unless ($isAdminShellUser)
             {{-- Support Ticket Toggle Button --}}
             <button onclick="toggleSupportForm()"
                 class="group flex h-14 w-14 items-center justify-center rounded-full bg-primary-600 text-white shadow-xl shadow-primary-600/30 transition-all hover:scale-105 hover:bg-primary-600"
@@ -145,6 +148,7 @@
                         d="M12 2C6.477 2 2 5.582 2 10c0 2.476 1.343 4.675 3.444 6.136.213 1.393-.454 3.125-.5 3.245a.5.5 0 00.643.64c.12-.046 1.85-.712 3.244-1.127A9.852 9.852 0 0012 18c5.523 0 10-3.582 10-8s-4.477-8-10-8zm-3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
                 </svg>
             </button>
+            @endunless
         @endauth
     </div>
 
@@ -183,6 +187,7 @@
         }
     </style>
     @auth
+        @unless ($isAdminShellUser)
         <div id="supportTicketForm"
             class="hidden flex-col bg-white border border-slate-200 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1),0_0_20px_-5px_rgba(26,77,46,0.05)] z-50 fixed bottom-24 right-6 w-full max-w-[380px] sm:max-h-[85vh] max-h-[85vh] rounded-[2.25rem] overflow-hidden"
             aria-labelledby="supportFormTitle" role="dialog" aria-modal="true">
@@ -346,6 +351,7 @@
                 @endif
             </div>
         </div>
+        @endunless
     @endauth
 
     <script>

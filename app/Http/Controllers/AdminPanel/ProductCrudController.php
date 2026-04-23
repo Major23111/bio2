@@ -16,139 +16,161 @@ class ProductCrudController extends Controller
     {
     }
 
-    // Display products list for admin panel.
-    public function index(): View
+    // This displays the main list of products with pagination and category data for filtering.
+    public function index(Request $request): View
     {
         try {
-            // Fetch all products with basic information.
+            // Step 1: fetch all categories to populate the frontend filter pills.
+            $categories = Category::orderBy('name')->get();
+
+            // Step 2: fetch paginated products from the service.
             $products = $this->productCrudService->getAllProductsForAdminList();
 
-            // Return view with products data.
             return view('admin.products.index', [
                 'products' => $products,
+                'categories' => $categories,
             ]);
         } catch (Throwable $exception) {
-            // Log error and return empty list.
-            $products = collect([]);
-
+            // Step 3: fallback to empty state when list fetching fails.
             return view('admin.products.index', [
-                'products' => $products,
+                'products' => collect([]),
+                'categories' => collect([]),
             ]);
         }
     }
 
-    // Display create product form.
+    // This shows the empty form for adding a new product to the catalog.
     public function create(): View
     {
         try {
-            // Fetch all categories for dropdown selection.
+            // Step 1: fetch all available categories for the dropdown selection.
             $categories = Category::orderBy('name')->get();
 
-            // Return view with categories data.
             return view('admin.products.create', [
                 'categories' => $categories,
             ]);
         } catch (Throwable $exception) {
-            // Return view with empty categories.
-            $categories = collect([]);
-
             return view('admin.products.create', [
-                'categories' => $categories,
+                'categories' => collect([]),
             ]);
         }
     }
 
-    // Store new product from form submission.
+    // This processes the creation form, validates input, and saves the product master and files.
     public function store(Request $request): RedirectResponse
     {
         try {
-            // Validate required product information.
+            // Step 1: validate provided product info including file upload limits (max 3 images, 5MB each).
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'sku' => 'required|string|max:100|unique:products',
+                'sku' => 'required|string|max:100|unique:products,sku',
                 'category_id' => 'required|integer|exists:categories,id',
                 'brand' => 'nullable|string|max:255',
-                'description' => 'nullable|string',
-                'is_active' => 'boolean',
+                'description' => 'required|string',
+                'product_overview' => 'nullable|string',
+                'gst_rate' => 'nullable|numeric',
+                'visibility_scope' => 'required|string|in:all,b2b,b2c',
+                'stock_quantity' => 'required|integer|min:0',
+                'base_price' => 'required|numeric|min:0',
+                'images' => 'nullable|array|max:3',
+                'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+                'documents' => 'nullable|array',
+                'documents.*' => 'file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
             ]);
 
-            // Set default active status if not provided.
-            $validated['is_active'] = $request->boolean('is_active', true);
+            // Step 2: ensure logical boolean status for product visibility.
+            $validated['is_active'] = $request->has('is_active');
 
-            // Create new product record in database.
-            $productId = $this->productCrudService->createProduct($validated);
+            // Step 3: delegate heavy creation logic to the service layer.
+            $this->productCrudService->createProduct($validated);
 
-            // Redirect to products list with success message.
             return redirect()->route('admin.products')
-                ->with('success', 'Product created successfully.');
+                ->with('success', 'Product has been successfully added to catalog.');
         } catch (Throwable $exception) {
-            // Redirect back to form with error message.
+            // Step 4: redirect back with errors when creation fails.
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Failed to create product. Please try again.');
+                ->with('error', 'Unable to create product: ' . $exception->getMessage());
         }
     }
 
-    // Display edit product form.
+    // This shows the edit form populated with existing product database values.
     public function edit(int $productId): View
     {
-        try {
-            // Fetch product information for editing.
-            $product = $this->productCrudService->getProductForEdit($productId);
+        // Step 1: fetch full product data with images and variant details.
+        $product = $this->productCrudService->getProductForEdit($productId);
 
-            // Abort if product not found.
-            if (!$product) {
-                abort(404);
-            }
+        abort_if(!$product, 404);
 
-            // Fetch all categories for dropdown selection.
-            $categories = Category::orderBy('name')->get();
+        // Step 2: fetch all categories for the dropdown selection.
+        $categories = Category::orderBy('name')->get();
 
-            // Return view with product and categories data.
-            return view('admin.products.edit', [
-                'product' => $product,
-                'categories' => $categories,
-            ]);
-        } catch (Throwable $exception) {
-            // Abort with error if product cannot be fetched.
-            abort(500);
-        }
+        return view('admin.products.edit', [
+            'product' => $product,
+            'categories' => $categories,
+        ]);
     }
 
-    // Update product from form submission.
+    // This processes the edit form, updates product details, and handles new uploads.
     public function update(Request $request, int $productId): RedirectResponse
     {
         try {
-            // Validate product information to update.
+            // Step 1: validate product updates ensuring SKU remains unique (except for current record).
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'sku' => 'required|string|max:100|unique:products,sku,' . $productId,
                 'category_id' => 'required|integer|exists:categories,id',
                 'brand' => 'nullable|string|max:255',
-                'description' => 'nullable|string',
-                'is_active' => 'boolean',
+                'description' => 'required|string',
+                'product_overview' => 'nullable|string',
+                'gst_rate' => 'nullable|numeric',
+                'visibility_scope' => 'required|string|in:all,b2b,b2c',
+                'stock_quantity' => 'required|integer|min:0',
+                'base_price' => 'required|numeric|min:0',
+                'images' => 'nullable|array|max:3',
+                'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+                'documents' => 'nullable|array',
+                'documents.*' => 'file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
+                'deleted_images' => 'nullable|array',
+                'deleted_images.*' => 'integer|exists:product_image,id',
+                'deleted_documents' => 'nullable|array',
+                'deleted_documents.*' => 'integer|exists:product_technical_resources,id',
             ]);
 
-            // Set active status from form.
-            $validated['is_active'] = $request->boolean('is_active', true);
+            $validated['is_active'] = $request->has('is_active');
 
-            // Update product record in database.
+            // Step 2: call the service to update records and sync files.
             $isUpdated = $this->productCrudService->updateProduct($productId, $validated);
 
-            // Check if update was successful.
             if (!$isUpdated) {
-                return redirect()->back()
-                    ->with('error', 'Product not found.');
+                return redirect()->back()->with('error', 'Product not found.');
             }
 
-            // Redirect to products list with success message.
             return redirect()->route('admin.products')
-                ->with('success', 'Product updated successfully.');
+                ->with('success', 'Product details have been updated successfully.');
         } catch (Throwable $exception) {
-            // Redirect back to form with error message.
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Failed to update product. Please try again.');
+                ->with('error', 'Update failed: ' . $exception->getMessage());
+        }
+    }
+
+    // This handles the request to remove a product and its associated files permanently.
+    public function destroy(int $productId): RedirectResponse
+    {
+        try {
+            // Step 1: call the service to delete records and physical media.
+            $isDeleted = $this->productCrudService->deleteProduct($productId);
+
+            if (!$isDeleted) {
+                return redirect()->back()->with('error', 'Product not found or already deleted.');
+            }
+
+            return redirect()->route('admin.products')
+                ->with('success', 'Product and its assets have been removed permanently.');
+        } catch (Throwable $exception) {
+            return redirect()->back()
+                ->with('error', 'Deletion failed: ' . $exception->getMessage());
         }
     }
 }

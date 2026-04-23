@@ -9,8 +9,8 @@
     <!-- Welcome Header -->
     <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">FAQ Management</h1>
-            <p class="text-sm text-slate-500 mt-1">Manage public FAQ content, display order, and status.</p>
+            <h1 class="text-2xl font-extrabold text-[var(--ui-text)] tracking-tight">FAQ Management</h1>
+            <p class="text-sm text-[var(--ui-text-muted)] mt-1">Manage public FAQ content, display order, and status.</p>
         </div>
         <a href="{{ route('faq') }}" target="_blank" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition cursor-pointer flex items-center gap-2">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -124,7 +124,7 @@
                         {{ $editingFaq ? 'Update FAQ' : 'Add FAQ' }}
                     </button>
                     @if ($editingFaq)
-                        <a class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition cursor-pointer" href="{{ route('admin.faqs.index') }}">Cancel</a>
+                        <a class="ajax-link px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition cursor-pointer" href="{{ route('admin.faqs.index') }}">Cancel</a>
                     @endif
                 </div>
             </form>
@@ -182,10 +182,11 @@
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <a class="text-primary-600 hover:text-primary-700 transition font-bold text-xs uppercase tracking-widest" href="{{ route('admin.faqs.show', $faq->id) }}">Edit</a>
-                                            <form method="POST" action="{{ route('admin.faqs.delete', $faq->id) }}" onsubmit="return confirm('Delete this FAQ?');">
+                                            <a class="ajax-link text-primary-600 hover:text-primary-700 transition font-bold text-xs uppercase tracking-widest" href="{{ route('admin.faqs.show', $faq->id) }}">Edit</a>
+                                            <form method="POST" action="{{ route('admin.faqs.delete', $faq->id) }}" class="faq-delete-form">
                                                 @csrf @method('DELETE')
-                                                <button class="text-rose-600 hover:text-rose-700 transition font-bold text-xs uppercase tracking-widest cursor-pointer" type="submit">Delete</button>
+                                                <button class="text-rose-600 hover:text-rose-700 transition font-bold text-xs uppercase tracking-widest cursor-pointer" type="button"
+                                                    onclick="confirmDeleteFaq(this)">Delete</button>
                                             </form>
                                         </div>
                                     </td>
@@ -207,4 +208,26 @@
             @endif
         </section>
     </div>
+
+<script>
+(function () {
+    window.confirmDeleteFaq = function (btn) {
+        var form = btn.closest('form');
+        if (!form) return;
+        if (window.AdminConfirm) {
+            window.AdminConfirm.show({
+                title: 'Delete FAQ',
+                message: 'Are you sure you want to permanently delete this FAQ? This action cannot be undone.',
+                confirmText: 'Delete',
+                danger: true
+            }).then(function (confirmed) {
+                if (confirmed) form.submit();
+            });
+        } else {
+            if (confirm('Delete this FAQ?')) form.submit();
+        }
+    };
+})();
+</script>
+
 @endsection

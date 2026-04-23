@@ -42,7 +42,7 @@
                     class="ajax-link px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm cursor-pointer">
                     Cancel
                 </a>
-                <button id="saveProductBtn" type="button"
+                <button id="saveProductBtn" type="submit" form="productForm"
                     class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-primary-600/20 cursor-pointer">
                     Save Product
                 </button>
@@ -50,7 +50,8 @@
         </div>
 
         <!-- Form Sections -->
-        <form id="productForm" class="space-y-6 pb-12" novalidate>
+        <form id="productForm" action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 pb-12" novalidate>
+            @csrf
 
             <!-- 1. Product Information -->
             <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
@@ -70,15 +71,28 @@
                         <div class="space-y-2">
                             <label class="block text-[13px] font-bold text-slate-700">Product Name <span
                                     class="text-rose-500">*</span></label>
-                            <input id="productName" type="text" required placeholder="e.g. Molecular Grade Reagent Kit"
+                            <input id="productName" name="name" type="text" required placeholder="e.g. Molecular Grade Reagent Kit"
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
 
+                        <!-- Brand (Hidden but preserving layout position logic) -->
+                        <input type="hidden" name="brand" value="Biogenix">
+
                         <!-- SKU -->
                         <div class="space-y-2">
-                            <label class="block text-[13px] font-bold text-slate-700">CAT No <span
+                             <label class="block text-[13px] font-bold text-slate-700">SKU <span
+                                     class="text-rose-500">*</span></label>
+                             <input id="productSku" name="sku" type="text" required placeholder="e.g. BGX-7700-01"
+                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                         </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Stock Qty -->
+                        <div class="space-y-2">
+                            <label class="block text-[13px] font-bold text-slate-700">Initial Stock <span
                                     class="text-rose-500">*</span></label>
-                            <input id="productSku" type="text" required placeholder="e.g. BGX-7700-01"
+                            <input id="productStock" name="stock_quantity" type="number" required placeholder="100"
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
                     </div>
@@ -87,23 +101,23 @@
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Description <span
                                 class="text-rose-500">*</span></label>
-                        <textarea id="productDesc" rows="4" required
+                        <textarea id="productDesc" name="description" rows="4" required
                             placeholder="Enter comprehensive product details, specifications, and use cases..."
                             class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y"></textarea>
                     </div>
 
-                    <!-- Specifics -> Product Overview -->
+                    <!-- Product Overview -->
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Product Overview</label>
-                        <textarea rows="2" placeholder="Provide a brief overview for quick summary..."
+                        <textarea name="product_overview" rows="2" placeholder="Provide a brief overview for quick summary..."
                             class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y"></textarea>
                     </div>
 
                 </div>
             </div>
 
-            <!-- 2. Logistics -->
-            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
+            <!-- 2. Pricing & Visibility -->
+            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-visible">
                 <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
                     <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -111,27 +125,44 @@
                                 d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                         </svg>
                     </div>
-                    <h3 class="text-base font-bold text-slate-900">Logistics</h3>
+                    <h3 class="text-base font-bold text-slate-900">Pricing & Visibility</h3>
                 </div>
                 <div class="p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="space-y-2">
-                            <label class="block text-[13px] font-bold text-slate-700">GST Rate (%) <span
-                                    class="text-slate-400 font-normal">(Optional)</span></label>
-                            <input type="number" placeholder="18"
+                            <label class="block text-[13px] font-bold text-slate-700">Base Price (₹) <span
+                                    class="text-rose-500">*</span></label>
+                            <input id="productPrice" name="base_price" type="number" step="0.01" required placeholder="0.00"
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
                         <div class="space-y-2">
-                            <label class="block text-[13px] font-bold text-slate-700">Stock Qty <span
-                                    class="text-rose-500">*</span></label>
-                            <input id="productStock" type="number" required placeholder="100"
+                            <label class="block text-[13px] font-bold text-slate-700">GST Rate (%) <span
+                                    class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input name="gst_rate" type="number" placeholder="18"
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+                        <div class="space-y-2">
+                            <label class="block text-[13px] font-bold text-slate-700">Visibility Scope <span class="text-rose-500">*</span></label>
+                            <select name="visibility_scope" required
+                                class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium cursor-pointer">
+                                <option value="all" selected>All Users</option>
+                                <option value="b2b">B2B</option>
+                                <option value="b2c">B2C</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center pt-8">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="is_active" value="1" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                                <span class="ml-3 text-[13px] font-bold text-slate-700">Active Listing</span>
+                            </label>
                         </div>
                     </div>
                 </div>
             </div>
-
-    
 
             <!-- 3. Category Mapping -->
             <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-visible">
@@ -147,29 +178,18 @@
                 <div class="p-6 space-y-5">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="space-y-2">
-                            <label class="block text-[13px] font-bold text-slate-700">Select Categories <span class="text-rose-500">*</span></label>
+                            <label class="block text-[13px] font-bold text-slate-700">Select Category <span class="text-rose-500">*</span></label>
                             <select id="productCategory" name="category_id" required
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium cursor-pointer">
                                 <option value="" disabled selected>Select Primary Category</option>
-                                <option value="1">Biotechnology</option>
-                                <option value="2">Research Tools</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="space-y-2">
-                            <label class="block text-[13px] font-bold text-slate-700">Sub Category</label>
-                            <input id="productSubCategory" type="text" placeholder="e.g. Molecular Biology" 
-                                class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                        </div>
-                    </div>
-
-                    <div id="categoryTagsContainer" class="flex flex-wrap gap-2 pt-2">
-                        <!-- Selection tags if any -->
                     </div>
                 </div>
             </div>
-
-            <!-- 5. Product Specifications -->
-
 
             <!-- 6. Media Assets -->
             <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
@@ -188,7 +208,7 @@
                     <!-- Left: Upload Box -->
                     <div class="lg:col-span-2 space-y-4">
                         <label class="block text-[13px] font-bold text-slate-700">Product Images</label>
-                        <input id="imageUploadInput" type="file" accept="image/png,image/jpeg,image/webp" multiple
+                        <input id="imageUploadInput" name="images[]" type="file" accept="image/png,image/jpeg,image/webp" multiple
                             class="hidden">
                         <div id="imageDropZone"
                             class="border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 p-10 flex flex-col items-center justify-center text-center transition hover:bg-slate-50 cursor-pointer"
@@ -202,8 +222,7 @@
                                 </svg>
                             </div>
                             <p class="text-[15px] font-bold text-slate-900 mb-1">Drag and drop images here</p>
-                            <p class="text-[12px] font-medium text-slate-500 mb-4">PNG, JPG or WEBP up to 10MB each (max 3
-                                images)</p>
+                            <p class="text-[12px] font-medium text-slate-500 mb-4">PNG, JPG or WEBP up to 5MB each (max 3 images)</p>
                             <button type="button"
                                 class="px-5 py-2.5 rounded-xl text-[13px] font-bold text-primary-800 bg-white border border-slate-200 hover:border-primary-600 shadow-sm transition cursor-pointer">
                                 Browse Files
@@ -212,35 +231,8 @@
 
                         <!-- Thumbnails -->
                         <div id="imagePreviewGrid" class="flex flex-wrap gap-4 mt-2">
-                            <!-- Image 1 placeholder style -->
-                            <div
-                                class="h-24 w-24 rounded-xl border-2 border-slate-200 bg-slate-100 flex items-center justify-center overflow-hidden relative group">
-                                <!-- Dummy box object -->
-                                <div
-                                    class="w-8 h-12 bg-white rounded shadow-sm flex items-center justify-center text-[5px] font-bold">
-                                    Biogenix</div>
-                                <button
-                                    class="absolute top-1.5 right-1.5 h-6 w-6 rounded bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-sm cursor-pointer"><svg
-                                        class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                        stroke-width="2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg></button>
-                            </div>
-
-                            <!-- Add more square -->
-                            <div
-                                class="h-24 w-24 rounded-xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center cursor-pointer hover:bg-slate-50 hover:border-slate-400 transition text-primary-800">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                    stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                            </div>
                         </div>
                     </div>
-
-                    {{-- External Video Links section hidden per business requirement --}}
                 </div>
 
                 <!-- Bottom: Documents -->
@@ -248,8 +240,10 @@
                     <!-- Dropzone for Docs -->
                     <div class="flex-1 space-y-3">
                         <label class="block text-[13px] font-bold text-slate-700">Documents & Brochures</label>
+                        <input id="docUploadInput" name="documents[]" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx" multiple class="hidden">
                         <div
-                            class="border-2 border-dashed border-slate-200 rounded-2xl bg-white p-8 flex flex-col items-center text-center transition hover:bg-slate-50 cursor-pointer">
+                            class="border-2 border-dashed border-slate-200 rounded-2xl bg-white p-8 flex flex-col items-center text-center transition hover:bg-slate-50 cursor-pointer"
+                            onclick="document.getElementById('docUploadInput').click()">
                             <div
                                 class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center mb-3">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -259,7 +253,7 @@
                                 </svg>
                             </div>
                             <p class="text-[13px] font-bold text-slate-900 mb-1">Upload Technical Datasheets</p>
-                            <p class="text-[11px] font-medium text-slate-500 mb-3">PDF, DOCX or PPT up to 20MB each</p>
+                            <p class="text-[11px] font-medium text-slate-500 mb-3">PDF, DOCX or PPT up to 5MB each</p>
                             <button type="button"
                                 class="px-4 py-2 rounded-lg text-[12px] font-bold text-slate-700 bg-white border border-slate-200 hover:border-primary-600 shadow-sm transition cursor-pointer">
                                 Browse Documents
@@ -269,7 +263,6 @@
 
                     <!-- Attached list -->
                     <div class="flex-1 lg:max-w-md space-y-3 mt-[26px]" id="documentsList">
-
                         <div id="noDocumentsPlaceholder"
                             class="flex flex-col items-center justify-center p-8 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
                             <svg class="h-6 w-6 text-slate-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -279,8 +272,7 @@
                             </svg>
                             <p class="text-[12px] font-semibold text-slate-400">No documents added yet.</p>
                         </div>
-
-                    </div>
+                   </div>
                 </div>
 
             </div>
@@ -295,9 +287,11 @@
         // ─── Form Validation ───
         const requiredFields = [
             { id: 'productName', label: 'Product Name' },
-            { id: 'productSku', label: 'CAT No' },
+            { id: 'productSku', label: 'SKU' },
             { id: 'productDesc', label: 'Description' },
-            { id: 'productStock', label: 'Stock Qty' }
+            { id: 'productStock', label: 'Stock Qty' },
+            { id: 'productPrice', label: 'Base Price' },
+            { id: 'productCategory', label: 'Category' }
         ];
 
         function validateProductForm() {
@@ -334,18 +328,31 @@
             });
         });
 
-        document.getElementById('saveProductBtn')?.addEventListener('click', function () {
+        const productForm = document.getElementById('productForm');
+        const saveProductBtn = document.getElementById('saveProductBtn');
+
+        productForm?.addEventListener('submit', function(event) {
             if (!validateProductForm()) {
+                event.preventDefault();
                 AdminToast.show('Please fill in all required fields', 'error');
                 return;
             }
-            AdminBtnLoading.start(this);
-            setTimeout(() => {
-                AdminBtnLoading.stop(this);
-                AdminToast.show('Product saved successfully!', 'success');
-            }, 1500);
+            AdminBtnLoading.start(saveProductBtn);
         });
 
+
+        // ─── File Utilities ───
+        const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+        function validateFileSize(files) {
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].size > MAX_FILE_SIZE) {
+                    AdminToast.show(`File "${files[i].name}" exceeds 5MB limit`, 'error');
+                    return false;
+                }
+            }
+            return true;
+        }
 
         // ─── Image Upload with Preview ───
         const imageInput = document.getElementById('imageUploadInput');
@@ -360,66 +367,91 @@
                 dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('border-primary-600', 'bg-primary-50/50'); });
                 dropZone.addEventListener('drop', e => {
                     e.preventDefault(); dropZone.classList.remove('border-primary-600', 'bg-primary-50/50');
-                    if (e.dataTransfer.files.length) { imageInput.files = e.dataTransfer.files; handleImageFiles(); }
+                    if (e.dataTransfer.files.length) { 
+                        if (validateFileSize(e.dataTransfer.files)) {
+                            imageInput.files = e.dataTransfer.files; 
+                            handleImageFiles(); 
+                        }
+                    }
                 });
             }
         }
 
         function handleImageFiles() {
             const files = imageInput.files;
+            if (!validateFileSize(files)) {
+                imageInput.value = '';
+                previewGrid.innerHTML = '';
+                return;
+            }
+
+            previewGrid.innerHTML = '';
             Array.from(files).forEach(file => {
                 if (!file.type.match('image.*')) return;
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    // Remove any existing "add more" placeholder before appending
-                    const addMore = previewGrid.querySelector('.add-more-img');
                     const thumb = document.createElement('div');
                     thumb.className = 'h-24 w-24 rounded-xl border-2 border-slate-200 overflow-hidden relative group';
                     thumb.innerHTML = `
-                    <img src="${e.target.result}" class="w-full h-full object-cover" alt="preview">
-                    <button type="button" onclick="this.parentElement.remove()" class="absolute top-1.5 right-1.5 h-6 w-6 rounded bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-sm cursor-pointer">
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                    </button>
-                `;
-                    if (previewGrid.querySelectorAll('.h-24.w-24').length >= 3) {
-                        AdminToast.show('Maximum 3 images allowed', 'warning');
-                        return;
-                    }
-                    if (addMore) previewGrid.insertBefore(thumb, addMore);
-                    else previewGrid.appendChild(thumb);
-
-                    // Disable upload if 3 images reached
-                    if (previewGrid.querySelectorAll('.h-24.w-24').length >= 3) {
-                        if (dropZone) dropZone.classList.add('opacity-50', 'pointer-events-none');
-                        if (addMore) addMore.classList.add('hidden');
-                    }
+                        <img src="${e.target.result}" class="w-full h-full object-cover" alt="preview">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <span class="text-[10px] text-white font-bold truncate px-2">${file.name}</span>
+                        </div>
+                    `;
+                    previewGrid.appendChild(thumb);
                 };
                 reader.readAsDataURL(file);
             });
-            AdminToast.show(`${files.length} image(s) added`, 'success');
+            AdminToast.show(`${files.length} image(s) selected`, 'success');
         }
 
-        // ─── Documents Delete ───
+        // ─── Documents Preview ───
+        const docUploadInput = document.getElementById('docUploadInput');
         const documentsList = document.getElementById('documentsList');
-        if (documentsList) {
-            const noDocsPlaceholder = document.getElementById('noDocumentsPlaceholder');
-
-            documentsList.addEventListener('click', function (e) {
-                const deleteBtn = e.target.closest('.delete-doc-btn');
-                if (deleteBtn) {
-                    const item = deleteBtn.closest('.document-item');
-                    if (item) {
-                        item.remove();
-
-                        if (documentsList.querySelectorAll('.document-item').length === 0) {
-                            if (noDocsPlaceholder) {
-                                noDocsPlaceholder.classList.remove('hidden');
-                            }
-                        }
-
-                        AdminToast.show('Document removed', 'info');
-                    }
+        const noDocsPlaceholder = document.getElementById('noDocumentsPlaceholder');
+        
+        if (docUploadInput) {
+            docUploadInput.addEventListener('change', function() {
+                const files = this.files;
+                if (!validateFileSize(files)) {
+                    this.value = '';
+                    renderDocList([]);
+                    return;
                 }
+                renderDocList(Array.from(files));
+                if (files.length > 0) {
+                    AdminToast.show(`${files.length} document(s) attached`, 'info');
+                }
+            });
+        }
+
+        function renderDocList(files) {
+            // Keep placeholder logic
+            if (files.length === 0) {
+                if (noDocsPlaceholder) noDocsPlaceholder.classList.remove('hidden');
+                // Remove existing file items if any
+                document.querySelectorAll('.selected-doc-item').forEach(el => el.remove());
+                return;
+            }
+            
+            if (noDocsPlaceholder) noDocsPlaceholder.classList.add('hidden');
+            document.querySelectorAll('.selected-doc-item').forEach(el => el.remove());
+
+            files.forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'selected-doc-item flex items-center justify-between px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl';
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="h-8 w-8 rounded bg-primary-50 text-primary-600 flex items-center justify-center text-[10px] font-bold uppercase">
+                            ${file.name.split('.').pop()}
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-[13px] font-bold text-slate-900 truncate">${file.name}</p>
+                            <p class="text-[11px] font-semibold text-slate-400 mt-0.5">${(file.size / 1024).toFixed(1)} KB</p>
+                        </div>
+                    </div>
+                `;
+                documentsList.appendChild(item);
             });
         }
     </script>

@@ -52,6 +52,7 @@ return new class extends Migration
                 $table->string('scope_type', 40);
                 $table->string('scope_value', 191);
                 $table->unsignedBigInteger('assigned_by_user_id')->nullable();
+                $table->timestamp('expires_at')->nullable();
                 $table->timestamps();
                 $table->unique(['delegated_admin_user_id', 'scope_type', 'scope_value'], 'delegated_admin_scope_unique');
             });

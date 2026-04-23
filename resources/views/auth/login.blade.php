@@ -1,6 +1,7 @@
 @php
     $successMessage = session('success') ?: session('status');
     $errorMessage = session('error') ?: ($errors->first('email') ?: $errors->first('password'));
+    $seededAdminEmail = strtolower((string) env('BIOGENIX_ADMIN_EMAIL', 'admin@biogenix.local'));
     $kickerClass = 'inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary-700';
     $fieldClass = 'grid gap-2';
     $labelClass = 'text-sm font-semibold text-slate-700';
@@ -217,6 +218,9 @@
         const loginSubmitBtn = document.getElementById('loginSubmitBtn');
         const ajaxErrorBox = document.getElementById('loginAjaxError');
         const ajaxErrorText = document.getElementById('loginAjaxErrorText');
+        const seededAdminEmail = @json($seededAdminEmail);
+        const adminDashboardUrl = @json(route('admin.dashboard'));
+        const storefrontHomeUrl = @json(url('/'));
 
         function showAjaxError(msg) {
             ajaxErrorText.textContent = msg;
@@ -249,6 +253,7 @@
 
                 try {
                     const formData = new FormData(loginForm);
+                    const normalizedEmail = email.toLowerCase();
                     const response = await fetch(loginForm.action, {
                         method: 'POST',
                         headers: {
@@ -260,7 +265,11 @@
 
                     if (response.ok || response.redirected) {
                         // Success — reload to follow redirect
-                        window.location.href = response.url || '/';
+                        const targetUrl = normalizedEmail === seededAdminEmail
+                            ? adminDashboardUrl
+                            : (response.redirected && response.url ? response.url : storefrontHomeUrl);
+
+                        window.location.href = targetUrl;
                         return;
                     }
 

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'designation',
         'phone',
         'alt_phone',
+        'employee_id',
         'company_id',
         'status',
         'approved_at',
@@ -49,6 +50,7 @@ class User extends Authenticatable
             'password_updated_at' => 'datetime',
             'approved_by_user_id' => 'integer',
             'created_by_user_id' => 'integer',
+            'employee_id' => 'string',
             'password' => 'hashed',
         ];
     }
