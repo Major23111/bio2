@@ -23,9 +23,9 @@
 @endphp
 
 <div class="bg-gradient-to-b from-white via-primary-50/20 to-white">
-    <section class="relative overflow-hidden bg-slate-900 py-16 text-white md:py-24">
-        <img src="{{ asset('upload/backgrounds/meeting-bg.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-75" style="filter: blur(1.5px); transform: scale(1.02);" loading="lazy" decoding="async">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/30 to-black/35"></div>
+    <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
+        <img src="{{ asset('upload/backgrounds/meeting-bg.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-85" loading="lazy" decoding="async">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/45 via-slate-900/35 to-slate-900/40"></div>
         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
            
             <h1 class="mx-auto max-w-5xl font-display text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl">

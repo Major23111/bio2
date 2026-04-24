@@ -134,7 +134,7 @@
                                 </div>
                                 
                                 <!-- Right Column (Level 3) -->
-                                <div class="flex-1 bg-slate-50 flex" id="mm-level3-container">
+                                <div class="flex-1 bg-slate-50" id="mm-level3-container">
                                     <!-- Populated by JS -->
                                 </div>
                             </div>
@@ -663,115 +663,89 @@
             solutions: {
                 categories: [
                     {
-                        id: "sol-1",
+                        id: "sol-hospitalwide",
                         label: "Hospitalwide Solution",
-                        href: "{{ route('solutions.demo', ['slug' => 'hospitalwide-solution']) }}",
+                        href: "/solutions/hospitalwide-solution",
                         subcategories: [
-                            { label: "For ER", href: "{{ route('solutions.demo', ['slug' => 'hospitalwide-solution']) }}" },
-                            { label: "For ICU", href: "{{ route('solutions.demo', ['slug' => 'hospitalwide-solution']) }}" },
-                            { label: "For CCU", href: "{{ route('solutions.demo', ['slug' => 'hospitalwide-solution']) }}" },
-                            { label: "View all", href: "{{ route('solutions.demo', ['slug' => 'hospitalwide-solution']) }}" }
+                            { label: "For ER", href: "/solutions/hospitalwide-solution?segment=er" },
+                            { label: "For ICU", href: "/solutions/hospitalwide-solution?segment=icu" },
+                            { label: "For CCU", href: "/solutions/hospitalwide-solution?segment=ccu" }
                         ]
                     },
                     {
-                        id: "sol-2",
+                        id: "sol-emergency",
                         label: "Emergency Care",
-                        href: "{{ route('solutions.demo', ['slug' => 'emergency-care']) }}",
+                        href: "/solutions/emergency-care",
                         subcategories: [
-                            { label: "Pre-hospital", href: "{{ route('solutions.demo', ['slug' => 'emergency-care']) }}" },
-                            { label: "Emergency Room", href: "{{ route('solutions.demo', ['slug' => 'emergency-care']) }}" },
-                            { label: "View all", href: "{{ route('solutions.demo', ['slug' => 'emergency-care']) }}" }
+                            { label: "Response Systems", href: "/solutions/emergency-care?segment=response" },
+                            { label: "Care Workflows", href: "/solutions/emergency-care?segment=workflow" }
                         ]
                     },
-                    { id: "sol-3", label: "Critical Care", href: "{{ route('solutions.demo', ['slug' => 'critical-care']) }}", subcategories: [] },
-                    { id: "sol-4", label: "Perioperative Care", href: "{{ route('solutions.demo', ['slug' => 'perioperative-care']) }}", subcategories: [] },
-                    { id: "sol-5", label: "Minimally Invasive Surgery", href: "{{ route('solutions.demo', ['slug' => 'minimally-invasive-surgery']) }}", subcategories: [] },
-                    { id: "sol-6", label: "Laboratory Diagnostics", href: "{{ route('solutions.demo', ['slug' => 'laboratory-diagnostics']) }}", subcategories: [] },
-                    { id: "sol-7", label: "Cybersecurity", href: "{{ route('solutions.demo', ['slug' => 'cybersecurity']) }}", subcategories: [] },
-                    { id: "sol-8", label: "View all", href: "{{ route('solutions.demo', ['slug' => 'hospitalwide-solution']) }}", subcategories: [] }
+                    {
+                        id: "sol-critical",
+                        label: "Critical Care",
+                        href: "/solutions/critical-care",
+                        subcategories: [
+                            { label: "ICU Programs", href: "/solutions/critical-care?segment=icu" },
+                            { label: "Monitoring Solutions", href: "/solutions/critical-care?segment=monitoring" }
+                        ]
+                    },
+                    {
+                        id: "sol-perioperative",
+                        label: "Perioperative Care",
+                        href: "/solutions/perioperative-care",
+                        subcategories: [
+                            { label: "OT Readiness", href: "/solutions/perioperative-care?segment=ot-readiness" },
+                            { label: "Procedure Support", href: "/solutions/perioperative-care?segment=procedure-support" }
+                        ]
+                    },
+                    {
+                        id: "sol-mis",
+                        label: "Minimally Invasive Surgery",
+                        href: "/solutions/minimally-invasive-surgery",
+                        subcategories: [
+                            { label: "Procedure Suites", href: "/solutions/minimally-invasive-surgery?segment=suites" },
+                            { label: "Device Portfolio", href: "/solutions/minimally-invasive-surgery?segment=devices" }
+                        ]
+                    },
+                    {
+                        id: "sol-lab",
+                        label: "Laboratory Diagnostics",
+                        href: "/solutions/laboratory-diagnostics",
+                        subcategories: [
+                            { label: "Small-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=small" },
+                            { label: "Mid-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=mid" },
+                            { label: "High-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=high" }
+                        ]
+                    },
+                    {
+                        id: "sol-cyber",
+                        label: "Cybersecurity",
+                        href: "/solutions/cybersecurity",
+                        subcategories: [
+                            { label: "Endpoint Security", href: "/solutions/cybersecurity?segment=endpoint" },
+                            { label: "Network Protection", href: "/solutions/cybersecurity?segment=network" }
+                        ]
+                    }
                 ]
             },
             products: {
                 categories: [
-                    {
-                        id: "prod-1",
-                        label: "Biochemistry",
-                        href: "{{ route('products.demo-category', ['slug' => 'biochemistry']) }}",
-                        subcategories: [
-                            { label: "Overview", href: "{{ route('products.demo-category', ['slug' => 'biochemistry']) }}" },
-                            { label: "Use Cases", href: "{{ route('products.demo-category', ['slug' => 'biochemistry']) }}" }
-                        ]
-                    },
-                    {
-                        id: "prod-2",
-                        label: "Blood Culture Bottle",
-                        href: "{{ route('products.demo-category', ['slug' => 'blood-culture-bottle']) }}",
-                        subcategories: [
-                            { label: "Overview", href: "{{ route('products.demo-category', ['slug' => 'blood-culture-bottle']) }}" },
-                            { label: "Applications", href: "{{ route('products.demo-category', ['slug' => 'blood-culture-bottle']) }}" }
-                        ]
-                    },
-                    {
-                        id: "prod-3",
-                        label: "Elisa Kits",
-                        href: "{{ route('products.demo-category', ['slug' => 'elisa-kits']) }}",
-                        subcategories: [
-                            { label: "Overview", href: "{{ route('products.demo-category', ['slug' => 'elisa-kits']) }}" },
-                            { label: "Specifications", href: "{{ route('products.demo-category', ['slug' => 'elisa-kits']) }}" }
-                        ]
-                    },
-                    {
-                        id: "prod-4",
-                        label: "Haematology",
-                        href: "{{ route('products.demo-category', ['slug' => 'haematology']) }}",
-                        subcategories: [
-                            { label: "Overview", href: "{{ route('products.demo-category', ['slug' => 'haematology']) }}" },
-                            { label: "Workflow", href: "{{ route('products.demo-category', ['slug' => 'haematology']) }}" }
-                        ]
-                    },
-                    {
-                        id: "prod-5",
-                        label: "Instrument",
-                        href: "{{ route('products.demo-category', ['slug' => 'instrument']) }}",
-                        subcategories: [
-                            { label: "Overview", href: "{{ route('products.demo-category', ['slug' => 'instrument']) }}" },
-                            { label: "Compatibility", href: "{{ route('products.demo-category', ['slug' => 'instrument']) }}" }
-                        ]
-                    },
-                    {
-                        id: "prod-6",
-                        label: "POCT",
-                        href: "{{ route('products.demo-category', ['slug' => 'poct']) }}",
-                        subcategories: [
-                            { label: "Overview", href: "{{ route('products.demo-category', ['slug' => 'poct']) }}" },
-                            { label: "Deployment", href: "{{ route('products.demo-category', ['slug' => 'poct']) }}" }
-                        ]
-                    },
-                    {
-                        id: "prod-7",
-                        label: "Rapid",
-                        href: "{{ route('products.demo-category', ['slug' => 'rapid']) }}",
-                        subcategories: [
-                            { label: "Overview", href: "{{ route('products.demo-category', ['slug' => 'rapid']) }}" },
-                            { label: "Panels", href: "{{ route('products.demo-category', ['slug' => 'rapid']) }}" }
-                        ]
-                    },
-                    {
-                        id: "prod-8",
-                        label: "Serology",
-                        href: "{{ route('products.demo-category', ['slug' => 'serology']) }}",
-                        subcategories: [
-                            { label: "Overview", href: "{{ route('products.demo-category', ['slug' => 'serology']) }}" },
-                            { label: "Markers", href: "{{ route('products.demo-category', ['slug' => 'serology']) }}" }
-                        ]
-                    },
-                    { id: "prod-9", label: "Urinalysis", href: "{{ route('products.demo-category', ['slug' => 'urinalysis']) }}", subcategories: [] },
-                    { id: "prod-10", label: "Special Chemistry", href: "{{ route('products.demo-category', ['slug' => 'special-chemistry']) }}", subcategories: [] },
-                    { id: "prod-11", label: "CLIA", href: "{{ route('products.demo-category', ['slug' => 'clia']) }}", subcategories: [] },
-                    { id: "prod-12", label: "Veterinary", href: "{{ route('products.demo-category', ['slug' => 'veterinary']) }}", subcategories: [] },
-                    { id: "prod-13", label: "Molecular", href: "{{ route('products.demo-category', ['slug' => 'molecular']) }}", subcategories: [] },
-                    { id: "prod-14", label: "Microbiology", href: "{{ route('products.demo-category', ['slug' => 'microbiology']) }}", subcategories: [] },
-                    { id: "prod-15", label: "IVD Instruments and solution", href: "{{ route('products.demo-category', ['slug' => 'ivd-instruments-and-solution']) }}", subcategories: [] }
+                    { id: "prod-biochemistry", label: "Biochemistry", href: "/product-categories/biochemistry", subcategories: [] },
+                    { id: "prod-blood-culture-bottle", label: "Blood Culture Bottle", href: "/product-categories/blood-culture-bottle", subcategories: [] },
+                    { id: "prod-elisa-kits", label: "Elisa Kits", href: "/product-categories/elisa-kits", subcategories: [] },
+                    { id: "prod-haematology", label: "Haematology", href: "/product-categories/haematology", subcategories: [] },
+                    { id: "prod-instrument", label: "Instrument", href: "/product-categories/instrument", subcategories: [] },
+                    { id: "prod-poct", label: "POCT", href: "/product-categories/poct", subcategories: [] },
+                    { id: "prod-rapid", label: "Rapid", href: "/product-categories/rapid", subcategories: [] },
+                    { id: "prod-serology", label: "Serology", href: "/product-categories/serology", subcategories: [] },
+                    { id: "prod-urinalysis", label: "Urinalysis", href: "/product-categories/urinalysis", subcategories: [] },
+                    { id: "prod-special-chemistry", label: "Special Chemistry", href: "/product-categories/special-chemistry", subcategories: [] },
+                    { id: "prod-clia", label: "CLIA", href: "/product-categories/clia", subcategories: [] },
+                    { id: "prod-veterinary", label: "Veterinary", href: "/product-categories/veterinary", subcategories: [] },
+                    { id: "prod-molecular", label: "Molecular", href: "/product-categories/molecular", subcategories: [] },
+                    { id: "prod-microbiology", label: "Microbiology", href: "/product-categories/microbiology", subcategories: [] },
+                    { id: "prod-ivd-instruments", label: "IVD Instruments", href: "/product-categories/ivd-instruments", subcategories: [] }
                 ]
             }
         };
@@ -803,7 +777,7 @@
             categories.forEach(cat => {
                 const hasArrow = cat.subcategories && cat.subcategories.length > 0;
                 html += `
-                    <button class="mm-level2-btn w-full text-left px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-slate-600 hover:text-primary-700 transition-colors border-b border-transparent hover:border-slate-100" data-id="${cat.id}" data-href="${cat.href || ''}">
+                    <button class="mm-level2-btn w-full text-left px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-slate-600 hover:text-primary-700 transition-colors border-b border-transparent hover:border-slate-100" data-id="${cat.id}" data-href="${cat.href || '#'}">
                         <span>${cat.label}</span>
                         ${hasArrow ? `<svg class="w-3 h-3 text-slate-400 group-hover:text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>` : ''}
                     </button>
@@ -817,11 +791,9 @@
                 btn.addEventListener('mouseenter', () => {
                     renderLevel3(targetId, btn.dataset.id);
                 });
-
                 btn.addEventListener('click', () => {
-                    const href = btn.dataset.href;
-                    if (href) {
-                        window.location.href = href;
+                    if (btn.dataset.href) {
+                        window.location.href = btn.dataset.href;
                     }
                 });
             });
@@ -863,14 +835,14 @@
             let html = '<div class="w-full p-8 flex flex-col gap-2">';
             if (cat.subcategories && cat.subcategories.length > 0) {
                 cat.subcategories.forEach(sub => {
-                    const subLabel = typeof sub === 'string' ? sub : sub.label;
-                    const subHref = typeof sub === 'string' ? '#' : (sub.href || '#');
+                    const href = sub.href || cat.href || '#';
+                    const label = sub.label || '';
                     html += `
-                        <a href="${subHref}" class="px-2 py-2 text-[13px] font-medium text-slate-600 hover:text-primary-700 transition-colors border-b border-slate-100 last:border-0">${subLabel}</a>
+                        <a href="${href}" class="px-2 py-2 text-[13px] font-medium text-slate-600 hover:text-primary-700 transition-colors border-b border-slate-100 last:border-0">${label}</a>
                     `;
                 });
             } else {
-                html += `<div class="text-sm text-slate-400 italic">No subcategories available.</div>`;
+                html += `<div class="text-sm text-slate-500">Browse category overview.</div>`;
             }
             html += '</div>';
 

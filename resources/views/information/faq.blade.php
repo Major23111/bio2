@@ -8,25 +8,22 @@
     $faqCategories = [
         ['key' => 'payments', 'label' => 'Payments'],
         ['key' => 'refunds', 'label' => 'Refunds'],
-        ['key' => 'support', 'label' => 'Support'],
+        ['key' => 'services', 'label' => 'Services'],
     ];
-
-    $faqs = collect([
-        (object) ['category' => 'Payments', 'question' => 'What payment methods do you accept?', 'answer' => 'We accept Credit Cards (Visa, MasterCard, etc.), Debit Cards, Net Banking, UPI (Unified Payments Interface), and Wallets (supported by Razorpay). All payments are processed securely via our payment gateway.', 'is_default_open' => true],
-        (object) ['category' => 'Payments', 'question' => 'Is it safe to make payments on your website?', 'answer' => 'Yes. All transactions are processed through a secure and encrypted payment gateway powered by Razorpay, which complies with PCI-DSS standards. Your payment details such as card number, CVV, and banking credentials are not stored on our servers.', 'is_default_open' => false],
-        (object) ['category' => 'Payments', 'question' => 'Will I receive a confirmation after payment?', 'answer' => 'Yes, once your payment is successfully completed, you will receive a payment confirmation on the website and an email and/or SMS confirmation (if contact details are provided). If you do not receive confirmation, please contact our support team.', 'is_default_open' => false],
-        (object) ['category' => 'Payments', 'question' => 'What happens if my payment fails?', 'answer' => 'If your payment fails, the amount may be debited temporarily and the transaction will be marked as failed. The amount is usually reversed automatically within 5-7 business days, depending on your bank or payment provider. If delayed, contact us with transaction details.', 'is_default_open' => false],
-        (object) ['category' => 'Refunds', 'question' => 'Can I cancel my order after making payment?', 'answer' => 'Yes, you can cancel your order or service request, subject to our Cancellation Policy. Cancellation requests must be made within the specified time frame. Once the service has been processed or delivered, cancellation may not be possible.', 'is_default_open' => false],
-        (object) ['category' => 'Refunds', 'question' => 'How will I receive my refund?', 'answer' => 'Refunds, if applicable, will be processed using the original payment method: Credit/Debit Card to same card, UPI to same UPI ID, and Net Banking to originating account. Refund processing time is typically 5-7 working days, depending on your bank.', 'is_default_open' => false],
-        (object) ['category' => 'Payments', 'question' => 'Are there any additional charges on payments?', 'answer' => 'We do not charge any hidden fees. Your bank or payment provider may apply charges such as transaction fees or taxes. These charges are outside our control.', 'is_default_open' => false],
-        (object) ['category' => 'Support', 'question' => 'What should I do if my payment is successful but I did not receive the service/product?', 'answer' => 'Check your email/SMS confirmation, then contact our support team with transaction ID, payment details, and order details. We will verify the transaction and ensure proper resolution.', 'is_default_open' => false],
-        (object) ['category' => 'Payments', 'question' => 'Do you store my payment information?', 'answer' => 'No. We do not store any sensitive payment information such as card numbers, CVV, or banking credentials. All payment data is handled securely by Razorpay in compliance with industry standards.', 'is_default_open' => false],
-        (object) ['category' => 'Refunds', 'question' => 'What should I do if I was charged multiple times?', 'answer' => 'Check your bank statement carefully, as failed transactions may show temporary holds. If duplicate charges are confirmed, the extra amount will be refunded automatically, and you can also contact us for assistance.', 'is_default_open' => false],
-        (object) ['category' => 'Support', 'question' => 'Can I get an invoice for my payment?', 'answer' => 'Yes, you can request an invoice by contacting our support team, or it may be automatically sent to your registered email address after successful payment.', 'is_default_open' => false],
-        (object) ['category' => 'Support', 'question' => 'Who should I contact for payment-related issues?', 'answer' => 'For payment-related queries, contact us with transaction details for faster resolution. Email:  Phone:  Address:', 'is_default_open' => false],
-    ]);
-
-    $hasDefaultOpen = $faqs->contains(fn ($faq) => (bool) $faq->is_default_open);
+    $faqItems = [
+        ['category' => 'payments', 'question' => 'What payment methods do you accept?', 'answer' => 'We accept Credit Cards, Debit Cards, Net Banking, UPI, and supported Wallets through Razorpay.'],
+        ['category' => 'payments', 'question' => 'Is it safe to make payments on your website?', 'answer' => 'Yes. Payments are processed through Razorpay with secure encryption and PCI-DSS compliant systems. We do not store your card number, CVV, or banking credentials.'],
+        ['category' => 'payments', 'question' => 'Will I receive a confirmation after payment?', 'answer' => 'Yes. After successful payment, confirmation is shown on website and sent by email/SMS when contact details are provided.'],
+        ['category' => 'payments', 'question' => 'What happens if my payment fails?', 'answer' => 'Failed payment amounts are usually auto-reversed within 5-7 business days depending on your bank or payment provider.'],
+        ['category' => 'refunds', 'question' => 'Can I cancel my order after making payment?', 'answer' => 'Yes, based on the Cancellation Policy time window. Once a service is processed or delivered, cancellation may not be possible.'],
+        ['category' => 'refunds', 'question' => 'How will I receive my refund?', 'answer' => 'Refunds are made to the original payment method: card to same card, UPI to same UPI ID, and net banking to originating account.'],
+        ['category' => 'refunds', 'question' => 'Are there any additional charges on payments?', 'answer' => 'There are no hidden fees from our side. Your bank or payment provider may apply transaction charges or taxes.'],
+        ['category' => 'services', 'question' => 'What should I do if payment is successful but I did not receive service/product?', 'answer' => 'Please contact support with transaction ID, payment details, and order details so we can verify and resolve quickly.'],
+        ['category' => 'payments', 'question' => 'Do you store my payment information?', 'answer' => 'No. Sensitive payment details are handled directly by Razorpay in line with industry standards.'],
+        ['category' => 'payments', 'question' => 'What should I do if I was charged multiple times?', 'answer' => 'Check your bank statement first. If duplicate charges are confirmed, extra charges are refunded automatically, and support can help if needed.'],
+        ['category' => 'services', 'question' => 'Can I get an invoice for my payment?', 'answer' => 'Yes. You may request an invoice from support, and in many cases it is automatically sent to your registered email after successful payment.'],
+        ['category' => 'services', 'question' => 'Who should I contact for payment-related issues?', 'answer' => 'For payment-related help, contact Biogenix support and include transaction details for faster resolution.'],
+    ];
 @endphp
 
 <div class="min-h-screen bg-slate-50">
@@ -49,7 +46,7 @@
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                             </span>
-                            <input id="faqSearch" type="text" class="{{ $inputClass }} pl-10" placeholder="Search payment or refund questions...">
+                            <input id="faqSearch" type="text" class="{{ $inputClass }} pl-10" placeholder="Search payment, refund, or service queries">
                         </div>
                     </div>
                     <div class="mt-2 md:col-span-3">
@@ -71,20 +68,18 @@
     <section class="py-12">
         <div class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 xl:px-10">
             <div id="faqAccordion" class="space-y-6">
-                @foreach ($faqs as $faq)
+                @foreach ($faqItems as $index => $faq)
                     @php
-                        $categoryKey = \Illuminate\Support\Str::slug($faq->category);
-                        $isOpen = (bool) $faq->is_default_open || (! $hasDefaultOpen && $loop->first);
-                        $searchText = strtolower($faq->category . ' ' . $faq->question . ' ' . $faq->answer);
+                        $searchText = strtolower($faq['question'] . ' ' . $faq['answer'] . ' ' . $faq['category']);
                     @endphp
                     <div
                         class="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm transition hover:border-primary-200"
                         data-faq-item
-                        data-faq-category="{{ $categoryKey }}"
+                        data-faq-category="{{ $faq['category'] }}"
                         data-faq-search-text="{{ $searchText }}"
                     >
-                        <x-accordion :title="$faq->question" :open="$isOpen">
-                            <p class="text-slate-600">{{ $faq->answer }}</p>
+                        <x-accordion :title="$faq['question']" :open="$index === 0">
+                            <p class="text-slate-600">{{ $faq['answer'] }}</p>
                         </x-accordion>
                     </div>
                 @endforeach
@@ -95,7 +90,7 @@
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                 </div>
                 <h3 class="text-lg font-semibold text-slate-900">No results found</h3>
-                <p class="mt-2 text-sm text-slate-500">Try adjusting your keywords or category filter.</p>
+                <p class="mt-2 text-sm text-slate-500">Please adjust your search or filter to view relevant entries.</p>
             </div>
         </div>
     </section>

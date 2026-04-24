@@ -58,9 +58,9 @@
     {{-- Premium Toast Container --}}
     <div id="toast-container" class="fixed right-6 top-24 z-[1000] flex flex-col gap-3"></div>
 
-    <section class="relative overflow-hidden bg-slate-900 py-16 text-white md:py-24">
-        <img src="{{ asset('upload/backgrounds/quotation-bg.png') }}" alt="Biogenix Quotation" class="absolute inset-0 h-full w-full object-cover opacity-75" style="filter: blur(1.5px); transform: scale(1.02);" loading="lazy" decoding="async">
-        <div class="absolute inset-0 bg-gradient-to-b from-black/35 via-black/30 to-black/45"></div>
+    <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
+        <img src="{{ asset('upload/backgrounds/quotation-bg.png') }}" alt="Biogenix Quotation" class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" loading="lazy" decoding="async">
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-900/35 via-slate-900/25 to-slate-900/30"></div>
         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
             <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl text-shadow-lg">
                 {{ $pageTitle }}

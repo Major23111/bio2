@@ -1,37 +1,31 @@
 @extends('layouts.app')
 
-@section('title', $categoryTitle ?? 'Product Category')
+@section('title', $categoryName)
 
 @section('content')
-<div class="bg-gradient-to-b from-white via-primary-50/20 to-white">
-    <section class="relative overflow-hidden bg-slate-900 py-16 text-white md:py-24">
-        <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/35 to-black/45"></div>
-        <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
-            <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary-100">Product Category</p>
-            <h1 class="mx-auto mt-3 max-w-4xl font-display text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-                {{ $categoryTitle ?? 'Product Category' }}
-            </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-100 md:text-lg">
-                Explore product category details, applications, and key highlights.
+<div class="min-h-screen bg-slate-50 py-12 md:py-16">
+    <section class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-10">
+            <p class="text-sm font-medium text-primary-700">Product Category</p>
+            <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">{{ $categoryName }}</h1>
+            <p class="mt-4 max-w-3xl text-base leading-7 text-slate-600">
+                This section can be used for category highlights, product range summary, and procurement details for
+                {{ $categoryName }}.
             </p>
-        </div>
-    </section>
 
-    <section class="py-10 md:py-14">
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <div class="mx-auto max-w-4xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Category Snapshot</h2>
-                <ul class="mt-4 space-y-3">
-                    <li class="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">
-                        Overview for {{ $categoryTitle ?? 'this category' }}.
-                    </li>
-                    <li class="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">
-                        Placeholder specification set for client review.
-                    </li>
-                    <li class="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">
-                        Sample use-cases and application notes can be listed here.
-                    </li>
-                </ul>
+            <div class="mt-8 grid gap-4 md:grid-cols-2">
+                <article class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                    <h2 class="text-lg font-semibold text-slate-900">Portfolio Snapshot</h2>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">
+                        Ready-to-quote items with standardized details for lab, hospital, and institutional buyers.
+                    </p>
+                </article>
+                <article class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                    <h2 class="text-lg font-semibold text-slate-900">Commercial Information</h2>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">
+                        Ideal for MRP visibility, bulk planning discussions, and request-for-quote workflows.
+                    </p>
+                </article>
             </div>
         </div>
     </section>

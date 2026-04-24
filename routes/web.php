@@ -37,31 +37,6 @@ Route::view('/forgot-password', 'auth.forgot-password')->name('forgot.password')
 Route::get('/', [HomeController::class, 'index'])->middleware('permission:home')->name('home');  // home page route
 Route::get('/home', [HomeController::class, 'index'])->middleware('permission:home.page')->name('home.page');  // home page route
 Route::get('/products', [ProductController::class, 'index'])->middleware('permission:products.index')->name('products.index'); // products page route
-Route::get('/products/demo-category/{slug}', function (string $slug) {
-    $productCategories = [
-        'biochemistry' => 'Biochemistry',
-        'blood-culture-bottle' => 'Blood Culture Bottle',
-        'elisa-kits' => 'Elisa Kits',
-        'haematology' => 'Haematology',
-        'instrument' => 'Instrument',
-        'poct' => 'POCT',
-        'rapid' => 'Rapid',
-        'serology' => 'Serology',
-        'urinalysis' => 'Urinalysis',
-        'special-chemistry' => 'Special Chemistry',
-        'clia' => 'CLIA',
-        'veterinary' => 'Veterinary',
-        'molecular' => 'Molecular',
-        'microbiology' => 'Microbiology',
-        'ivd-instruments-and-solution' => 'IVD Instruments and solution',
-    ];
-
-    abort_unless(isset($productCategories[$slug]), 404);
-
-    return view('product.product-category-dummy', [
-        'categoryTitle' => $productCategories[$slug],
-    ]);
-})->name('products.demo-category');
 Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->middleware(['decrypt.route', 'permission:products.productDetails'])->name('products.productDetails'); // product details page route
 // route to download technical resources file in product details page.
 Route::get('/products/{productId}/technical-resources/{resourceId}/download', [ProductController::class, 'downloadTechnicalResource'])->middleware(['decrypt.route', 'permission:products.technical-resources.download'])->name('products.technical-resources.download');
@@ -132,80 +107,25 @@ Route::get('/meet-team/{id}', function ($id) {
         'teamData' => $teamData
     ]);
 })->name('meet-team.show');
-Route::get('/solutions/demo/{slug}', function (string $slug) {
-    $dummySolutions = [
-        'hospitalwide-solution' => [
-            'title' => 'Hospitalwide Solution',
-            'summary' => 'Dummy content for enterprise-wide diagnostics workflow rollout and coordination.',
-            'points' => [
-                'Centralized sample routing and dashboarding for multi-department visibility.',
-                'Standardized SOP templates for faster onboarding and compliance readiness.',
-                'Dummy KPI panel for turnaround time, utilization, and quality trend tracking.',
-            ],
-        ],
-        'emergency-care' => [
-            'title' => 'Emergency Care',
-            'summary' => 'Dummy content for rapid diagnostics pathways in high-pressure emergency settings.',
-            'points' => [
-                'Priority-based test ordering workflow with fast-lane queue simulation.',
-                'Dummy protocol checklist for critical patient triage support.',
-                'Integrated handoff notes for ER-to-ICU continuity.',
-            ],
-        ],
-        'critical-care' => [
-            'title' => 'Critical Care',
-            'summary' => 'Dummy content for ICU-aligned diagnostic support and response playbooks.',
-            'points' => [
-                'Continuous monitoring data placeholders for dynamic care decisions.',
-                'Critical value escalation matrix with dummy alert rules.',
-                'Unit-level quality and response audit timeline.',
-            ],
-        ],
-        'perioperative-care' => [
-            'title' => 'Perioperative Care',
-            'summary' => 'Dummy content for pre-op and post-op diagnostics planning.',
-            'points' => [
-                'Pre-surgery readiness checklist with sample collection windows.',
-                'Dummy risk flags for anesthesia and baseline diagnostics.',
-                'Post-op follow-up cadence templates.',
-            ],
-        ],
-        'minimally-invasive-surgery' => [
-            'title' => 'Minimally Invasive Surgery',
-            'summary' => 'Dummy content for diagnostics support in minimally invasive procedures.',
-            'points' => [
-                'Procedure-linked diagnostics package with configurable markers.',
-                'Dummy workflow for rapid post-procedure interpretation.',
-                'Cross-team communication log templates.',
-            ],
-        ],
-        'laboratory-diagnostics' => [
-            'title' => 'Laboratory Diagnostics',
-            'summary' => 'Dummy content for core lab optimization and throughput balancing.',
-            'points' => [
-                'Shift-wise processing matrix with mock workload balancing.',
-                'Dummy analyzer utilization map and downtime capture.',
-                'Turnaround SLA snapshots across routine and urgent tests.',
-            ],
-        ],
-        'cybersecurity' => [
-            'title' => 'Cybersecurity',
-            'summary' => 'Dummy content for protecting diagnostic infrastructure and data exchange channels.',
-            'points' => [
-                'Device access segmentation model with placeholder controls.',
-                'Dummy incident-response runbook for diagnostics IT.',
-                'Audit-ready policy checklist and role mapping.',
-            ],
-        ],
-    ];
-
-    abort_unless(isset($dummySolutions[$slug]), 404);
+Route::view('/portfolio', 'information.portfolio')->name('portfolio');
+Route::get('/solutions/{solutionSlug}', function (string $solutionSlug) {
+    $displayName = str_replace('-', ' ', $solutionSlug);
+    $displayName = ucwords($displayName);
 
     return view('information.solution-dummy', [
-        'solution' => $dummySolutions[$slug],
+        'solutionSlug' => $solutionSlug,
+        'solutionName' => $displayName,
     ]);
-})->name('solutions.demo');
-Route::view('/portfolio', 'information.portfolio')->name('portfolio');
+})->name('solutions.detail');
+Route::get('/product-categories/{categorySlug}', function (string $categorySlug) {
+    $displayName = str_replace('-', ' ', $categorySlug);
+    $displayName = ucwords($displayName);
+
+    return view('product.product-category-dummy', [
+        'categorySlug' => $categorySlug,
+        'categoryName' => $displayName,
+    ]);
+})->name('products.category.detail');
 Route::get('/contact', [ContactUsController::class, 'index'])->middleware('permission:contact')->name('contact');
 Route::post('/contact', [ContactUsController::class, 'store'])->middleware('permission:contact.store')->name('contact.store');
 Route::view('/privacy', 'information.privacy')->middleware('permission:privacy')->name('privacy');
