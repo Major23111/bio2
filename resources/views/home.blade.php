@@ -72,7 +72,7 @@
             }
 
             .hero-gradient-overlay {
-                background: linear-gradient(to top, var(--color-primary-800) 5%, rgba(26, 77, 46, 0.7) 60%, rgba(26, 77, 46, 0.3) 100%);
+                background: linear-gradient(to bottom, rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.25), rgba(15, 23, 42, 0.30));
             }
 
             .testimonial-card {
@@ -617,9 +617,9 @@
                     @forelse ($heroSlides ?? [] as $slide)
                         <article class="relative h-full w-full shrink-0">
                             <img src="{{ asset($slide['image']) }}" alt="{{ $slide['title'] }}"
-                                class="absolute inset-0 h-full w-full object-cover" @if ($loop->first) fetchpriority="high"
+                                class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" @if ($loop->first) fetchpriority="high"
                                 @else loading="lazy" @endif decoding="async">
-                            <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
+                            <div class="hero-gradient-overlay absolute inset-0 z-0"></div>
 
                             <div
                                 class="relative z-10 mx-auto flex min-h-[83vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
@@ -676,8 +676,8 @@
                     @empty
                         <article class="relative h-full w-full shrink-0">
                             <img src="{{ asset('upload/corousel/image1.jpg') }}" alt="Precision Diagnostics"
-                                class="absolute inset-0 h-full w-full object-cover" fetchpriority="high" decoding="async">
-                            <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
+                                class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" fetchpriority="high" decoding="async">
+                            <div class="hero-gradient-overlay absolute inset-0 z-0"></div>
                             <div
                                 class="relative z-10 mx-auto flex min-h-[83vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
                                 <div

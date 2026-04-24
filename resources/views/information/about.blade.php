@@ -14,8 +14,8 @@
 <div class="min-h-screen bg-gradient-to-b from-white via-primary-50/20 to-white">
     <!-- Premium Hero Section -->
     <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
-        <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="Biogenix company profile" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
-        <div class="absolute inset-0 bg-gradient-to-t from-primary-800/95 via-primary-800/70 to-primary-600/30"></div>
+        <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="Biogenix company profile" class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" loading="lazy" decoding="async">
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-900/35 via-slate-900/25 to-slate-900/30"></div>
         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
             <h1 class="mx-auto max-w-5xl {{ $titleClass }}">
                 Driving Precision Diagnostics Across India.
