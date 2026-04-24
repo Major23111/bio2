@@ -819,7 +819,7 @@
                     <div class="flex flex-wrap items-end justify-between gap-4">
                         <div>
                             <span class="text-primary-600 font-medium text-[15px] tracking-wide mb-1 block">Showcase</span>
-                            <h2 class="text-4xl md:text-[44px] font-bold text-slate-800 tracking-tight font-display">Portfolio</h2>
+                            <h2 class="text-4xl md:text-[44px] font-bold text-slate-800 tracking-tight font-display">Institutional Network</h2>
                         </div>
                         <a href="{{ route('portfolio') }}" class="inline-flex items-center gap-3 text-primary-600 font-bold text-lg hover:text-primary-700 transition group">
                             <span class="flex items-center justify-center w-[42px] h-[42px] rounded-full border-2 border-primary-600 group-hover:bg-primary-50 group-hover:scale-105 transition">
@@ -831,7 +831,8 @@
                         </a>
                     </div>
                     <p class="mt-5 text-[17px] text-slate-500 leading-relaxed max-w-3xl font-medium">
-                        Since 2016, Biogenix has backed over 110 startups across multiple sectors. We take immense pride in our founders achievements.
+                        With a strong and growing presence across India, Biogenix has established trusted partnerships with 150+ government institutions, healthcare organisations, and diagnostic networks.<br><br>
+                        Our collaborations span across state healthcare departments, government hospitals, medical colleges, and public health programs, reinforcing our commitment to strengthening diagnostic infrastructure at scale.
                     </p>
 
                     @php

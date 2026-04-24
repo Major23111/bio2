@@ -52,9 +52,6 @@
         $imageUrl = asset($product->image_path ?: 'upload/icons/logo.jpg');
         $galleryImages = collect([
             ['label' => 'Main View', 'src' => $imageUrl],
-            ['label' => 'Pack View', 'src' => asset('upload/products/image1.jpg')],
-            ['label' => 'Bench View', 'src' => asset('upload/products/image2.jpg')],
-            ['label' => 'Workflow', 'src' => asset('upload/products/image3.jpg')],
         ]);
         $currentPrice = $product->visible_price !== null ? (float) $product->visible_price : null;
         // Step 1: keep the saved base price ready so the detail page can show the real MRP from backend data.
