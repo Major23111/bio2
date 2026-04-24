@@ -299,7 +299,8 @@
                         item.addEventListener('click', function(e) {
                             e.stopPropagation();
                             select.selectedIndex = index;
-                            select.dispatchEvent(new Event('change'));
+                            // Dispatch with bubbles:true so document-level listeners (e.g. role switch) receive it.
+                            select.dispatchEvent(new Event('change', { bubbles: true }));
                             updateText();
                             menu.classList.add('hidden');
                         });

@@ -79,25 +79,30 @@
             
             <div class="mt-16 space-y-12">
                 @foreach ([
-                    ['year' => '2007', 'title' => 'Foundation', 'desc' => 'Biogenix was established with a vision to provide reliable diagnostic solutions, beginning as a distributor of ELISA kits.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500'],
-                    ['year' => '2010–2018', 'title' => 'Expansion Phase', 'desc' => 'Expanded into rapid tests, serology, and clinical chemistry while building a strong distribution network across India.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500'],
-                    ['year' => '2017', 'title' => 'Manufacturing Setup', 'desc' => 'Established a manufacturing facility in Lucknow, marking the beginning of in-house operational capabilities.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500'],
-                    ['year' => '2019–2020', 'title' => 'Manufacturing Growth', 'desc' => 'Started in-house production of rapid tests, biochemistry and serology reagents, strengthening quality control and scalability.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500'],
-                    ['year' => 'Post 2020', 'title' => 'Diversification', 'desc' => 'Expanded into instruments, CLIA, molecular diagnostics, and POCT segments to provide comprehensive diagnostic solutions.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500'],
-                    ['year' => 'Present', 'title' => 'Growth & Scale', 'desc' => 'A diversified diagnostics company serving healthcare institutions across India with a strong focus on quality, innovation, and operational efficiency.', 'year_class' => 'text-primary-700', 'node_class' => 'bg-primary-600'],
+                    ['year' => '2007', 'title' => 'Foundation', 'desc' => 'Biogenix was established with a vision to provide reliable diagnostic solutions, beginning as a distributor of ELISA kits.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500', 'image' => 'Our Journey - Foundation.JPG'],
+                    ['year' => '2010–2018', 'title' => 'Expansion Phase', 'desc' => 'Expanded into rapid tests, serology, and clinical chemistry while building a strong distribution network across India.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500', 'image' => 'Our Journey - Expansion Phase.jpeg'],
+                    ['year' => '2017', 'title' => 'Manufacturing Setup', 'desc' => 'Established a manufacturing facility in Lucknow, marking the beginning of in-house operational capabilities.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500', 'image' => 'Our Journey - Manufacturing Set Up.JPG'],
+                    ['year' => '2019–2020', 'title' => 'Manufacturing Growth', 'desc' => 'Started in-house production of rapid tests, biochemistry and serology reagents, strengthening quality control and scalability.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500', 'image' => 'Our Journey - Manufacturing Growth.jpeg'],
+                    ['year' => 'Post 2020', 'title' => 'Diversification', 'desc' => 'Expanded into instruments, CLIA, molecular diagnostics, and POCT segments to provide comprehensive diagnostic solutions.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500', 'image' => 'Our Journey - Diversification.jpeg'],
+                    ['year' => 'Present', 'title' => 'Growth & Scale', 'desc' => 'A diversified diagnostics company serving healthcare institutions across India with a strong focus on quality, innovation, and operational efficiency.', 'year_class' => 'text-primary-700', 'node_class' => 'bg-primary-600', 'image' => 'Our Journey - Growth and Scale.jpg'],
                 ] as $idx => $milestone)
-                    <div class="relative flex flex-col md:flex-row items-center group">
+                    <div class="relative flex flex-col md:flex-row items-center group gap-6 md:gap-0">
                         <!-- Desktop Line -->
                         @if(!$loop->last)
-                            <div class="hidden md:block absolute left-1/2 top-16 bottom-[-3rem] w-px bg-slate-200 -translate-x-1/2"></div>
+                            <div class="hidden md:block absolute left-1/2 top-16 bottom-[-4rem] w-px bg-slate-200 -translate-x-1/2"></div>
                         @endif
 
-                        <!-- Spacer for right-side items -->
+                        <!-- Left side Image (for odd indices) -->
                         @if($idx % 2 != 0)
-                            <div class="hidden md:block md:w-1/2"></div>
+                            <div class="w-full md:w-1/2 md:pr-12 lg:pr-16 order-2 md:order-1 mt-2 md:mt-0">
+                                <div class="overflow-hidden rounded-2xl shadow-[var(--ui-shadow-card)] border border-slate-200/50 scroll-reveal-item opacity-0 translate-y-8 transition-all duration-700">
+                                    <img src="{{ asset('upload/journey/' . $milestone['image']) }}" alt="{{ $milestone['title'] }}" class="w-full h-56 lg:h-64 object-cover hover:scale-105 transition-transform duration-700" loading="lazy">
+                                </div>
+                            </div>
                         @endif
                         
-                        <div class="w-full md:w-1/2 {{ $idx % 2 == 0 ? 'md:text-right md:pr-12' : 'md:pl-12 mt-4 md:mt-0' }}">
+                        <!-- Text Card -->
+                        <div class="w-full md:w-1/2 {{ $idx % 2 == 0 ? 'md:text-right md:pr-12 lg:pr-16' : 'md:pl-12 lg:pl-16' }} order-1 {{ $idx % 2 == 0 ? 'md:order-1' : 'md:order-2' }}">
                             <div class="rounded-[var(--ui-radius-card)] border border-slate-200/80 bg-white/95 p-6 shadow-[var(--ui-shadow-card)] backdrop-blur transition-all duration-700 opacity-0 translate-y-8 scroll-reveal-item hover:-translate-y-1 hover:border-primary-100 hover:shadow-[var(--ui-shadow-panel)]">
                                 <p class="text-3xl font-bold tracking-tight {{ $milestone['year_class'] }}">{{ $milestone['year'] }}</p>
                                 <h3 class="font-display mt-2 text-xl font-bold text-slate-950">{{ $milestone['title'] }}</h3>
@@ -105,9 +110,13 @@
                             </div>
                         </div>
 
-                        <!-- Spacer for left-side items -->
+                        <!-- Right side Image (for even indices) -->
                         @if($idx % 2 == 0)
-                            <div class="hidden md:block md:w-1/2"></div>
+                            <div class="w-full md:w-1/2 md:pl-12 lg:pl-16 order-2 md:order-2 mt-2 md:mt-0">
+                                <div class="overflow-hidden rounded-2xl shadow-[var(--ui-shadow-card)] border border-slate-200/50 scroll-reveal-item opacity-0 translate-y-8 transition-all duration-700">
+                                    <img src="{{ asset('upload/journey/' . $milestone['image']) }}" alt="{{ $milestone['title'] }}" class="w-full h-56 lg:h-64 object-cover hover:scale-105 transition-transform duration-700" loading="lazy">
+                                </div>
+                            </div>
                         @endif
                         
                         <!-- Center Node -->

@@ -220,6 +220,7 @@ class RolePermissionAdminCrudService
                 'impersonation_audits.reason',
                 'impersonation_audits.started_at',
                 'impersonation_audits.ended_at',
+                'impersonation_audits.is_active',
                 'impersonator_users.name as impersonator_name',
                 'target_users.name as target_name',
             ])
@@ -268,12 +269,14 @@ class RolePermissionAdminCrudService
 
             // Add the impersonation row to the final list.
             $impersonationAuditList[] = [
-                'initiator' => $savedImpersonationAudit->impersonator_name ?? 'System Admin',
-                'target' => $savedImpersonationAudit->target_name ?? 'Unknown User',
-                'started' => $startedAtText,
-                'duration' => $durationText,
-                'action' => $savedImpersonationAudit->reason ?: 'Manual Session',
-                'status' => $statusText,
+                'session_id' => (int) $savedImpersonationAudit->id,
+                'initiator'  => $savedImpersonationAudit->impersonator_name ?? 'System Admin',
+                'target'     => $savedImpersonationAudit->target_name ?? 'Unknown User',
+                'started'    => $startedAtText,
+                'duration'   => $durationText,
+                'action'     => $savedImpersonationAudit->reason ?: 'Manual Session',
+                'status'     => $statusText,
+                'is_active'  => (bool) $savedImpersonationAudit->is_active,
             ];
         }
 
@@ -327,7 +330,7 @@ class RolePermissionAdminCrudService
     }
 
     // This creates a new internal user from the page modal.
-    public function storeInternalUser(array $userData): int
+    public function storeInternalUser(array $userData, ?int $actorUserId = null): int
     {
         // Load the selected role and department rows.
         $savedRole = Role::query()->find((int) $userData['role_id']);
@@ -358,7 +361,7 @@ class RolePermissionAdminCrudService
             'user_type' => 'internal',
             'status' => 'active',
             'approved_at' => now(),
-            'created_by_user_id' => auth()->id(),
+            'created_by_user_id' => $actorUserId,
             'password' => $employeeId,
         ]);
 
@@ -419,7 +422,7 @@ class RolePermissionAdminCrudService
     }
 
     // This saves the selected user override permissions.
-    public function storeUserOverride(array $overrideData): void
+    public function storeUserOverride(array $overrideData, ?int $actorUserId = null): void
     {
         // Load the selected user row.
         $savedUser = User::query()->find((int) $overrideData['override_user_id']);
@@ -451,7 +454,7 @@ class RolePermissionAdminCrudService
                 ],
                 [
                     'grant_type' => 'allow',
-                    'granted_by_user_id' => auth()->id(),
+                    'granted_by_user_id' => $actorUserId,
                 ],
             );
         }
@@ -461,7 +464,7 @@ class RolePermissionAdminCrudService
     }
 
     // This saves delegated access from the page modal.
-    public function storeDelegatedAccess(array $delegationData): int
+    public function storeDelegatedAccess(array $delegationData, ?int $actorUserId = null): int
     {
         // Load the selected role row.
         $savedRole = Role::query()->find((int) $delegationData['role_id']);
@@ -488,6 +491,8 @@ class RolePermissionAdminCrudService
             $delegateName = 'Delegated User';
         }
 
+        // Actor user id is passed in by the controller — the HTTP-layer owner.
+
         // Load the delegated user by email when it already exists.
         $savedUser = User::query()
             ->where('email', $delegateEmail)
@@ -501,7 +506,7 @@ class RolePermissionAdminCrudService
                 'user_type' => 'delegated_admin',
                 'status' => 'active',
                 'approved_at' => now(),
-                'created_by_user_id' => auth()->id(),
+                'created_by_user_id' => $actorUserId,
                 'password' => (string) $delegationData['delegate_password'],
             ]);
         }
@@ -511,7 +516,7 @@ class RolePermissionAdminCrudService
             $savedUser->user_type = 'delegated_admin';
             $savedUser->status = 'active';
             $savedUser->approved_at = now();
-            $savedUser->created_by_user_id = auth()->id();
+            $savedUser->created_by_user_id = $actorUserId;
             $savedUser->password = (string) $delegationData['delegate_password'];
             $savedUser->save();
         }
@@ -543,7 +548,7 @@ class RolePermissionAdminCrudService
             'delegated_admin_user_id' => (int) $savedUser->id,
             'scope_type' => 'role',
             'scope_value' => (string) $savedRole->id,
-            'assigned_by_user_id' => auth()->id(),
+            'assigned_by_user_id' => $actorUserId,
             'expires_at' => $delegationData['expires_at'],
         ]);
 
@@ -554,24 +559,19 @@ class RolePermissionAdminCrudService
     }
 
     // This stores a new impersonation audit row from the page modal.
-    public function storeImpersonationSession(array $impersonationData): int
+    public function storeImpersonationSession(array $impersonationData, ?int $actorUserId = null): int
     {
         // Load the selected target user row.
-        $savedTargetUser = User::query()->find((int) $impersonationData['impersonated_user_id']);
+        $targetUser = User::query()->find((int) $impersonationData['impersonated_user_id']);
 
-        if (! $savedTargetUser) {
+        if (! $targetUser) {
             throw ValidationException::withMessages([
                 'impersonated_user_id' => 'Selected target user was not found.',
             ]);
         }
 
-        // Start with the logged-in user as the actor.
-        $actorUserId = auth()->id();
-
-        // Use the first saved user when the page is used without login.
-        if (! $actorUserId) {
-            $actorUserId = User::query()->orderBy('id')->value('id');
-        }
+        // Fall back to the first available user when no actor is logged in.
+        $actorUserId = $actorUserId ?? User::query()->orderBy('id')->value('id');
 
         if (! $actorUserId) {
             throw ValidationException::withMessages([
@@ -579,23 +579,77 @@ class RolePermissionAdminCrudService
             ]);
         }
 
-        // Build the saved reason text from the page input.
-        $savedReason = 'Manual impersonation session by ' . trim((string) $impersonationData['impersonator_name']);
+        // Build the audit reason from the impersonator name field.
+        $auditReason = 'Manual impersonation session by ' . trim((string) $impersonationData['impersonator_name']);
 
-        // Save the audit row.
-        $savedAuditId = DB::table('impersonation_audits')->insertGetId([
+        // Save the impersonation audit row with is_active = true.
+        $sessionId = DB::table('impersonation_audits')->insertGetId([
             'impersonator_user_id' => (int) $actorUserId,
-            'impersonated_user_id' => (int) $savedTargetUser->id,
-            'reason' => $savedReason,
-            'ip_address' => $impersonationData['ip_address'] ?? null,
-            'user_agent' => $impersonationData['user_agent'] ?? null,
-            'started_at' => now(),
-            'ended_at' => $impersonationData['ended_at'],
-            'created_at' => now(),
-            'updated_at' => now(),
+            'impersonated_user_id' => (int) $targetUser->id,
+            'reason'               => $auditReason,
+            'ip_address'           => $impersonationData['ip_address'] ?? null,
+            'user_agent'           => $impersonationData['user_agent'] ?? null,
+            'started_at'           => now(),
+            'ended_at'             => $impersonationData['ended_at'],
+            'is_active'            => true,
+            'created_at'           => now(),
+            'updated_at'           => now(),
         ]);
 
-        return (int) $savedAuditId;
+        // Store the impersonation session markers so middleware can detect and log activity.
+        session(['impersonator_id' => $actorUserId]);
+        session(['impersonation_audit_id' => $sessionId]);
+
+        return (int) $sessionId;
+    }
+
+    // This stops an active impersonation session and clears the session markers.
+    public function stopImpersonationSession(int $sessionId): void
+    {
+        // Mark the session as ended in the audit table.
+        DB::table('impersonation_audits')
+            ->where('id', $sessionId)
+            ->update([
+                'ended_at'   => now(),
+                'is_active'  => false,
+                'updated_at' => now(),
+            ]);
+
+        // Clear the impersonation session markers so middleware stops logging.
+        session()->forget('impersonator_id');
+        session()->forget('impersonation_audit_id');
+    }
+
+    // This returns a list of users matching a search term for the typeahead input.
+    public function searchUsers(string $searchTerm): array
+    {
+        // Build the query — return all users when the search term is empty.
+        $userQuery = User::query()
+            ->select('id', 'name', 'email')
+            ->orderBy('name');
+
+        if ($searchTerm !== '') {
+            $userQuery->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'like', '%' . $searchTerm . '%')
+                      ->orWhere('email', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        // Limit to 50 results to keep the dropdown fast.
+        $matchingUsers = $userQuery->limit(50)->get();
+
+        // Format each user as a simple array for the JSON response.
+        $userList = [];
+
+        foreach ($matchingUsers as $user) {
+            $userList[] = [
+                'id'    => (int) $user->id,
+                'name'  => $user->name,
+                'email' => $user->email,
+            ];
+        }
+
+        return $userList;
     }
 
     // This builds a unique slug for a new role.

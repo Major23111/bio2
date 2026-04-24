@@ -3,6 +3,7 @@
 use App\Http\Middleware\DecryptRouteParameters;
 use App\Http\Middleware\EnsurePermission;
 use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\ImpersonationMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,9 +19,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'decrypt.route' => DecryptRouteParameters::class,
-            'active' => EnsureUserIsActive::class,
-            'permission' => EnsurePermission::class,
+            'decrypt.route'    => DecryptRouteParameters::class,
+            'active'           => EnsureUserIsActive::class,
+            'permission'       => EnsurePermission::class,
+            'impersonation.log' => ImpersonationMiddleware::class,
+        ]);
+
+        // Run impersonation activity logging on every web request.
+        $middleware->web(append: [
+            ImpersonationMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

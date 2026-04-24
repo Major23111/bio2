@@ -26,6 +26,13 @@ return new class extends Migration
             $table->timestamp('approved_at')->nullable();
             $table->unsignedBigInteger('approved_by_user_id')->nullable();
             $table->unsignedBigInteger('created_by_user_id')->nullable();
+            
+            // Verification / B2B Credit constraints
+            $table->decimal('credit_limit', 15, 2)->nullable();
+            $table->integer('credit_days')->nullable();
+            $table->boolean('unlimited_credit')->default(false);
+            $table->text('internal_admin_notes')->nullable();
+            
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->timestamp('password_updated_at')->nullable();

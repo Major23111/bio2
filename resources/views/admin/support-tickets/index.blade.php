@@ -44,66 +44,68 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100" id="ticket-table-body">
 
-                    @php
-                    $tickets = [
-                        ['id' => 'TK-8821', 'customer' => 'Alice Henderson', 'subject' => 'Subscription Billing Issue',   'priority' => 'High',   'priority_color' => 'bg-rose-50 text-rose-700 border border-rose-200/60',    'status' => 'Open',        'status_color' => 'bg-amber-50 text-amber-700 border border-amber-200/60'],
-                        ['id' => 'TK-8819', 'customer' => 'Marcus Thorne',   'subject' => 'Lab Report Access',           'priority' => 'High',   'priority_color' => 'bg-rose-50 text-rose-700 border border-rose-200/60',    'status' => 'In progress', 'status_color' => 'bg-blue-50 text-blue-700 border border-blue-200/60'],
-                        ['id' => 'TK-8795', 'customer' => 'Elena Rossi',     'subject' => 'Technical Bug: Login Loop',   'priority' => 'Critical','priority_color' => 'bg-red-50 text-red-700 border border-red-200/60',        'status' => 'Close',       'status_color' => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'],
-                        ['id' => 'TK-8790', 'customer' => 'James Wilson',    'subject' => 'Feature Request: API Access', 'priority' => 'Low',      'priority_color' => 'bg-slate-50 text-slate-600 border border-slate-200/60', 'status' => 'Open',        'status_color' => 'bg-amber-50 text-amber-700 border border-amber-200/60'],
-                        ['id' => 'TK-8787', 'customer' => 'Priya Anand',     'subject' => 'Order Not Received',          'priority' => 'High',   'priority_color' => 'bg-rose-50 text-rose-700 border border-rose-200/60',    'status' => 'Open',        'status_color' => 'bg-amber-50 text-amber-700 border border-amber-200/60'],
-                        ['id' => 'TK-8771', 'customer' => 'Karl Messner',    'subject' => 'Refund Processing Delay',     'priority' => 'Low',    'priority_color' => 'bg-slate-50 text-slate-600 border border-slate-200/60',  'status' => 'Close',       'status_color' => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'],
-                    ];
-                    @endphp
-
-                    @if (count($tickets))
-                        @foreach($tickets as $t)
-                    <tr class="hover:bg-slate-50/60 transition-colors cursor-pointer ticket-row" onclick="selectTicket('{{ $t['id'] }}')" data-ticket="{{ $t['id'] }}" data-name="{{ strtolower($t['customer']) }}" data-subject="{{ strtolower($t['subject']) }}">
+                    @forelse($ticketList as $t)
+                        @php
+                            $customerName = trim(optional($t->ownerUser)->first_name . ' ' . optional($t->ownerUser)->last_name);
+                            $priorityColor = match($t->priority) {
+                                'Critical' => 'bg-rose-50 text-rose-700 border border-rose-200/60',
+                                'High' => 'bg-amber-50 text-amber-700 border border-amber-200/60',
+                                'Low' => 'bg-slate-50 text-slate-600 border border-slate-200/60',
+                                default => 'bg-slate-50 text-slate-600 border border-slate-200/60',
+                            };
+                            $statusColor = match($t->status) {
+                                'Open' => 'bg-amber-50 text-amber-700 border border-amber-200/60',
+                                'In progress' => 'bg-blue-50 text-blue-700 border border-blue-200/60',
+                                'Close' => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60',
+                                default => 'bg-slate-50 text-slate-600 border border-slate-200/60',
+                            };
+                        @endphp
+                    <tr class="hover:bg-slate-50/60 transition-colors cursor-pointer ticket-row" onclick="selectTicket('{{ $t->ticket_number }}')" data-ticket="{{ $t->ticket_number }}" data-name="{{ strtolower($customerName) }}" data-subject="{{ strtolower($t->subject) }}">
                         <td class="px-6 py-3.5">
-                            <span class="text-[13px] font-extrabold text-primary-800">#{{ $t['id'] }}</span>
+                            <span class="text-[13px] font-extrabold text-primary-800">#{{ $t->ticket_number }}</span>
                         </td>
                         <td class="px-6 py-3.5">
-                            <span class="text-[13px] font-semibold text-slate-800">{{ $t['customer'] }}</span>
+                            <span class="text-[13px] font-semibold text-slate-800">{{ $customerName }}</span>
                         </td>
                         <td class="px-6 py-3.5">
-                            <span class="text-[13px] text-slate-600 font-medium">{{ $t['subject'] }}</span>
+                            <span class="text-[13px] text-slate-600 font-medium">{{ $t->subject }}</span>
                         </td>
                         <td class="px-6 py-3.5">
                             <div class="relative">
-                                <button onclick="toggleDropdown(event, 'priority-dropdown-{{ $t['id'] }}')" class="flex items-center gap-1 hover:opacity-80 transition cursor-pointer focus:outline-none">
-                                    @if($t['priority'])
-                                        <span class="inline-flex items-center px-2.5 py-1 {{ $t['priority_color'] }} text-[11px] font-bold rounded-full">{{ $t['priority'] }}</span>
+                                <button onclick="toggleDropdown(event, 'priority-dropdown-{{ $t->id }}')" class="flex items-center gap-1 hover:opacity-80 transition cursor-pointer focus:outline-none">
+                                    @if($t->priority)
+                                        <span class="inline-flex items-center px-2.5 py-1 {{ $priorityColor }} text-[11px] font-bold rounded-full">{{ $t->priority }}</span>
                                     @else
                                         <span class="text-[11px] font-bold text-slate-400 border border-dashed border-slate-300 rounded-full px-2.5 py-1 hover:border-slate-400 hover:text-slate-600 transition">Add Priority</span>
                                     @endif
                                     <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
-                                <div id="priority-dropdown-{{ $t['id'] }}" class="hidden absolute top-full left-0 mt-1 w-32 bg-white border border-slate-200 rounded-xl shadow-[20px_20px_50px_rgba(0,0,0,0.1)] z-[100]">
+                                <div id="priority-dropdown-{{ $t->id }}" class="hidden absolute top-full left-0 mt-1 w-32 bg-white border border-slate-200 rounded-xl shadow-[20px_20px_50px_rgba(0,0,0,0.1)] z-[100]">
                                     <div class="p-1 flex flex-col gap-0.5">
-                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'priority', 'High')">High</button>
-                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'priority', 'Low')">Low</button>
-                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'priority', 'Critical')">Critical</button>
+                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t->id }}', 'priority', 'High')">High</button>
+                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t->id }}', 'priority', 'Low')">Low</button>
+                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t->id }}', 'priority', 'Critical')">Critical</button>
                                     </div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-3.5">
                             <div class="relative">
-                                <button onclick="toggleDropdown(event, 'status-dropdown-{{ $t['id'] }}')" class="flex items-center gap-1 hover:opacity-80 transition cursor-pointer focus:outline-none">
-                                    <span class="inline-flex items-center px-2.5 py-1 {{ $t['status_color'] }} text-[11px] font-bold rounded-full">{{ $t['status'] }}</span>
+                                <button onclick="toggleDropdown(event, 'status-dropdown-{{ $t->id }}')" class="flex items-center gap-1 hover:opacity-80 transition cursor-pointer focus:outline-none">
+                                    <span class="inline-flex items-center px-2.5 py-1 {{ $statusColor }} text-[11px] font-bold rounded-full">{{ $t->status }}</span>
                                     <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
-                                <div id="status-dropdown-{{ $t['id'] }}" class="hidden absolute top-full left-0 mt-1 w-32 bg-white border border-slate-200 rounded-xl shadow-[20px_20px_50px_rgba(0,0,0,0.1)] z-[100]">
+                                <div id="status-dropdown-{{ $t->id }}" class="hidden absolute top-full left-0 mt-1 w-32 bg-white border border-slate-200 rounded-xl shadow-[20px_20px_50px_rgba(0,0,0,0.1)] z-[100]">
                                     <div class="p-1 flex flex-col gap-0.5">
-                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'status', 'Open')">Open</button>
-                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'status', 'In progress')">In progress</button>
-                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'status', 'Close')">Close</button>
+                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t->id }}', 'status', 'Open')">Open</button>
+                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t->id }}', 'status', 'In progress')">In progress</button>
+                                        <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer" onclick="updateDropdownVal(event, '{{ $t->id }}', 'status', 'Close')">Close</button>
                                     </div>
                                 </div>
                             </div>
                         </td>
                     </tr>
-                        @endforeach
-                    @else
+                    @empty
                         <tr>
                             <td colspan="5" class="px-6 py-12">
                                 <div class="flex flex-col items-center justify-center">
@@ -115,7 +117,7 @@
                                 </div>
                             </td>
                         </tr>
-                    @endif
+                    @endforelse
 
                 </tbody>
             </table>
@@ -123,13 +125,8 @@
 
         {{-- Pagination --}}
         <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between">
-            <p class="text-[12px] font-medium text-slate-500">Showing <span class="font-bold text-slate-900">1</span> to <span class="font-bold text-slate-900">25</span> of <span class="font-bold text-slate-900">48</span> results</p>
-            <div class="flex items-center gap-1">
-                <button class="px-3 py-1.5 rounded-lg border border-slate-200 text-[12px] font-bold text-slate-400 cursor-not-allowed">Previous</button>
-                <button class="px-3 py-1.5 rounded-lg border border-primary-600 bg-primary-600 text-white text-[12px] font-bold shadow-sm shadow-primary-600/20 cursor-pointer">1</button>
-                <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-[12px] font-bold transition cursor-pointer">2</button>
-                <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-[12px] font-bold transition cursor-pointer">3</button>
-                <button class="px-3 py-1.5 rounded-lg border border-slate-200 text-[12px] font-bold text-slate-600 hover:bg-slate-50 transition cursor-pointer">Next</button>
+            <div class="w-full">
+                {{ $ticketList->links() }}
             </div>
         </div>
     </div>
@@ -313,15 +310,31 @@
 
     window.updateDropdownVal = function(e, id, type, val) {
         if (e) e.stopPropagation();
-        if(window.AdminToast) window.AdminToast.show(`Ticket ${id} ${type} updated to ${val}`, "success");
+        
+        let url = `/adminPanel/support-tickets/${id}/${type}`;
+        
+        // Hide dropdown immediately
         document.getElementById(`${type}-dropdown-${id}`).classList.add('hidden');
         
-        // Update DOM
-        const btn = document.querySelector(`button[onclick="toggleDropdown(event, '${type}-dropdown-${id}')"]`);
-        if (btn) {
-            const span = btn.querySelector('span');
-            if (span) {
-                span.textContent = val;
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ [type]: val })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                if(window.AdminToast) window.AdminToast.show(`Ticket ${type} updated to ${val}`, "success");
+                
+                // Update DOM
+                const btn = document.querySelector(`button[onclick="toggleDropdown(event, '${type}-dropdown-${id}')"]`);
+                if (btn) {
+                    const span = btn.querySelector('span');
+                    if (span) {
+                        span.textContent = val;
                 span.className = `inline-flex items-center px-2.5 py-1 text-[11px] font-bold rounded-full`;
                 if (type === 'priority') {
                     if (val === 'Critical') span.classList.add('bg-rose-50', 'text-rose-700', 'border', 'border-rose-200/60');
@@ -334,7 +347,14 @@
                 }
             }
         }
-    };
+    } else {
+        if(window.AdminToast) window.AdminToast.show(data.message || 'Error updating ticket', 'error');
+    }
+})
+.catch(err => {
+    if(window.AdminToast) window.AdminToast.show('Error communicating with server.', 'error');
+});
+};
 
     // ─── Add Category — themed modal ───
     window.addCategory = function() {

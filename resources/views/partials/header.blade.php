@@ -109,13 +109,46 @@
         @endunless
 
         {{-- Desktop nav --}}
-        <nav id="headerMainNav" class="hidden items-center justify-self-center xl:col-start-2 xl:flex xl:min-w-0"
+        <nav id="headerMainNav" class="hidden h-full items-stretch justify-self-center xl:col-start-2 xl:flex xl:min-w-0"
             aria-label="Main Navigation">
             @foreach ($navItems as $nav)
-                <a href="{{ $nav['href'] }}"
-                    class="header-nav-link relative whitespace-nowrap rounded-lg font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-[var(--ui-text-muted)] hover:bg-[var(--ui-surface-subtle)] hover:text-[var(--ui-text)]' }}">
-                    {{ $nav['label'] }}
-                </a>
+                @if($nav['label'] === 'Products & Solutions')
+                    <div class="group flex items-center h-full xl:py-5 2xl:py-6" id="megaMenuWrapper">
+                        <a href="{{ $nav['href'] }}"
+                            class="header-nav-link relative whitespace-nowrap rounded-lg font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-[var(--ui-text-muted)] hover:bg-[var(--ui-surface-subtle)] hover:text-[var(--ui-text)]' }}">
+                            {{ $nav['label'] }}
+                        </a>
+                        
+                        <!-- Mega Menu Container -->
+                        <div class="fixed left-0 right-0 top-[64px] 2xl:top-[72px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[110]" id="megaMenuDropdown">
+                            <div class="mx-auto w-full max-w-[1400px] bg-white shadow-[0_24px_80px_rgba(26,77,46,0.15)] border-t border-slate-100 flex min-h-[450px]">
+                                <!-- Left Sidebar (Level 1) -->
+                                <div class="w-[220px] bg-white border-r border-slate-100 py-6" id="mm-level1-container">
+                                    <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="solutions">Solutions</button>
+                                    <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="products">Products</button>
+                                    <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="community">Community</button>
+                                </div>
+                                
+                                <!-- Middle Column (Level 2) -->
+                                <div class="w-[300px] bg-white border-r border-slate-100 py-6 relative" id="mm-level2-container">
+                                    <!-- Populated by JS -->
+                                </div>
+                                
+                                <!-- Right Column (Level 3 & Image) -->
+                                <div class="flex-1 bg-slate-50 flex" id="mm-level3-container">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="flex items-center h-full xl:py-5 2xl:py-6">
+                        <a href="{{ $nav['href'] }}"
+                            class="header-nav-link relative whitespace-nowrap rounded-lg font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-[var(--ui-text-muted)] hover:bg-[var(--ui-surface-subtle)] hover:text-[var(--ui-text)]' }}">
+                            {{ $nav['label'] }}
+                        </a>
+                    </div>
+                @endif
             @endforeach
         </nav>
 
@@ -626,6 +659,177 @@
     }());
 
     document.addEventListener('DOMContentLoaded', function () {
+        // --- Mega Menu Logic ---
+        const mmData = {
+            solutions: {
+                categories: [
+                    {
+                        id: "sol-1",
+                        label: "Hospitalwide Solution",
+                        subcategories: ["For ER", "For ICU", "For CCU", "For OR", "M-Connect IT Solution", "View all"]
+                    },
+                    {
+                        id: "sol-2",
+                        label: "Emergency Care",
+                        subcategories: ["Pre-hospital", "Emergency Room", "View all"]
+                    },
+                    { id: "sol-3", label: "Critical Care", subcategories: [] },
+                    { id: "sol-4", label: "Perioperative Care", subcategories: [] },
+                    { id: "sol-5", label: "Minimally Invasive Surgery", subcategories: [] },
+                    { 
+                        id: "sol-6", 
+                        label: "Laboratory Diagnostics", 
+                        subcategories: ["Small-volume Laboratories", "Mid-volume Laboratories", "High-volume Laboratories", "View all"] 
+                    },
+                    { id: "sol-7", label: "Medical Imaging", subcategories: ["General Imaging", "Women's Healthcare", "Cardiology", "POC", "View all"] },
+                    { id: "sol-8", label: "Cybersecurity", subcategories: [] },
+                    { id: "sol-9", label: "View all", subcategories: [] }
+                ]
+            },
+            products: {
+                categories: [
+                    {
+                        id: "prod-1",
+                        label: "Patient Monitoring",
+                        subcategories: ["Continuous Patient Monitoring", "Transport Monitoring", "Wearable Monitoring", "Telemetry Monitoring", "Vital Signs Monitoring", "Centralized Monitoring", "Patient Monitoring Accessories", "Mobile Application", "View all"]
+                    },
+                    { id: "prod-2", label: "Anesthesia", subcategories: [] },
+                    { id: "prod-3", label: "Ventilators", subcategories: [] },
+                    { id: "prod-4", label: "Infusion System", subcategories: [] },
+                    { id: "prod-5", label: "Defibrillation System", subcategories: [] },
+                    { id: "prod-6", label: "Electrocardiograph (ECG)", subcategories: [] },
+                    { id: "prod-7", label: "Laboratory Diagnostics", subcategories: [] },
+                    { id: "prod-8", label: "Reagents", subcategories: [] },
+                    { id: "prod-9", label: "Ultrasound", subcategories: [] },
+                    { id: "prod-10", label: "Radiology", subcategories: [] }
+                ]
+            },
+            community: {
+                categories: [
+                    { id: "com-1", label: "Nuewa Club", subcategories: [] },
+                    { id: "com-2", label: "Global Clinical Institute", subcategories: [] },
+                    { id: "com-3", label: "U-Studio", subcategories: [] }
+                ]
+            }
+        };
+
+        const level1Btns = document.querySelectorAll('.mm-level1-btn');
+        const level2Container = document.getElementById('mm-level2-container');
+        const level3Container = document.getElementById('mm-level3-container');
+
+        let activeL1 = null;
+        let activeL2 = null;
+
+        function renderLevel2(targetId) {
+            if (!mmData[targetId]) return;
+            activeL1 = targetId;
+
+            // Update level 1 active state
+            level1Btns.forEach(btn => {
+                if (btn.dataset.target === targetId) {
+                    btn.classList.add('bg-primary-600', 'text-white');
+                    btn.classList.remove('text-[var(--ui-text)]', 'hover:bg-slate-50');
+                } else {
+                    btn.classList.remove('bg-primary-600', 'text-white');
+                    btn.classList.add('text-[var(--ui-text)]', 'hover:bg-slate-50');
+                }
+            });
+
+            const categories = mmData[targetId].categories;
+            let html = '<div class="flex flex-col w-full px-4 h-full overflow-y-auto">';
+            categories.forEach(cat => {
+                const hasArrow = cat.subcategories && cat.subcategories.length > 0;
+                html += `
+                    <button class="mm-level2-btn w-full text-left px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-slate-600 hover:text-primary-700 transition-colors border-b border-transparent hover:border-slate-100" data-id="${cat.id}">
+                        <span>${cat.label}</span>
+                        ${hasArrow ? `<svg class="w-3 h-3 text-slate-400 group-hover:text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>` : ''}
+                    </button>
+                `;
+            });
+            html += '</div>';
+            level2Container.innerHTML = html;
+
+            const l2Btns = level2Container.querySelectorAll('.mm-level2-btn');
+            l2Btns.forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                    renderLevel3(targetId, btn.dataset.id);
+                });
+            });
+
+            // Auto-select first item
+            if (categories.length > 0) {
+                renderLevel3(targetId, categories[0].id);
+            } else {
+                level3Container.innerHTML = '';
+            }
+        }
+
+        function renderLevel3(l1Id, l2Id) {
+            const cat = mmData[l1Id].categories.find(c => c.id === l2Id);
+            if (!cat) return;
+            activeL2 = l2Id;
+
+            // Update level 2 active state
+            const l2Btns = level2Container.querySelectorAll('.mm-level2-btn');
+            l2Btns.forEach(btn => {
+                const arrow = btn.querySelector('svg');
+                if (btn.dataset.id === l2Id) {
+                    btn.classList.add('text-primary-700');
+                    btn.classList.remove('text-slate-600');
+                    if(arrow) {
+                        arrow.classList.remove('text-slate-400');
+                        arrow.classList.add('text-primary-700');
+                    }
+                } else {
+                    btn.classList.remove('text-primary-700');
+                    btn.classList.add('text-slate-600');
+                    if(arrow) {
+                        arrow.classList.add('text-slate-400');
+                        arrow.classList.remove('text-primary-700');
+                    }
+                }
+            });
+
+            let html = '<div class="w-1/2 p-8 border-r border-slate-100/50 flex flex-col gap-2">';
+            if (cat.subcategories && cat.subcategories.length > 0) {
+                cat.subcategories.forEach(sub => {
+                    html += `
+                        <a href="#" class="px-2 py-2 text-[13px] font-medium text-slate-600 hover:text-primary-700 transition-colors border-b border-slate-100 last:border-0">${sub}</a>
+                    `;
+                });
+            } else {
+                html += `<div class="text-sm text-slate-400 italic">No subcategories available.</div>`;
+            }
+            html += '</div>';
+
+            // Image right side
+            html += `
+                <div class="w-1/2 p-8 relative flex flex-col items-center justify-center overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-20" alt="bg">
+                    <div class="relative z-10 text-center">
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">${cat.label}</h3>
+                        <a href="#" class="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold rounded-full transition-colors shadow-md">
+                            Explore
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            level3Container.innerHTML = html;
+        }
+
+        level1Btns.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                renderLevel2(btn.dataset.target);
+            });
+        });
+
+        // Initialize default
+        if(level1Btns.length > 0) {
+            renderLevel2('solutions');
+        }
+
         // ─── Cart badge sync ───
         const cartCountBadges = Array.from(document.querySelectorAll('[data-cart-count]'));
         if (window.CartStore && cartCountBadges.length) {

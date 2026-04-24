@@ -1,33 +1,14 @@
 @extends('admin.layout')
 
-@section('title', 'Customer Management - Biogenix Admin')
+@section('title', 'User Management - Biogenix Admin')
 
 @section('admin_content')
 
-    @php
-        $pendingApplicants = [
-            ['id' => 1, 'name' => 'MediLab Solutions', 'email' => 'contact@medilab.co', 'category' => 'B2B', 'applicationLabel' => 'Applied for B2B', 'initials' => 'ML', 'color' => 'bg-primary-600'],
-            ['id' => 2, 'name' => 'Arthur P. Morgon', 'email' => 'arthur.m@gmail.com', 'category' => 'B2C', 'applicationLabel' => 'Applied for Retail', 'initials' => 'AP', 'color' => 'bg-tertiary-600'],
-            ['id' => 3, 'name' => 'BioLink Diagnostics', 'email' => 'info@biolink.in', 'category' => 'B2B', 'applicationLabel' => 'Applied for B2B', 'initials' => 'BL', 'color' => 'bg-primary-600'],
-        ];
 
-        $customers = [
-            ['name' => 'Nova Scientific Group', 'email' => 'contact@nova.com', 'category' => 'B2B', 'status' => 'Active', 'date' => 'Oct 12, 2023', 'initials' => 'NS', 'color' => 'var(--color-primary-600)', 'creditLimit' => '25000', 'creditDays' => '30', 'unlimitedCredit' => false],
-            ['name' => 'David Wilson', 'email' => 'david.w@provider.net', 'category' => 'B2C', 'status' => 'Active', 'date' => 'Nov 05, 2023', 'initials' => 'DW', 'color' => 'var(--color-secondary-700)', 'creditLimit' => '', 'creditDays' => '7', 'unlimitedCredit' => false],
-            ['name' => 'Bio-Chem Logistics', 'email' => 'billing@biochem.log', 'category' => 'B2B', 'status' => 'Suspended', 'date' => 'Aug 22, 2023', 'initials' => 'BC', 'color' => 'var(--color-primary-600)', 'creditLimit' => '50000', 'creditDays' => '45', 'unlimitedCredit' => false],
-            ['name' => 'Elena Rodriguez', 'email' => 'elena.rod@webmail.com', 'category' => 'B2C', 'status' => 'Active', 'date' => 'Dec 01, 2023', 'initials' => 'ER', 'color' => 'var(--color-tertiary-600)', 'creditLimit' => '', 'creditDays' => '7', 'unlimitedCredit' => false],
-            ['name' => 'Omni BioSystems Ltd', 'email' => 'ops@omnibiosys.com', 'category' => 'B2B', 'status' => 'Active', 'date' => 'Jan 15, 2024', 'initials' => 'OB', 'color' => 'var(--color-secondary-700)', 'creditLimit' => '100000', 'creditDays' => '60', 'unlimitedCredit' => true],
-            ['name' => 'Clara Mendez', 'email' => 'c.mendez@gmail.com', 'category' => 'B2C', 'status' => 'Inactive', 'date' => 'Feb 20, 2024', 'initials' => 'CM', 'color' => 'var(--color-tertiary-600)', 'creditLimit' => '', 'creditDays' => '7', 'unlimitedCredit' => false],
-            ['name' => 'LabCore Sciences', 'email' => 'admin@labcore.io', 'category' => 'B2B', 'status' => 'Active', 'date' => 'Mar 03, 2024', 'initials' => 'LC', 'color' => 'var(--color-primary-600)', 'creditLimit' => '75000', 'creditDays' => '90', 'unlimitedCredit' => false],
-            ['name' => 'Thomas Reinholt', 'email' => 't.reinholt@bionet.de', 'category' => 'B2C', 'status' => 'Active', 'date' => 'Mar 10, 2024', 'initials' => 'TR', 'color' => 'var(--color-tertiary-600)', 'creditLimit' => '', 'creditDays' => '7', 'unlimitedCredit' => false],
-        ];
-
-        $b2bCustomers = array_values(array_filter($customers, static fn($customer) => $customer['category'] === 'B2B'));
-    @endphp
 
     <div class="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-            <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">Customer Management</h1>
+            <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">User Management</h1>
             <p class="mt-1 text-sm text-slate-500">Manage customer accounts, verifications, and access settings.</p>
         </div>
         <div class="flex items-center gap-3">
@@ -54,7 +35,7 @@
                         d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 </svg>
                 <span id="pending-count-label" class="text-sm font-bold text-amber-800">Pending User Verifications
-                    ({{ count($pendingApplicants) }})</span>
+                    ({{ count($pendingVerifications ?? []) }})</span>
             </div>
             <button type="button"
                 class="text-[12px] font-bold text-secondary-700 transition hover:text-amber-900 cursor-pointer">View All
@@ -62,24 +43,31 @@
         </div>
 
         <div id="pending-list" class="space-y-2.5">
-            @foreach($pendingApplicants as $applicant)
+            @foreach($pendingVerifications as $applicant)
+                @php
+                    $isB2B = strtolower($applicant->user_type) === 'b2b';
+                    $appLabel = $isB2B ? 'Applied for B2B' : 'Applied for Retail';
+                    $color = $isB2B ? 'bg-primary-600' : 'bg-tertiary-600';
+                    $initials = strtoupper(substr($applicant->name, 0, 2));
+                    $categoryName = $isB2B ? 'B2B' : 'B2C';
+                @endphp
                 <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-100 bg-white px-4 py-3 shadow-sm"
-                    data-pending-id="{{ $applicant['id'] }}" data-applicant-name="{{ $applicant['name'] }}"
-                    data-application-category="{{ $applicant['category'] }}">
+                    data-pending-id="{{ $applicant->id }}" data-applicant-name="{{ $applicant->name }}"
+                    data-application-category="{{ $categoryName }}">
                     <div class="flex min-w-0 items-center gap-3">
                         <div
-                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full {{ $applicant['color'] }} text-[11px] font-black text-white">
-                            {{ $applicant['initials'] }}</div>
+                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full {{ $color }} text-[11px] font-black text-white">
+                            {{ $initials }}</div>
                         <div class="min-w-0">
-                            <p class="truncate text-[13px] font-bold text-slate-900">{{ $applicant['name'] }}</p>
-                            <p class="truncate text-[11px] font-medium text-slate-500">{{ $applicant['email'] }} &bull;
-                                {{ $applicant['applicationLabel'] }}</p>
+                            <p class="truncate text-[13px] font-bold text-slate-900">{{ $applicant->name }}</p>
+                            <p class="truncate text-[11px] font-medium text-slate-500">{{ $applicant->email }} &bull;
+                                {{ $appLabel }}</p>
                         </div>
                     </div>
                     <div class="pending-action-group flex shrink-0 items-center gap-2">
-                        <button type="button" onclick="handleVerification(this, 'approve', {{ $applicant['id'] }})"
+                        <button type="button" onclick="handleVerification(this, 'approve', {{ $applicant->id }})"
                             class="rounded-lg bg-primary-600 px-4 py-1.5 text-[12px] font-bold text-white transition hover:bg-primary-700 cursor-pointer">Approve</button>
-                        <button type="button" onclick="handleVerification(this, 'reject', {{ $applicant['id'] }})"
+                        <button type="button" onclick="handleVerification(this, 'reject', {{ $applicant->id }})"
                             class="rounded-lg border border-rose-200 bg-white px-4 py-1.5 text-[12px] font-bold text-rose-600 transition hover:bg-rose-50 cursor-pointer">Reject</button>
                     </div>
                 </div>
@@ -115,27 +103,17 @@
 
             <div id="b2b-client-suggestions"
                 class="absolute inset-x-0 top-full z-20 mt-2 hidden max-h-72 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
-                @foreach($b2bCustomers as $customer)
+                @foreach($b2bSpecificList as $customer)
                     @php
-                        $detailsUrl = route('admin.customers.details', [
-                            'name' => $customer['name'],
-                            'email' => $customer['email'],
-                            'category' => $customer['category'],
-                            'status' => $customer['status'],
-                            'date' => $customer['date'],
-                            'initials' => $customer['initials'],
-                            'credit_limit' => $customer['creditLimit'],
-                            'credit_days' => $customer['creditDays'],
-                            'unlimited_credit' => $customer['unlimitedCredit'] ? 1 : 0,
-                        ]);
+                        $detailsUrl = route('admin.customers.details', ['customerId' => $customer->id]);
                     @endphp
                     <button type="button"
                         class="b2b-client-option flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-slate-50 cursor-pointer"
-                        data-name="{{ strtolower($customer['name']) }}" data-email="{{ strtolower($customer['email']) }}"
+                        data-name="{{ strtolower($customer->name) }}" data-email="{{ strtolower($customer->email) }}"
                         data-url="{{ $detailsUrl }}">
                         <div class="min-w-0">
-                            <p class="text-sm font-bold text-slate-900">{{ $customer['name'] }}</p>
-                            <p class="text-xs font-medium text-slate-500">{{ $customer['email'] }}</p>
+                            <p class="text-sm font-bold text-slate-900">{{ $customer->name }}</p>
+                            <p class="text-xs font-medium text-slate-500">{{ $customer->email }}</p>
                         </div>
                         <span
                             class="inline-flex shrink-0 items-center rounded-full border border-primary-200/60 bg-primary-50 px-2.5 py-1 text-[10px] font-bold text-primary-700">B2B</span>
@@ -202,54 +180,48 @@
                     </tr>
                 </thead>
                 <tbody id="customer-table-body" class="divide-y divide-slate-100">
-                    @if (count($customers))
-                        @foreach($customers as $customer)
+                    @if (count($verifiedCustomers))
+                        @foreach($verifiedCustomers as $customer)
                             @php
-                                $statusClasses = match ($customer['status']) {
-                                    'Active' => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60',
-                                    'Suspended' => 'bg-rose-50 text-rose-700 border border-rose-200/60',
-                                    'Inactive' => 'bg-slate-100 text-slate-600 border border-slate-200/60',
+                                $statusClasses = match (strtolower($customer->status)) {
+                                    'active' => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60',
+                                    'suspended' => 'bg-rose-50 text-rose-700 border border-rose-200/60',
+                                    'inactive', 'rejected' => 'bg-slate-100 text-slate-600 border border-slate-200/60',
                                     default => 'bg-slate-100 text-slate-600 border border-slate-200/60',
                                 };
 
-                                $categoryClasses = match ($customer['category']) {
+                                $catLabel = strtoupper($customer->user_type ?? 'B2C');
+                                $categoryClasses = match ($catLabel) {
                                     'B2B' => 'bg-primary-50 text-primary-700 border border-primary-200/60',
                                     'B2C' => 'bg-primary-50 text-primary-700 border border-primary-200/60',
                                     default => 'bg-slate-100 text-slate-600 border border-slate-200/60',
                                 };
 
-                                $detailsUrl = route('admin.customers.details', [
-                                    'name' => $customer['name'],
-                                    'email' => $customer['email'],
-                                    'category' => $customer['category'],
-                                    'status' => $customer['status'],
-                                    'date' => $customer['date'],
-                                    'initials' => $customer['initials'],
-                                    'credit_limit' => $customer['creditLimit'],
-                                    'credit_days' => $customer['creditDays'],
-                                    'unlimited_credit' => $customer['unlimitedCredit'] ? 1 : 0,
-                                ]);
+                                $detailsUrl = route('admin.customers.details', ['customerId' => $customer->id]);
+                                $initials = strtoupper(substr($customer->name, 0, 2));
+                                $color = 'var(--color-primary-600)';
+                                $dateJoined = $customer->created_at ? $customer->created_at->format('M d, Y') : 'Unknown';
                             @endphp
                             <tr class="customer-row cursor-pointer transition-colors hover:bg-slate-50/50"
-                                data-name="{{ strtolower($customer['name']) }}" data-email="{{ strtolower($customer['email']) }}"
-                                data-category="{{ $customer['category'] }}">
+                                data-name="{{ strtolower($customer->name) }}" data-email="{{ strtolower($customer->email) }}"
+                                data-category="{{ $catLabel }}">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-black text-white"
-                                            style="background-color: {{ $customer['color'] }}">{{ $customer['initials'] }}</div>
-                                        <span class="text-[13px] font-bold text-slate-900">{{ $customer['name'] }}</span>
+                                            style="background-color: {{ $color }}">{{ $initials }}</div>
+                                        <span class="text-[13px] font-bold text-slate-900">{{ $customer->name }}</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-[13px] font-medium text-slate-600">{{ $customer['email'] }}</td>
+                                <td class="px-6 py-4 text-[13px] font-medium text-slate-600">{{ $customer->email }}</td>
                                 <td class="px-6 py-4">
                                     <span
-                                        class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold {{ $categoryClasses }}">{{ $customer['category'] }}</span>
+                                        class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold {{ $categoryClasses }}">{{ $catLabel }}</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span
-                                        class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold {{ $statusClasses }}">{{ $customer['status'] }}</span>
+                                        class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold {{ $statusClasses }}">{{ ucfirst($customer->status) }}</span>
                                 </td>
-                                <td class="px-6 py-4 text-[13px] font-medium text-slate-500">{{ $customer['date'] }}</td>
+                                <td class="px-6 py-4 text-[13px] font-medium text-slate-500">{{ $dateJoined }}</td>
                                 <td class="flex justify-end px-6 py-4 text-right">
                                     <a href="{{ $detailsUrl }}"
                                         class="ajax-link inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-700 text-white shadow-sm transition-all hover:-translate-y-px hover:bg-primary-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 cursor-pointer"
@@ -327,11 +299,11 @@
         </div>
     </div>
 
-    <div id="verification-modal" class="fixed inset-0 z-[1000] hidden items-center justify-center" role="dialog"
+    <div id="verification-modal" class="fixed inset-0 z-[1000] hidden overflow-y-auto" role="dialog"
         aria-modal="true" aria-labelledby="verification-modal-title">
-        <div class="absolute inset-0 bg-slate-900/55 backdrop-blur-sm" onclick="closeVerificationModal()"></div>
-        <div class="relative z-10 w-full max-w-lg px-4 py-6">
-            <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl animate-fade-in">
+        <div class="fixed inset-0 bg-slate-900/55 backdrop-blur-sm transition-opacity" onclick="closeVerificationModal()"></div>
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl animate-fade-in">
                 <div class="mb-5 flex items-start justify-between gap-4">
                     <div>
                         <h3 id="verification-modal-title" class="text-lg font-extrabold text-slate-900">Approve Customer
@@ -516,7 +488,6 @@
             window.closeVerificationModal = function () {
                 if (!modal) return;
                 modal.classList.add('hidden');
-                modal.classList.remove('flex');
                 setBodyScrollLocked(false);
                 resetVerificationForm();
             };
@@ -551,7 +522,6 @@
 
                 updateUnlimitedCreditState();
                 modal.classList.remove('hidden');
-                modal.classList.add('flex');
                 setBodyScrollLocked(true);
             };
 
@@ -582,31 +552,64 @@
                     return;
                 }
 
-                const label = isApproval ? 'Approved' : 'Rejected';
-                const colorClass = isApproval ? 'text-primary-600' : 'text-rose-500';
-                const metaText = isB2bApproval
-                    ? (unlimitedCreditCheckbox.checked
-                        ? 'Unlimited credit limit for ' + creditDaysSelect.value + ' days'
-                        : 'Credit limit Rs. ' + Number(creditLimitSelect.value).toLocaleString('en-IN') + ' for ' + creditDaysSelect.value + ' days')
-                    : '';
+                const endpoint = isApproval ? '/adminPanel/customers/pending/approve' : '/adminPanel/customers/pending/reject';
+                const payload = {
+                    user_id: id,
+                    credit_limit: creditLimitSelect ? creditLimitSelect.value : null,
+                    credit_days: creditDaysSelect ? creditDaysSelect.value : null,
+                    unlimited_credit: unlimitedCreditCheckbox ? unlimitedCreditCheckbox.checked : false
+                };
 
-                card.dataset.removing = 'true';
-                card.innerHTML = '<div class="flex items-start justify-between gap-4"><div><div class="flex items-center gap-2 py-1"><svg class="h-4 w-4 ' + colorClass + '" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="' + (isApproval ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12') + '"/></svg><span class="text-[12px] font-bold ' + colorClass + '">' + label + '</span></div>' + (metaText ? '<p class="pl-6 text-[11px] font-medium text-slate-500">' + metaText + '</p>' : '') + '</div></div>';
+                confirmBtn.disabled = true;
+                confirmBtn.innerText = 'Processing...';
 
-                closeVerificationModal();
-                updatePendingCount();
+                fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    confirmBtn.disabled = false;
+                    
+                    if (data.success) {
+                        const label = isApproval ? 'Approved' : 'Rejected';
+                        const colorClass = isApproval ? 'text-primary-600' : 'text-rose-500';
+                        const metaText = isB2bApproval
+                            ? (unlimitedCreditCheckbox.checked
+                                ? 'Unlimited credit limit for ' + creditDaysSelect.value + ' days'
+                                : 'Credit limit Rs. ' + Number(creditLimitSelect.value).toLocaleString('en-IN') + ' for ' + creditDaysSelect.value + ' days')
+                            : '';
 
-                setTimeout(function () {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(-6px)';
-                    card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-                }, 900);
+                        card.dataset.removing = 'true';
+                        card.innerHTML = '<div class="flex items-start justify-between gap-4"><div><div class="flex items-center gap-2 py-1"><svg class="h-4 w-4 ' + colorClass + '" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="' + (isApproval ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12') + '"/></svg><span class="text-[12px] font-bold ' + colorClass + '">' + label + '</span></div>' + (metaText ? '<p class="pl-6 text-[11px] font-medium text-slate-500">' + metaText + '</p>' : '') + '</div></div>';
 
-                setTimeout(function () {
-                    card.remove();
-                }, 1200);
+                        closeVerificationModal();
+                        updatePendingCount();
 
-                showToast(isApproval ? 'Customer application approved.' : 'Customer application rejected.', isApproval ? 'success' : 'info');
+                        setTimeout(function () {
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(-6px)';
+                            card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+                        }, 900);
+
+                        setTimeout(function () {
+                            card.remove();
+                        }, 1200);
+
+                        showToast(data.message || (isApproval ? 'Customer application approved.' : 'Customer application rejected.'), isApproval ? 'success' : 'info');
+                    } else {
+                        showToast(data.message || 'Error occurred updating verification.', 'error');
+                        closeVerificationModal();
+                    }
+                })
+                .catch(err => {
+                    confirmBtn.disabled = false;
+                    showToast('Server error while updating verification.', 'error');
+                });
             };
 
             unlimitedCreditCheckbox?.addEventListener('change', updateUnlimitedCreditState);

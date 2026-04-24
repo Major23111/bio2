@@ -34,7 +34,7 @@
                 <!-- Total Leads -->
                 <div class="bg-[var(--ui-surface)] rounded-2xl p-6 shadow-[var(--ui-shadow-soft)] border-l-4 border-l-primary-600 border-y border-y-[var(--ui-card-border)] border-r border-r-[var(--ui-card-border)] flex flex-col justify-center min-h-[140px]">
                     <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-2">Total Leads</p>
-                    <h3 class="text-4xl font-black text-[var(--ui-text)] tracking-tight mb-3">12,842</h3>
+                    <h3 class="text-4xl font-black text-[var(--ui-text)] tracking-tight mb-3">{{ number_format($quizeStats['total_leads']) }}</h3>
 
                 </div>
 
@@ -47,15 +47,15 @@
                     
                     <div class="flex items-end justify-between mt-8 relative z-10">
                         <div class="text-center">
-                            <span class="block text-white font-bold text-sm mb-1">B2B (65%)</span>
+                            <span class="block text-white font-bold text-sm mb-1">B2B ({{ $quizeStats['b2b_percent'] }}%)</span>
                             <div class="w-32 sm:w-40 bg-primary-800 rounded-full h-2">
-                                <div class="bg-white h-2 rounded-full" style="width: 65%"></div>
+                                <div class="bg-white h-2 rounded-full" style="width: {{ $quizeStats['b2b_percent'] }}%"></div>
                             </div>
                         </div>
                         <div class="text-center">
-                            <span class="block text-white font-bold text-sm mb-1">B2C (35%)</span>
+                            <span class="block text-white font-bold text-sm mb-1">B2C ({{ $quizeStats['b2c_percent'] }}%)</span>
                             <div class="w-20 sm:w-24 bg-primary-800 rounded-full h-2">
-                                <div class="bg-blue-300 h-2 rounded-full" style="width: 35%"></div>
+                                <div class="bg-blue-300 h-2 rounded-full" style="width: {{ $quizeStats['b2c_percent'] }}%"></div>
                             </div>
                         </div>
                     </div>
@@ -88,96 +88,61 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[var(--ui-border)] text-sm font-semibold text-[var(--ui-text)]">
-                            <!-- Julianna -->
-                            <tr class="hover:bg-slate-50/50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-8 w-8 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs">JW</div>
-                                        <span class="text-slate-800 font-bold text-sm">Julianna Wright</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-slate-500 font-medium text-sm">j.wright@biolabs.com</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-[10px] font-black tracking-wider uppercase">B2B</span>
-                                </td>
-                                <td class="px-6 py-4 text-slate-800 font-black text-sm">92/100</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-1.5">
-                                        <div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
-                                        <span class="text-emerald-700 font-bold text-xs">Converted</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-right relative">
-                                    <button onclick="toggleRowActions(event, 'actions-0')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
-                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
-                                    </button>
-                                    <div id="actions-0" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
-                                        <div class="p-1 flex flex-col gap-0.5">
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Viewing lead details...', 'info')">View Details</button>
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Contacting lead...', 'info')">Contact Lead</button>
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-rose-600 transition" onclick="confirm('Delete this lead record?')">Delete</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <!-- Marcus -->
-                            <tr class="hover:bg-slate-50/50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-8 w-8 rounded-full bg-purple-100 text-purple-700 font-bold flex items-center justify-center text-xs">MK</div>
-                                        <span class="text-slate-800 font-bold text-sm">Marcus Kaine</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-slate-500 font-medium text-sm">marcus.k@outlook.com</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2 py-1 bg-slate-100 text-slate-600 rounded-md text-[10px] font-black tracking-wider uppercase">B2C</span>
-                                </td>
-                                <td class="px-6 py-4 text-slate-800 font-black text-sm">45/100</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-1.5">
-                                        <div class="h-1.5 w-1.5 rounded-full bg-amber-500"></div>
-                                        <span class="text-amber-600 font-bold text-xs">Pending</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-right relative">
-                                    <button onclick="toggleRowActions(event, 'actions-1')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
-                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
-                                    </button>
-                                    <div id="actions-1" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
-                                        <div class="p-1 flex flex-col gap-0.5">
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Viewing lead details...', 'info')">View Details</button>
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Contacting lead...', 'info')">Contact Lead</button>
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-rose-600 transition" onclick="confirm('Delete this lead record?')">Delete</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+                            @forelse ($leadFeed as $lead)
+                            @php
+                                // Build two-letter avatar initials from the lead name.
+                                $firstName    = $lead->participant_first_name ?? '';
+                                $lastName     = $lead->participant_last_name ?? '';
+                                $initials     = strtoupper(substr($firstName, 0, 1) . substr($lastName, 0, 1));
+                                $fullName     = trim($firstName . ' ' . $lastName);
+                                $segmentType  = strtoupper($lead->user_type ?? 'N/A');
+                                $scoreDisplay = $lead->total_questions > 0
+                                    ? $lead->total_correct_answers . '/' . $lead->total_questions
+                                    : '—';
 
-                            <!-- Sarah -->
+                                // Determine status label from score_percentage.
+                                if ($lead->score_percentage >= 70) {
+                                    $statusLabel = 'Converted';
+                                    $statusDot   = 'bg-emerald-500';
+                                    $statusText  = 'text-emerald-700';
+                                } elseif ($lead->score_percentage >= 40) {
+                                    $statusLabel = 'Contacted';
+                                    $statusDot   = 'bg-blue-500';
+                                    $statusText  = 'text-blue-700';
+                                } else {
+                                    $statusLabel = 'Pending';
+                                    $statusDot   = 'bg-amber-500';
+                                    $statusText  = 'text-amber-600';
+                                }
+
+                                // Segment badge colors.
+                                $segmentBadge = $segmentType === 'B2B'
+                                    ? 'bg-blue-50 text-blue-700'
+                                    : 'bg-slate-100 text-slate-600';
+                            @endphp
                             <tr class="hover:bg-slate-50/50 transition-colors">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-xs">SM</div>
-                                        <span class="text-slate-800 font-bold text-sm">Sarah Miller</span>
+                                        <div class="h-8 w-8 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs">{{ $initials }}</div>
+                                        <span class="text-slate-800 font-bold text-sm">{{ $fullName }}</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-slate-500 font-medium text-sm">smiller@techcorp.io</td>
+                                <td class="px-6 py-4 text-slate-500 font-medium text-sm">{{ $lead->participant_email }}</td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-[10px] font-black tracking-wider uppercase">B2B</span>
+                                    <span class="inline-flex items-center px-2 py-1 {{ $segmentBadge }} rounded-md text-[10px] font-black tracking-wider uppercase">{{ $segmentType }}</span>
                                 </td>
-                                <td class="px-6 py-4 text-slate-800 font-black text-sm">78/100</td>
+                                <td class="px-6 py-4 text-slate-800 font-black text-sm">{{ $scoreDisplay }}</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-1.5">
-                                        <div class="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-                                        <span class="text-blue-700 font-bold text-xs">Contacted</span>
+                                        <div class="h-1.5 w-1.5 rounded-full {{ $statusDot }}"></div>
+                                        <span class="{{ $statusText }} font-bold text-xs">{{ $statusLabel }}</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-right relative">
-                                    <button onclick="toggleRowActions(event, 'actions-2')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
+                                    <button onclick="toggleRowActions(event, 'actions-{{ $lead->id }}')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
                                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
                                     </button>
-                                    <div id="actions-2" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
+                                    <div id="actions-{{ $lead->id }}" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
                                         <div class="p-1 flex flex-col gap-0.5">
                                             <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Viewing lead details...', 'info')">View Details</button>
                                             <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Contacting lead...', 'info')">Contact Lead</button>
@@ -186,87 +151,34 @@
                                     </div>
                                 </td>
                             </tr>
-                            
-                            <!-- Aaron -->
-                            <tr class="hover:bg-slate-50/50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-8 w-8 rounded-full bg-violet-100 text-violet-700 font-bold flex items-center justify-center text-xs">AL</div>
-                                        <span class="text-slate-800 font-bold text-sm">Aaron Leong</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-slate-500 font-medium text-sm">a.leong@university.edu</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-[10px] font-black tracking-wider uppercase">B2B</span>
-                                </td>
-                                <td class="px-6 py-4 text-slate-800 font-black text-sm">88/100</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-1.5">
-                                        <div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
-                                        <span class="text-emerald-700 font-bold text-xs">Converted</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-right relative">
-                                    <button onclick="toggleRowActions(event, 'actions-3')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
-                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
-                                    </button>
-                                    <div id="actions-3" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
-                                        <div class="p-1 flex flex-col gap-0.5">
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Viewing lead details...', 'info')">View Details</button>
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Contacting lead...', 'info')">Contact Lead</button>
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-rose-600 transition" onclick="confirm('Delete this lead record?')">Delete</button>
-                                        </div>
-                                    </div>
-                                </td>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-10 text-center text-sm text-slate-400 font-medium">No quiz responses recorded yet.</td>
                             </tr>
-                            
-                             <!-- Robert -->
-                             <tr class="hover:bg-slate-50/50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-8 w-8 rounded-full bg-orange-100 text-orange-700 font-bold flex items-center justify-center text-xs">RD</div>
-                                        <span class="text-slate-800 font-bold text-sm">Robert D'Arcy</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-slate-500 font-medium text-sm">robert.d@pharmaco.com</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-[10px] font-black tracking-wider uppercase">B2B</span>
-                                </td>
-                                <td class="px-6 py-4 text-slate-800 font-black text-sm">64/100</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-1.5">
-                                        <div class="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-                                        <span class="text-blue-700 font-bold text-xs">Contacted</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-right relative">
-                                    <button onclick="toggleRowActions(event, 'actions-4')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
-                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
-                                    </button>
-                                    <div id="actions-4" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
-                                        <div class="p-1 flex flex-col gap-0.5">
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Viewing lead details...', 'info')">View Details</button>
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Contacting lead...', 'info')">Contact Lead</button>
-                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-rose-600 transition" onclick="confirm('Delete this lead record?')">Delete</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+                        @endforelse
 
                         </tbody>
                     </table>
                 </div>
 
                 <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Showing 1-25 of 12,842 Entries</span>
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Showing {{ $leadFeed->firstItem() }}-{{ $leadFeed->lastItem() }} of {{ number_format($leadFeed->total()) }} Entries</span>
                     <div class="flex items-center gap-3 text-xs font-bold text-slate-400">
-                        <button class="hover:text-slate-700 transition">Previous</button>
+                        @if ($leadFeed->onFirstPage())
+                            <span class="opacity-40">Previous</span>
+                        @else
+                            <a href="{{ $leadFeed->previousPageUrl() }}" class="hover:text-slate-700 transition">Previous</a>
+                        @endif
                         <div class="flex gap-2">
-                           <button class="text-primary-700">1</button>
-                           <button class="hover:text-slate-700 transition">2</button>
-                           <button class="hover:text-slate-700 transition">3</button>
+                            @for ($page = 1; $page <= min($leadFeed->lastPage(), 3); $page++)
+                                <a href="{{ $leadFeed->url($page) }}" class="{{ $page === $leadFeed->currentPage() ? 'text-primary-700' : 'hover:text-slate-700 transition' }}">{{ $page }}</a>
+                            @endfor
                         </div>
-                        <button class="text-slate-800 hover:text-primary-600 transition">Next</button>
+                        @if ($leadFeed->hasMorePages())
+                            <a href="{{ $leadFeed->nextPageUrl() }}" class="text-slate-800 hover:text-primary-600 transition">Next</a>
+                        @else
+                            <span class="opacity-40">Next</span>
+                        @endif
                     </div>
                 </div>
             </div>

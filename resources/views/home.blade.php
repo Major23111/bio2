@@ -1007,11 +1007,8 @@
                                 <div class="home-route-card__panel">
                                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For
                                         institutions and channel partners</p>
-                                    <h3 class="mt-3 text-2xl font-semibold text-white">Distributor, lab, and hospital
-                                        buying with structured support.</h3>
-                                    <p class="mt-3 text-sm leading-7 text-primary-50/90">Account-based ordering, product
-                                        discovery, quotation approval flow, and coordinated support for healthcare
-                                        institutions.</p>
+                                    <h3 class="mt-3 text-2xl font-semibold text-white">Structured buying for distributors, labs and hospitals and channel partners.</h3>
+                                    <p class="mt-3 text-sm leading-7 text-primary-50/90">Login-based pricing, quotation flow, order confirmation and real-time tracking in one connected system.</p>
                                     <div class="mt-5 flex flex-wrap gap-3">
                                         <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])"
                                             variant="inverse">B2B Login</x-ui.action-link>
@@ -1031,11 +1028,8 @@
                                 <div class="home-route-card__panel">
                                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For direct and
                                         retail buyers</p>
-                                    <h3 class="mt-3 text-2xl font-semibold text-white">A cleaner buying path for faster
-                                        product access.</h3>
-                                    <p class="mt-3 text-sm leading-7 text-primary-50/90">Simple MRP-visible catalog flow
-                                        with quick quotation generation and immediate assistance through support
-                                        channels.</p>
+                                    <h3 class="mt-3 text-2xl font-semibold text-white">Faster product access for labs, clinics and hospitals.</h3>
+                                    <p class="mt-3 text-sm leading-7 text-primary-50/90">Browse, generate a quote, check out, pay securely and track your order with minimal friction.</p>
                                     <div class="mt-5 flex flex-wrap gap-3">
                                         <x-ui.action-link :href="route('login', ['user_type' => 'b2c'])"
                                             variant="inverse">B2C Login</x-ui.action-link>

@@ -68,6 +68,7 @@ return new class extends Migration
                 $table->text('user_agent')->nullable();
                 $table->timestamp('started_at');
                 $table->timestamp('ended_at')->nullable();
+                $table->boolean('is_active')->default(true);
                 $table->timestamps();
             });
         }

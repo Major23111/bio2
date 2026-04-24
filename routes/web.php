@@ -14,6 +14,8 @@ use App\Http\Controllers\Proforma\ProformaInvoiceController;
 use App\Http\Controllers\Quotation\QuotationController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\AdminPanel\RolePermissionAdminCrudController;
+use App\Http\Controllers\AdminPanel\PricingCrudController;
+use App\Http\Controllers\AdminPanel\QuizeCrudController;
 use App\Http\Controllers\Profile\CustomerAddressController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Product\ProductCrudController;
@@ -142,7 +144,8 @@ Route::post('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrud
 Route::get('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'edit'])->name('admin.products.edit');
 Route::put('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'update'])->name('admin.products.update');
 Route::delete('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'destroy'])->name('admin.products.destroy');
-Route::view('/adminPanel/pricing', 'admin.pricing.index')->name('admin.pricing');
+Route::get('/adminPanel/pricing', [PricingCrudController::class, 'index'])->name('admin.pricing.index');
+Route::post('/adminPanel/pricing/bulk-price', [PricingCrudController::class, 'saveBulkPricingSlabs'])->name('admin.pricing.bulk-price.save');
 Route::get('/adminPanel/pi-quotation', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'index'])->name('admin.pi-quotation.index');
 Route::get('/adminPanel/pi-quotation/create', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'create'])->name('admin.pi-quotation.create');
 Route::post('/adminPanel/pi-quotation', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'store'])->name('admin.pi-quotation.store');
@@ -151,16 +154,24 @@ Route::put('/adminPanel/pi-quotation/{proformaId}', [App\Http\Controllers\AdminP
 Route::get('/adminPanel/orders', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'index'])->name('admin.orders');
 Route::get('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'show'])->name('admin.orders.view');
 Route::put('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'update'])->name('admin.orders.update');
-Route::view('/adminPanel/customers', 'admin.customers.index')->name('admin.customers');
-Route::view('/adminPanel/customers/details', 'admin.customers.details')->name('admin.customers.details');
-Route::view('/adminPanel/customer-directory', 'admin.customers.directory')->name('admin.customer-directory');
-Route::view('/adminPanel/support-tickets', 'admin.support-tickets.index')->name('admin.support-tickets');
+    Route::get('/adminPanel/customers', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'index'])->name('admin.customers');
+    Route::get('/adminPanel/customers/details/{customerId}', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'details'])->name('admin.customers.details');
+    Route::put('/adminPanel/customers/details/{customerId}', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'updateDetails'])->name('admin.customers.details.update');
+    Route::get('/adminPanel/customer-directory', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'directory'])->name('admin.customer-directory');
+    Route::post('/adminPanel/customers/pending/approve', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'approvePending'])->name('admin.customers.pending.approve');
+    Route::post('/adminPanel/customers/pending/reject', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'rejectPending'])->name('admin.customers.pending.reject');
+    Route::get('/adminPanel/support-tickets', [\App\Http\Controllers\AdminPanel\SupportTicketCrudController::class, 'index'])->name('admin.support-tickets');
+    Route::put('/adminPanel/support-tickets/{ticketId}/priority', [\App\Http\Controllers\AdminPanel\SupportTicketCrudController::class, 'updatePriority'])->name('admin.support-tickets.priority');
+    Route::put('/adminPanel/support-tickets/{ticketId}/status', [\App\Http\Controllers\AdminPanel\SupportTicketCrudController::class, 'updateStatus'])->name('admin.support-tickets.status');
 Route::view('/adminPanel/ui-fields-modification', 'admin.support-tickets.ui-fields-modification')->name('admin.ui-fields-modification');
 Route::view('/adminPanel/sync-monitor', 'admin.sync-monitor.index')->name('admin.sync-monitor');
 Route::view('/adminPanel/global-settings', 'admin.global-settings.index')->name('admin.global-settings');
 Route::view('/adminPanel/delivery-logistics', 'admin.delivery-logistics')->name('admin.delivery-logistics');
-Route::view('/adminPanel/quiz', 'admin.quiz.index')->name('admin.quiz.index');
-Route::view('/adminPanel/quiz/create', 'admin.quiz.create')->name('admin.quiz.create');
+Route::get('/adminPanel/quiz', [QuizeCrudController::class, 'index'])->name('admin.quiz.index');
+Route::get('/adminPanel/quiz/create', [QuizeCrudController::class, 'create'])->name('admin.quiz.create');
+Route::post('/adminPanel/quiz/questions', [QuizeCrudController::class, 'storeQuestion'])->name('admin.quiz.questions.store');
+Route::post('/adminPanel/quiz/questions/{questionId}/toggle', [QuizeCrudController::class, 'toggleQuestionStatus'])->name('admin.quiz.questions.toggle');
+Route::delete('/adminPanel/quiz/questions/{questionId}', [QuizeCrudController::class, 'destroyQuestion'])->name('admin.quiz.questions.destroy');
 
 Route::group(['prefix' => 'adminPanel', 'as' => 'admin.'], function () {
     Route::get('/role-permission', [RolePermissionAdminCrudController::class, 'index'])->name('role-permission');
@@ -170,6 +181,8 @@ Route::group(['prefix' => 'adminPanel', 'as' => 'admin.'], function () {
     Route::post('/role-permission/overrides', [RolePermissionAdminCrudController::class, 'storeUserOverride'])->name('role-permission.overrides.store');
     Route::post('/role-permission/delegations', [RolePermissionAdminCrudController::class, 'storeDelegatedAccess'])->name('role-permission.delegations.store');
     Route::post('/role-permission/impersonations', [RolePermissionAdminCrudController::class, 'storeImpersonationSession'])->name('role-permission.impersonations.store');
+    Route::post('/role-permission/impersonations/{sessionId}/stop', [RolePermissionAdminCrudController::class, 'stopImpersonationSession'])->name('role-permission.impersonations.stop');
+    Route::get('/role-permission/users/search', [RolePermissionAdminCrudController::class, 'searchUsers'])->name('role-permission.users.search');
     Route::view('/role-permission/add-role', 'admin.RolePermissions.add-role')->name('role-permission.add-role');
     Route::view('/role-permission/add-permission', 'admin.RolePermissions.add-permission')->name('role-permission.add-permission');
     Route::view('/role-permission/assign-dept-role', 'admin.RolePermissions.assign-dept-role')->name('role-permission.assign-dept-role');
@@ -177,3 +190,4 @@ Route::group(['prefix' => 'adminPanel', 'as' => 'admin.'], function () {
     Route::view('/role-permission/add-delegation', 'admin.RolePermissions.add-delegation')->name('role-permission.add-delegation');
     Route::view('/role-permission/grant-impersonation', 'admin.RolePermissions.grant-impersonation')->name('role-permission.grant-impersonation');
 });
+

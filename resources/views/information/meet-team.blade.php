@@ -29,7 +29,7 @@
                     <a href="{{ route('meet-team.show', $idx) }}" class="group block flex flex-col h-full overflow-hidden shadow-md hover:shadow-lg transition-all relative rounded-sm bg-primary-600">
                         <div class="sm:aspect-square bg-primary-50 overflow-hidden relative">
                             <!-- Image container -->
-                            <img src="{{ $leader['img'] }}" alt="{{ $leader['name'] }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <img src="{{ Str::startsWith($leader['img'], 'http') ? $leader['img'] : asset($leader['img']) }}" alt="{{ $leader['name'] }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         </div>
                         <div class="p-4 md:p-5 flex-grow flex items-end justify-between transition-colors bg-primary-600 group-hover:bg-primary-700">
                             <div class="text-left w-full pr-3">

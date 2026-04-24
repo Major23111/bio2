@@ -4,65 +4,11 @@
 
 @section('admin_content')
 @php
-    $permissionGroups = [
-        [
-            'title' => 'Data Operations',
-            'subtitle' => 'Functional authorization layer',
-            'iconPath' => 'M3.75 5.25h16.5v13.5H3.75zm4.5 3.75h7.5m-7.5 3h4.5',
-            'permissions' => [
-                ['id' => 1, 'label' => 'Read Scientific Datasets', 'checked' => true],
-                ['id' => 2, 'label' => 'Write Scientific Datasets', 'checked' => true],
-                ['id' => 3, 'label' => 'Execute Batch Queries', 'checked' => false],
-            ],
-        ],
-        [
-            'title' => 'Lab Controls',
-            'subtitle' => 'Instrument and process access',
-            'iconPath' => 'M6 4.5h12m-9 0v15m6-15v15M6 9h12M6 14h12',
-            'permissions' => [
-                ['id' => 4, 'label' => 'Environmental Override', 'checked' => true],
-                ['id' => 5, 'label' => 'Instrument Calibration', 'checked' => false],
-                ['id' => 6, 'label' => 'Hazard Containment Log', 'checked' => true],
-            ],
-        ],
-        [
-            'title' => 'System Admin',
-            'subtitle' => 'Infrastructure operations',
-            'iconPath' => 'M9.75 3v3m4.5-3v3M4.5 9h15M6.75 21h10.5A2.25 2.25 0 0019.5 18.75V8.25A2.25 2.25 0 0017.25 6H6.75A2.25 2.25 0 004.5 8.25v10.5A2.25 2.25 0 006.75 21Z',
-            'permissions' => [
-                ['id' => 7, 'label' => 'Edit Audit Protocols', 'checked' => false],
-                ['id' => 8, 'label' => 'Flush Cache Layers', 'checked' => false],
-                ['id' => 9, 'label' => 'View System Logs', 'checked' => true],
-            ],
-        ],
-        [
-            'title' => 'Security',
-            'subtitle' => 'Policy enforcement matrix',
-            'iconPath' => 'M12 3.75 19.5 6v5.25c0 4.526-3.067 8.478-7.5 9.75-4.433-1.272-7.5-5.224-7.5-9.75V6L12 3.75Z',
-            'permissions' => [
-                ['id' => 10, 'label' => '2FA Enforcement', 'checked' => true],
-                ['id' => 11, 'label' => 'API Token Rotation', 'checked' => true],
-                ['id' => 12, 'label' => 'IP Whitelisting', 'checked' => false],
-            ],
-        ],
-    ];
-
-    $overrides = [
-        ['initials' => 'EV', 'name' => 'Dr. Elena Vance', 'role' => 'Scientific Lead', 'permission' => 'Admin Console Access', 'status' => 'Active'],
-        ['initials' => 'MT', 'name' => 'Marcus Thorne', 'role' => 'Facility Manager', 'permission' => 'Hazard Override', 'status' => 'Pending'],
-        ['initials' => 'JV', 'name' => 'Julian Vance', 'role' => 'Lab Associate III', 'permission' => 'Bulk Data Export', 'status' => 'Active'],
-    ];
-
-    $delegates = [
-        ['name' => 'Sarah Connor', 'email' => 's.connor@biogenix.io', 'role' => 'Compliance Auditor', 'expiry' => '24 May 2024', 'status' => 'Expired'],
-        ['name' => 'Julian Blackwood', 'email' => 'j.blackwood@partner.io', 'role' => 'External Reviewer', 'expiry' => '30 Oct 2024', 'status' => 'Active'],
-        ['name' => 'Priya Nair', 'email' => 'p.nair@auditlabs.io', 'role' => 'Temporary Partner', 'expiry' => '12 Nov 2024', 'status' => 'Scheduled'],
-    ];
-
-    $impersonations = [
-        ['initiator' => 'Admin Root', 'target' => 'Dr. Elena Vance', 'started' => '14 Oct 2023 09:12', 'duration' => '45 mins', 'action' => 'Full Console Access', 'status' => 'Archived'],
-        ['initiator' => 'Support Lead', 'target' => 'Marcus Thorne', 'started' => '12 Oct 2023 14:30', 'duration' => '20 mins', 'action' => 'Read Only View', 'status' => 'Archived'],
-        ['initiator' => 'Compliance Head', 'target' => 'Sarah Connor', 'started' => '08 Oct 2023 11:05', 'duration' => '30 mins', 'action' => 'Audit Walkthrough', 'status' => 'Live'],
+    // CSS tone classes for stats cards
+    $toneClasses = [
+        'primary' => 'bg-primary-50 text-primary-600',
+        'slate' => 'bg-slate-100 text-slate-700',
+        'secondary' => 'bg-secondary-50 text-secondary-900',
     ];
 @endphp
 
@@ -116,12 +62,24 @@
 
                 <div class="flex flex-col sm:flex-row items-center gap-3">
                     <div class="relative w-full sm:w-64">
-                        <select name="selected_role_id" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[13px] font-bold text-slate-700 outline-none focus:border-primary-600 appearance-none cursor-pointer" required>
+                        @php
+                            $selectedRoleId = (int) old('selected_role_id', $selectedRole?->id);
+                        @endphp
+                        <select
+                            name="selected_role_id"
+                            class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[13px] font-bold text-slate-700 outline-none focus:border-primary-600 appearance-none cursor-pointer"
+                            data-role-switch-select
+                            data-role-switch-url="{{ route('admin.role-permission') }}"
+                            required
+                        >
                             <option value="">Select a role...</option>
-                            <option value="1">Scientific Lead</option>
-                            <option value="2">Facility Manager</option>
-                            <option value="3">Compliance Auditor</option>
-                            <option value="4">Support Lead</option>
+                            @forelse ($roles as $role)
+                                <option value="{{ $role->id }}" {{ $selectedRoleId === (int) $role->id ? 'selected' : '' }}>
+                                    {{ $role->name }}
+                                </option>
+                            @empty
+                                <option value="" disabled>No roles available</option>
+                            @endforelse
                         </select>
                         <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -168,13 +126,13 @@
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
                 </div>
                 <div>
-                    <h2 class="text-[17px] font-bold text-slate-900 font-display leading-none">User Role Overrides</h2>
+                    <h2 class="text-[17px] font-bold text-slate-900 font-display leading-none">User Permission Overrides</h2>
                     <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">ACTIVE TEMPORARY ESCALATIONS</p>
                 </div>
             </div>
             <button type="button" data-role-modal-open="addOverrideModal" class="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg border border-slate-200 text-slate-700 text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                ADD USER ROLE OVERRIDE
+                ADD USER PERMISSION OVERRIDE
             </button>
         </div>
         <div class="overflow-x-auto">
@@ -291,8 +249,8 @@
                         <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Target User</th>
                         <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Start Time</th>
                         <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Duration</th>
-                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Action Type</th>
                         <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Status</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -302,9 +260,22 @@
                             <td class="px-8 py-5 border-t border-slate-50 align-middle text-[13px] font-semibold text-slate-600">{{ $imp['target'] }}</td>
                             <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-medium text-slate-500">{{ $imp['started'] }}</td>
                             <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-medium text-slate-500">{{ $imp['duration'] }}</td>
-                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-semibold text-slate-700">{{ $imp['action'] }}</td>
                             <td class="px-8 py-5 border-t border-slate-50 align-middle">
                                 <span class="inline-flex px-3 py-1.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide {{ $imp['status'] === 'Live' ? 'bg-[#f0faf4] text-primary-800' : 'bg-slate-100 text-slate-600' }}">{{ $imp['status'] }}</span>
+                            </td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle">
+                                @if ($imp['is_active'])
+                                    {{-- Show Stop button only for sessions that are still active --}}
+                                    <form method="POST" action="{{ route('admin.role-permission.impersonations.stop', $imp['session_id']) }}">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center gap-1.5 h-7 px-3 rounded-lg border border-red-200 text-red-600 text-[10px] font-black uppercase tracking-widest hover:bg-red-50 transition active:scale-95">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                            Stop
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-[11px] font-medium text-slate-300">Ended</span>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -355,7 +326,19 @@
                     if (backdrop) { const modal = backdrop.closest('[data-role-modal-root]'); if (modal) this.close(modal.id); return; }
                 });
                 document.addEventListener('keydown', (event) => { if (event.key === 'Escape') this.closeAll(); });
-                document.addEventListener('change', (event) => { if (event.target.closest('#addOverrideModal [data-override-permission-grid]')) updateOverrideCount(); });
+                document.addEventListener('change', (event) => {
+                    const roleSwitchSelect = event.target.closest('[data-role-switch-select]');
+                    if (roleSwitchSelect) {
+                        const roleId = roleSwitchSelect.value;
+                        const baseUrl = roleSwitchSelect.getAttribute('data-role-switch-url');
+                        if (!roleId || !baseUrl) return;
+                        const nextUrl = new URL(baseUrl, window.location.origin);
+                        nextUrl.searchParams.set('role_id', roleId);
+                        window.location.href = nextUrl.toString();
+                        return;
+                    }
+                    if (event.target.closest('#addOverrideModal [data-override-permission-grid]')) updateOverrideCount();
+                });
                 window.__roleModalEventsBound = true;
             },
             open(id) {

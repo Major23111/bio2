@@ -14,18 +14,34 @@
                 </button>
             </div>
 
-            <form method="POST" action="{{ route('admin.role-permission.impersonations.store') }}" class="p-8 space-y-5">
+            <form method="POST" action="{{ route('admin.role-permission.impersonations.store') }}" class="p-8 space-y-5" id="impersonation-form">
                 @csrf
-                {{-- User Selection (Required) --}}
+
+                {{-- USER SELECTION (REQUIRED) — typeahead with all users shown on click --}}
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">USER SELECTION (REQUIRED)</label>
-                    <div class="relative">
-                        <input type="text" name="impersonated_user_search" data-role-modal-autofocus placeholder="Search by name or email..." class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition">
+                    <div class="relative" id="user-typeahead-wrapper">
+                        <input
+                            type="text"
+                            id="impersonation-user-input"
+                            data-role-modal-autofocus
+                            placeholder="Click to see all users or type to filter..."
+                            autocomplete="off"
+                            class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition"
+                        >
                         <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                         </svg>
+
+                        {{-- Dropdown list that appears below the input --}}
+                        <div
+                            id="user-typeahead-dropdown"
+                            class="absolute z-50 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg hidden"
+                        ></div>
                     </div>
-                    <input type="hidden" name="impersonated_user_id" value="">
+
+                    {{-- Hidden field that stores the selected user id for form submission --}}
+                    <input type="hidden" name="impersonated_user_id" id="impersonated-user-id-field" value="" required>
                 </div>
 
                 {{-- Impersonator Name (Required) --}}
@@ -70,3 +86,105 @@
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    // All elements needed for the typeahead.
+    var searchInput   = document.getElementById('impersonation-user-input');
+    var dropdown      = document.getElementById('user-typeahead-dropdown');
+    var hiddenIdField = document.getElementById('impersonated-user-id-field');
+
+    // The URL for the user search endpoint.
+    var searchUrl = '{{ route('admin.role-permission.users.search') }}';
+
+    // Holds the pending fetch timer so rapid typing doesn't fire too many requests.
+    var debounceTimer = null;
+
+    // Render a list of user objects into the dropdown.
+    function renderDropdown(users) {
+        dropdown.innerHTML = '';
+
+        if (users.length === 0) {
+            dropdown.innerHTML = '<div class="px-4 py-3 text-[12px] text-slate-400 font-medium">No users found.</div>';
+            dropdown.classList.remove('hidden');
+            return;
+        }
+
+        // Build one row per user.
+        users.forEach(function (user) {
+            var row = document.createElement('div');
+            row.className = 'px-4 py-2.5 cursor-pointer hover:bg-slate-50 transition flex items-center gap-3';
+            row.innerHTML =
+                '<div class="h-7 w-7 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center text-[10px] font-black shrink-0">'
+                + user.name.charAt(0).toUpperCase()
+                + '</div>'
+                + '<div>'
+                + '<div class="text-[12px] font-bold text-slate-800">' + user.name + '</div>'
+                + '<div class="text-[10px] text-slate-400 font-medium">' + user.email + '</div>'
+                + '</div>';
+
+            // When a user is clicked, fill the input and store the id.
+            row.addEventListener('mousedown', function (event) {
+                // Prevent the input blur from hiding dropdown before click registers.
+                event.preventDefault();
+
+                searchInput.value = user.name + ' (' + user.email + ')';
+                hiddenIdField.value = user.id;
+                dropdown.classList.add('hidden');
+            });
+
+            dropdown.appendChild(row);
+        });
+
+        dropdown.classList.remove('hidden');
+    }
+
+    // Fetch users from the backend and render them.
+    function fetchUsers(searchTerm) {
+        var url = searchUrl + '?q=' + encodeURIComponent(searchTerm);
+
+        fetch(url)
+            .then(function (response) { return response.json(); })
+            .then(function (users) { renderDropdown(users); })
+            .catch(function () { dropdown.classList.add('hidden'); });
+    }
+
+    // Show all users immediately when the input is focused.
+    searchInput.addEventListener('focus', function () {
+        // Clear any previous selection when the user reopens the dropdown.
+        hiddenIdField.value = '';
+        fetchUsers('');
+    });
+
+    // Filter users as the user types.
+    searchInput.addEventListener('input', function () {
+        var typedText = searchInput.value.trim();
+
+        // Clear hidden id when user changes text after a selection.
+        hiddenIdField.value = '';
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+            fetchUsers(typedText);
+        }, 250);
+    });
+
+    // Hide the dropdown when the input loses focus.
+    searchInput.addEventListener('blur', function () {
+        setTimeout(function () {
+            dropdown.classList.add('hidden');
+        }, 150);
+    });
+
+    // Validate that a user was actually selected before the form submits.
+    document.getElementById('impersonation-form').addEventListener('submit', function (event) {
+        if (! hiddenIdField.value) {
+            event.preventDefault();
+            searchInput.classList.add('border-red-400');
+            searchInput.placeholder = 'Please select a user from the list.';
+        } else {
+            searchInput.classList.remove('border-red-400');
+        }
+    });
+})();
+</script>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AdminPanel;
 
 use App\Http\Controllers\Controller;
 use App\Services\AdminPanel\RolePermissionAdminCrudService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -77,16 +78,19 @@ class RolePermissionAdminCrudController extends Controller
         try {
             // Validate the submitted user values.
             $validatedUserData = $request->validate([
-                'user_name' => 'required|string|max:255',
-                'user_email' => 'required|email|max:255|unique:users,email',
-                'user_phone' => 'nullable|string|max:20',
-                'employee_id' => 'required|string|max:50|unique:users,employee_id',
+                'user_name'     => 'required|string|max:255',
+                'user_email'    => 'required|email|max:255|unique:users,email',
+                'user_phone'    => 'nullable|string|max:20',
+                'employee_id'   => 'required|string|max:50|unique:users,employee_id',
                 'department_id' => 'required|integer|exists:departments,id',
-                'role_id' => 'required|integer|exists:roles,id',
+                'role_id'       => 'required|integer|exists:roles,id',
             ]);
 
             // Save the internal user through the service layer.
-            $this->rolePermissionAdminCrudService->storeInternalUser($validatedUserData);
+            $this->rolePermissionAdminCrudService->storeInternalUser(
+                $validatedUserData,
+                $this->resolveActorUserId($request),
+            );
 
             // Redirect back with a success message.
             $response = redirect()->route('admin.role-permission')
@@ -138,13 +142,16 @@ class RolePermissionAdminCrudController extends Controller
         try {
             // Validate the selected user and permissions.
             $validatedOverrideData = $request->validate([
-                'override_user_id' => 'required|integer|exists:users,id',
-                'permission_ids' => 'required|array|min:1',
-                'permission_ids.*' => 'integer|exists:permissions,id',
+                'override_user_id'  => 'required|integer|exists:users,id',
+                'permission_ids'    => 'required|array|min:1',
+                'permission_ids.*'  => 'integer|exists:permissions,id',
             ]);
 
             // Save the selected overrides through the service layer.
-            $this->rolePermissionAdminCrudService->storeUserOverride($validatedOverrideData);
+            $this->rolePermissionAdminCrudService->storeUserOverride(
+                $validatedOverrideData,
+                $this->resolveActorUserId($request),
+            );
 
             // Redirect back with a success message.
             $response = redirect()->route('admin.role-permission')
@@ -165,14 +172,17 @@ class RolePermissionAdminCrudController extends Controller
         try {
             // Validate the submitted delegated access values.
             $validatedDelegationData = $request->validate([
-                'delegate_email' => 'required|email|max:255',
+                'delegate_email'    => 'required|email|max:255',
                 'delegate_password' => 'required|string|min:8|max:255',
-                'role_id' => 'required|integer|exists:roles,id',
-                'expires_at' => 'required|date|after:now',
+                'role_id'           => 'required|integer|exists:roles,id',
+                'expires_at'        => 'required|date|after:now',
             ]);
 
             // Save the delegated access through the service layer.
-            $this->rolePermissionAdminCrudService->storeDelegatedAccess($validatedDelegationData);
+            $this->rolePermissionAdminCrudService->storeDelegatedAccess(
+                $validatedDelegationData,
+                $this->resolveActorUserId($request),
+            );
 
             // Redirect back with a success message.
             $response = redirect()->route('admin.role-permission')
@@ -194,16 +204,19 @@ class RolePermissionAdminCrudController extends Controller
             // Validate the submitted impersonation values.
             $validatedImpersonationData = $request->validate([
                 'impersonated_user_id' => 'required|integer|exists:users,id',
-                'impersonator_name' => 'required|string|max:255',
-                'ended_at' => 'required|date|after:now',
+                'impersonator_name'    => 'required|string|max:255',
+                'ended_at'             => 'required|date|after:now',
             ]);
 
             // Add request audit details used by the save flow.
-            $validatedImpersonationData['ip_address'] = $request->ip();
-            $validatedImpersonationData['user_agent'] = $request->userAgent();
+            $validatedImpersonationData['ip_address']  = $request->ip();
+            $validatedImpersonationData['user_agent']  = $request->userAgent();
 
             // Save the impersonation audit through the service layer.
-            $this->rolePermissionAdminCrudService->storeImpersonationSession($validatedImpersonationData);
+            $this->rolePermissionAdminCrudService->storeImpersonationSession(
+                $validatedImpersonationData,
+                $this->resolveActorUserId($request),
+            );
 
             // Redirect back with a success message.
             $response = redirect()->route('admin.role-permission')
@@ -216,5 +229,42 @@ class RolePermissionAdminCrudController extends Controller
         }
 
         return $response;
+    }
+
+    // Search users by name or email for the typeahead input in the impersonation modal.
+    public function searchUsers(Request $request): JsonResponse
+    {
+        // Read the search term from the query string .
+        $searchTerm = trim((string) $request->get('q', ''));
+
+        // Fetch matching users from the service.
+        $userList = $this->rolePermissionAdminCrudService->searchUsers($searchTerm);
+
+        return response()->json($userList);
+    }
+
+    // Stop an active impersonation session by its id.
+    public function stopImpersonationSession(Request $request, int $sessionId): RedirectResponse
+    {
+        try {
+            // Stop the session and clear the session markers.
+            $this->rolePermissionAdminCrudService->stopImpersonationSession($sessionId);
+
+            $response = redirect()->route('admin.role-permission')
+                ->with('success', 'Impersonation session stopped.');
+        } catch (Throwable $exception) {
+            $response = redirect()->back()
+                ->with('error', 'Unable to stop the impersonation session.');
+        }
+
+        return $response;
+    }
+
+    // Resolve the authenticated user id from the current HTTP request.
+    // This belongs in the controller — not the service — as it is an HTTP-layer concern.
+    private function resolveActorUserId(Request $request): ?int
+    {
+        $user = $request->user();
+        return $user !== null ? (int) $user->id : null;
     }
 }

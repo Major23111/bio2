@@ -20,6 +20,8 @@ return new class extends Migration
                 $table->text('question_text');
                 $table->json('question_support_details')->nullable();
                 $table->unsignedTinyInteger('display_order')->default(1);
+                // Allows admin to show or hide a question without deleting it.
+                $table->boolean('is_active')->default(true);
                 $table->timestamps();
 
                 $table->unique(['user_type', 'display_order'], 'diagnostic_quiz_question_user_type_display_order_unique');
@@ -36,6 +38,8 @@ return new class extends Migration
                 $table->string('option_text', 255);
                 $table->boolean('is_correct_answer')->default(false);
                 $table->unsignedTinyInteger('display_order')->default(1);
+                // Determines which question flow the user is routed to after picking this option.
+                $table->string('target_flow', 30)->default('common');
                 $table->timestamps();
 
                 $table->unique(['question_id', 'option_label'], 'diagnostic_quiz_option_label_unique');

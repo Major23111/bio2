@@ -17,6 +17,7 @@ class SupportTicket extends Model
         'created_by_user_id',
         'category',
         'priority',
+        'subject',
         'description',
         'status',
         'last_activity_at',

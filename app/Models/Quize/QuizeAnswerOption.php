@@ -15,6 +15,7 @@ class QuizeAnswerOption extends Model
         'option_text',
         'is_correct_answer',
         'display_order',
+        'target_flow',
     ];
 
     protected function casts(): array

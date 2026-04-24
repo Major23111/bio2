@@ -15,6 +15,7 @@ class QuizeQuestion extends Model
         'question_text',
         'question_support_details',
         'display_order',
+        'is_active',
     ];
 
     protected function casts(): array
@@ -22,6 +23,7 @@ class QuizeQuestion extends Model
         return [
             'question_support_details' => 'array',
             'display_order' => 'integer',
+            'is_active' => 'boolean',
         ];
     }
 

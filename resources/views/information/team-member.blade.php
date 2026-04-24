@@ -18,7 +18,7 @@
             
             <!-- Left Side: Image -->
             <div class="w-full md:w-5/12 lg:w-2/5 aspect-[4/3] md:aspect-auto bg-primary-50 relative shrink-0">
-                <img src="{{ $member['img'] }}" alt="{{ $member['name'] }}" class="absolute inset-0 w-full h-full object-cover">
+                <img src="{{ Str::startsWith($member['img'], 'http') ? $member['img'] : asset($member['img']) }}" alt="{{ $member['name'] }}" class="absolute inset-0 w-full h-full object-cover">
             </div>
 
             <!-- Right Side: Details -->

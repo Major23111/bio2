@@ -34,6 +34,10 @@ class User extends Authenticatable
         'created_by_user_id',
         'password',
         'password_updated_at',
+        'credit_limit',
+        'credit_days',
+        'unlimited_credit',
+        'internal_admin_notes',
     ];
 
     protected $hidden = [
@@ -52,6 +56,7 @@ class User extends Authenticatable
             'created_by_user_id' => 'integer',
             'employee_id' => 'string',
             'password' => 'hashed',
+            'unlimited_credit' => 'boolean',
         ];
     }
 

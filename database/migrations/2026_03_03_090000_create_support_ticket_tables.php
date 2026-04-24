@@ -20,6 +20,7 @@ return new class extends Migration
                 $table->foreignId('created_by_user_id')->nullable()->constrained('users')->nullOnDelete();
                 $table->string('category', 60);
                 $table->string('priority', 20);
+                $table->string('subject', 255);
                 $table->text('description');
                 $table->string('status', 30)->default('open');
                 $table->timestamp('last_activity_at')->nullable();
