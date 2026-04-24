@@ -1,0 +1,356 @@
+/* ═══════════════════════════════════════════════════════════════════
+   BIOGENIX DARK THEME
+   Follows same token pattern as theme.css — override design tokens
+   under html.dark so every component switches automatically.
+   ═══════════════════════════════════════════════════════════════════ */
+
+html.dark {
+    color-scheme: dark;
+
+    /* UI - Dark neutral tones (harmonized with green primary) */
+    --ui-page-bg: #0f172a;
+    --ui-page-bg-gradient: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+    --ui-surface: #1e293b;
+    --ui-surface-muted: #1a2332;
+    --ui-surface-subtle: #334155;
+    --ui-border: #334155;
+    --ui-text: #f1f5f9;
+    --ui-text-muted: #94a3b8;
+    --ui-shadow-soft: 0 12px 28px rgba(0, 0, 0, 0.3);
+    --ui-shadow-card: 0 18px 42px rgba(0, 0, 0, 0.35);
+    --ui-shadow-panel: 0 28px 70px rgba(0, 0, 0, 0.4);
+    
+    --ui-header-bg: rgba(15, 23, 42, 0.85);
+    --ui-card-shadow: var(--ui-shadow-soft);
+    --ui-card-border: var(--ui-border);
+    --ui-input-bg: var(--ui-page-bg);
+    --ui-skeleton-bg: #1e293b;
+
+    /* Glassmorphism - Dark */
+    --glass-bg: rgba(30, 41, 59, 0.75);
+    --glass-blur: 16px;
+    --glass-border: rgba(51, 65, 85, 0.4);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Dark utility overrides ─── */
+
+@utility dark-surface {
+    background: var(--ui-surface);
+    color: var(--ui-text);
+    border-color: var(--ui-border);
+}
+
+@utility dark-surface-muted {
+    background: var(--ui-surface-muted);
+    color: var(--ui-text);
+}
+
+@utility dark-text {
+    color: var(--ui-text);
+}
+
+@utility dark-text-muted {
+    color: var(--ui-text-muted);
+}
+
+@utility dark-border {
+    border-color: var(--ui-border);
+}
+
+/* ─── Auto-apply dark backgrounds via token overrides ─── */
+
+html.dark body {
+    background: var(--ui-page-bg);
+    background-image: var(--ui-page-bg-gradient);
+    color: var(--ui-text);
+}
+
+html.dark .bg-white {
+    background-color: var(--ui-surface) !important;
+}
+
+html.dark .bg-slate-50 {
+    background-color: var(--ui-page-bg) !important;
+}
+
+html.dark .bg-slate-100 {
+    background-color: var(--ui-surface) !important;
+}
+
+html.dark .bg-slate-200 {
+    background-color: var(--ui-surface-subtle) !important;
+}
+
+html.dark .bg-slate-50\/60,
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-slate-50\/60:hover,
+html.dark .hover\:bg-slate-50\/40:hover {
+    background-color: var(--ui-surface-subtle) !important;
+}
+
+html.dark .bg-white\/95 {
+    background-color: rgba(30, 41, 59, 0.95) !important;
+}
+
+html.dark .bg-slate-50\/60 {
+    background-color: rgba(51, 65, 85, 0.4) !important;
+}
+
+/* ─── Auto-apply dark text via token overrides ─── */
+
+html.dark .text-slate-900 {
+    color: #f1f5f9 !important;
+}
+
+html.dark .text-slate-800 {
+    color: #e2e8f0 !important;
+}
+
+html.dark .text-slate-700 {
+    color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-600 {
+    color: #94a3b8 !important;
+}
+
+html.dark .text-slate-500 {
+    color: #94a3b8 !important;
+}
+
+html.dark .text-slate-400 {
+    color: #64748b !important;
+}
+
+/* ─── Auto-apply dark borders via token overrides ─── */
+
+html.dark .border-slate-100,
+html.dark .border-slate-200 {
+    border-color: var(--ui-border) !important;
+}
+
+html.dark .border-slate-300 {
+    border-color: #475569 !important;
+}
+
+html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+    border-color: var(--ui-border) !important;
+}
+
+html.dark .ring-slate-100 {
+    --tw-ring-color: var(--ui-border) !important;
+}
+
+html.dark .ring-1.ring-slate-100 {
+    --tw-ring-color: var(--ui-border);
+}
+
+/* ─── Auto-apply dark shadows ─── */
+
+html.dark .shadow-\[var\(--ui-shadow-soft\)\],
+html.dark .shadow-\[var\(--ui-shadow-card\)\],
+html.dark .shadow-\[var\(--ui-shadow-panel\)\] {
+    box-shadow: var(--ui-shadow-card) !important;
+}
+
+html.dark .shadow-lg {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark .shadow-sm {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* ─── Form inputs ─── */
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+    background-color: var(--ui-page-bg) !important;
+    border-color: #475569 !important;
+    color: var(--ui-text) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+    color: #64748b !important;
+}
+
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+    border-color: var(--color-primary-600) !important;
+    --tw-ring-color: var(--color-primary-600) !important;
+}
+
+html.dark .custom-select-menu {
+    background-color: var(--ui-surface) !important;
+    border-color: #475569 !important;
+}
+
+html.dark .custom-select-menu div:hover {
+    background-color: var(--ui-surface-subtle) !important;
+}
+
+/* ─── Badges — soften bg, keep text bright ─── */
+
+html.dark .bg-primary-50 {
+    background-color: rgba(26, 77, 46, 0.2) !important;
+}
+
+html.dark .bg-amber-50 {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+html.dark .bg-rose-50 {
+    background-color: rgba(244, 63, 94, 0.15) !important;
+}
+
+html.dark .bg-red-50 {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+html.dark .bg-blue-50 {
+    background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+html.dark .bg-emerald-50 {
+    background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+html.dark .bg-primary-50\/95 {
+    background-color: rgba(26, 77, 46, 0.25) !important;
+}
+
+html.dark .bg-rose-50\/95 {
+    background-color: rgba(244, 63, 94, 0.2) !important;
+}
+
+html.dark .bg-secondary-50\/95 {
+    background-color: rgba(245, 158, 11, 0.2) !important;
+}
+
+/* ─── Tables ─── */
+
+html.dark table {
+    color: var(--ui-text);
+}
+
+html.dark thead tr,
+html.dark tbody tr {
+    border-color: var(--ui-border) !important;
+}
+
+html.dark tr:hover {
+    background-color: rgba(51, 65, 85, 0.5) !important;
+}
+
+html.dark .ticket-row.active-ticket {
+    background-color: var(--ui-surface-subtle) !important;
+}
+
+/* ─── Dropdowns ─── */
+
+html.dark [id^="priority-dropdown-"],
+html.dark [id^="status-dropdown-"] {
+    background-color: var(--ui-surface) !important;
+    border-color: #475569 !important;
+}
+
+html.dark [id^="priority-dropdown-"] button:hover,
+html.dark [id^="status-dropdown-"] button:hover {
+    background-color: var(--ui-surface-subtle) !important;
+}
+
+/* ─── Scrollbar ─── */
+
+html.dark ::-webkit-scrollbar-track {
+    background: var(--ui-surface);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-color: var(--ui-surface);
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+html.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+html.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* ─── Sidebar mobile ─── */
+
+html.dark #sidebar-overlay {
+    background: rgba(0, 0, 0, 0.6) !important;
+}
+
+@media (max-width: 1023px) {
+    html.dark aside#admin-sidebar {
+        background: var(--ui-surface) !important;
+    }
+}
+
+/* ─── Skeleton loader ─── */
+
+html.dark .bg-slate-200\/60,
+html.dark .bg-slate-200\/50,
+html.dark .bg-slate-200\/40 {
+    background-color: var(--ui-surface-subtle) !important;
+}
+
+html.dark .skeleton-shimmer {
+    background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%) !important;
+    background-size: 200% 100%;
+}
+
+html.dark #globalPageLoader {
+    background-color: var(--ui-page-bg) !important;
+}
+
+/* ─── Stepper (Order Details) ─── */
+
+html.dark .border-4.border-white {
+    border-color: var(--ui-surface) !important;
+}
+
+/* ─── Support Widget ─── */
+
+html.dark #supportTicketForm {
+    background: var(--ui-surface) !important;
+    border-color: var(--ui-border) !important;
+}
+
+/* ─── Scroll-to-top & FAB ─── */
+
+html.dark #admin-scroll-top {
+    background-color: var(--ui-surface-subtle) !important;
+    color: var(--ui-text) !important;
+}
+
+html.dark #backToTopBtn {
+    background-color: var(--ui-surface) !important;
+    border-color: #475569 !important;
+    color: var(--ui-text) !important;
+}
+
+/* ─── Button loading state ─── */
+
+html.dark .btn-loading::after {
+    border-color: rgba(255, 255, 255, 0.2);
+    border-top-color: white;
+}
+
+/* ─── Misc borders and dividers ─── */
+
+html.dark hr,
+html.dark .border-b {
+    border-color: var(--ui-border);
+}
