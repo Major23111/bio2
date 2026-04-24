@@ -120,21 +120,21 @@
                         </a>
                         
                         <!-- Mega Menu Container -->
-                        <div class="fixed left-0 right-0 top-[64px] 2xl:top-[72px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[110]" id="megaMenuDropdown">
-                            <div class="mx-auto w-full max-w-[1400px] bg-white shadow-[0_24px_80px_rgba(26,77,46,0.15)] border-t border-slate-100 flex min-h-[450px]">
+                        <div class="fixed left-0 right-0 top-[64px] 2xl:top-[72px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[110] flex justify-center" id="megaMenuDropdown">
+                            <div class="w-fit bg-white shadow-[0_24px_80px_rgba(26,77,46,0.15)] border border-slate-200 rounded-b-2xl flex min-h-[450px] overflow-hidden">
                                 <!-- Left Sidebar (Level 1) -->
-                                <div class="w-[220px] bg-white border-r border-slate-100 py-6" id="mm-level1-container">
+                                <div class="w-[220px] bg-white border-r border-slate-100 py-6 shrink-0" id="mm-level1-container">
                                     <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="solutions">Solutions</button>
                                     <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="products">Products</button>
                                 </div>
                                 
                                 <!-- Middle Column (Level 2) -->
-                                <div class="w-[300px] bg-white border-r border-slate-100 py-6 relative" id="mm-level2-container">
+                                <div class="w-[300px] bg-white border-r border-slate-100 py-6 relative shrink-0" id="mm-level2-container">
                                     <!-- Populated by JS -->
                                 </div>
                                 
                                 <!-- Right Column (Level 3) -->
-                                <div class="flex-1 bg-slate-50" id="mm-level3-container">
+                                <div class="w-[300px] bg-slate-50 shrink-0" id="mm-level3-container">
                                     <!-- Populated by JS -->
                                 </div>
                             </div>
@@ -832,8 +832,9 @@
                 }
             });
 
-            let html = '<div class="w-full p-8 flex flex-col gap-2">';
             if (cat.subcategories && cat.subcategories.length > 0) {
+                level3Container.style.display = '';
+                let html = '<div class="w-full p-8 flex flex-col gap-2">';
                 cat.subcategories.forEach(sub => {
                     const href = sub.href || cat.href || '#';
                     const label = sub.label || '';
@@ -841,12 +842,12 @@
                         <a href="${href}" class="px-2 py-2 text-[13px] font-medium text-slate-600 hover:text-primary-700 transition-colors border-b border-slate-100 last:border-0">${label}</a>
                     `;
                 });
+                html += '</div>';
+                level3Container.innerHTML = html;
             } else {
-                html += `<div class="text-sm text-slate-500">Browse category overview.</div>`;
+                level3Container.style.display = 'none';
+                level3Container.innerHTML = '';
             }
-            html += '</div>';
-
-            level3Container.innerHTML = html;
         }
 
         level1Btns.forEach(btn => {
