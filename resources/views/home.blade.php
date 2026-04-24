@@ -814,15 +814,13 @@
         <!-- Portfolio Section -->
 
         <section class="bg-white py-16 md:py-20 relative z-10 border-b border-slate-100">
-            <div class="mx-auto max-w-[1300px] w-full px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center lg:items-center">
-                    <!-- Left Side -->
-                    <div class="w-full lg:w-5/12 flex flex-col items-start lg:shrink-0">
-                        <span class="text-primary-600 font-medium text-[15px] tracking-wide mb-1">Showcase</span>
-                        <h2 class="text-4xl md:text-[44px] font-bold text-slate-800 tracking-tight mb-5 font-display">Portfolio</h2>
-                        <p class="text-[17px] text-slate-500 mb-8 leading-relaxed max-w-md font-medium">
-                            Since 2016, Biogenix has backed over 110 startups across multiple sectors. We take immense pride in our founders achievements.
-                        </p>
+            <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
+                <div class="w-full">
+                    <div class="flex flex-wrap items-end justify-between gap-4">
+                        <div>
+                            <span class="text-primary-600 font-medium text-[15px] tracking-wide mb-1 block">Showcase</span>
+                            <h2 class="text-4xl md:text-[44px] font-bold text-slate-800 tracking-tight font-display">Portfolio</h2>
+                        </div>
                         <a href="{{ route('portfolio') }}" class="inline-flex items-center gap-3 text-primary-600 font-bold text-lg hover:text-primary-700 transition group">
                             <span class="flex items-center justify-center w-[42px] h-[42px] rounded-full border-2 border-primary-600 group-hover:bg-primary-50 group-hover:scale-105 transition">
                                 <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -832,78 +830,71 @@
                             See All
                         </a>
                     </div>
+                    <p class="mt-5 text-[17px] text-slate-500 leading-relaxed max-w-3xl font-medium">
+                        Since 2016, Biogenix has backed over 110 startups across multiple sectors. We take immense pride in our founders achievements.
+                    </p>
 
-                    <!-- Right Side (Grid of Logos) -->
-                    <div class="w-full lg:w-7/12 grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-12 items-center justify-items-center">
-                        <!-- Logo 1: BEARDO (Bold Serif) -->
-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
-                            <div class="flex items-center gap-2">
-                                <div class="w-9 h-9 rounded-full border-2 border-slate-800 flex items-center justify-center overflow-hidden shrink-0">
-                                    <svg class="h-6 w-6 text-slate-800" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-                                </div>
-                                <span class="text-2xl font-black tracking-tight text-slate-800 uppercase" style="transform: scaleY(1.2);">BEARDO</span>
+                    @php
+                        $portfolioLogoFiles = collect(\Illuminate\Support\Facades\File::files(public_path('upload/portfolio')))
+                            ->sortBy(fn ($file) => strtolower($file->getFilename()))
+                            ->values();
+                    @endphp
+                    <div class="mt-8 w-full">
+                        @if ($portfolioLogoFiles->isNotEmpty())
+                            @php
+                                $portfolioPerRow = (int) ceil($portfolioLogoFiles->count() / 2);
+                                $portfolioRows = [
+                                    $portfolioLogoFiles->slice(0, $portfolioPerRow)->values(),
+                                    $portfolioLogoFiles->slice($portfolioPerRow)->values(),
+                                ];
+                            @endphp
+
+                            <div class="flex gap-3 overflow-x-auto pb-2 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
+                                @foreach ($portfolioLogoFiles as $logoFile)
+                                    @php
+                                        $logoName = $logoFile->getFilename();
+                                        $logoLabel = preg_replace('/\.[^.]+$/', '', $logoName);
+                                        $logoUrl = asset('upload/portfolio/' . rawurlencode($logoName));
+                                    @endphp
+                                    <article class="flex h-20 w-[138px] shrink-0 snap-start items-center justify-center rounded-xl border border-slate-200 bg-white p-2.5 shadow-sm">
+                                        <img
+                                            src="{{ $logoUrl }}"
+                                            alt="{{ $logoLabel }}"
+                                            loading="lazy"
+                                            decoding="async"
+                                            class="max-h-full w-full object-contain"
+                                        >
+                                    </article>
+                                @endforeach
                             </div>
-                        </div>
-                        <!-- Logo 2: BharatPe (Sans Serif bold) -->
-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full border-4 border-slate-500 flex items-center justify-center -rotate-45 shrink-0">
-                                    <div class="w-4 h-1 bg-slate-500"></div>
-                                    <div class="w-4 h-1 bg-slate-500 absolute rotate-90"></div>
-                                </div>
-                                <span class="text-[22px] font-extrabold tracking-tight text-slate-800">Bharat<span class="font-normal text-slate-500">Pe</span></span>
+
+                            <div class="hidden space-y-4 md:block">
+                                @foreach ($portfolioRows as $portfolioRow)
+                                    <div class="flex gap-4 overflow-x-auto pb-1 md:overflow-x-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                                        @foreach ($portfolioRow as $logoFile)
+                                            @php
+                                                $logoName = $logoFile->getFilename();
+                                                $logoLabel = preg_replace('/\.[^.]+$/', '', $logoName);
+                                                $logoUrl = asset('upload/portfolio/' . rawurlencode($logoName));
+                                            @endphp
+                                            <article class="flex h-24 min-w-[170px] items-center justify-center rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:min-w-[180px] md:min-w-0 lg:min-w-[190px]">
+                                                <img
+                                                    src="{{ $logoUrl }}"
+                                                    alt="{{ $logoLabel }}"
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    class="max-h-full w-full object-contain"
+                                                >
+                                            </article>
+                                        @endforeach
+                                    </div>
+                                @endforeach
                             </div>
-                        </div>
-                        <!-- Logo 3: COUTLOOT (Clean Sans) -->
-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 flex-col cursor-pointer">
-                            <div class="w-10 h-10 bg-slate-600 text-white rounded-lg flex items-center justify-center mb-1 relative overflow-hidden shrink-0">
-                                <span class="text-[32px] font-bold pt-1">C</span>
-                                <div class="absolute w-2 h-2 bg-white rounded-full top-2 right-2"></div>
+                        @else
+                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-500">
+                                No portfolio images found in <span class="font-semibold">public/upload/portfolio</span>.
                             </div>
-                            <span class="text-xs font-bold tracking-[0.2em] text-slate-600 uppercase">COUTLOOT</span>
-                        </div>
-                        <!-- Logo 4: Fynd -->
-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
-                            <div class="flex items-center gap-2">
-                                <svg class="h-10 w-10 text-slate-600 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                                <span class="text-3xl font-extrabold text-slate-600 tracking-tighter">Fynd</span>
-                            </div>
-                        </div>
-                        <!-- Logo 5: SUPR DAILY -->
-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
-                            <div class="flex items-center gap-3">
-                                <svg class="h-10 w-10 text-slate-400 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9z"/></svg>
-                                <div class="flex flex-col">
-                                    <span class="text-xl font-black text-slate-500 tracking-widest uppercase leading-none mb-1">SUPR</span>
-                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none">DAILY</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Logo 6: PEE SAFE (Boxed) -->
-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
-                            <div class="border-2 border-slate-800 px-3 py-1.5 flex flex-col items-center justify-center bg-white shadow-[2px_2px_0_rgba(30,41,59,1)]">
-                                <span class="text-[17px] font-black text-slate-800 uppercase leading-[0.9]">PEE</span>
-                                <span class="text-[17px] font-black text-slate-800 uppercase leading-[0.9]">SAFE</span>
-                            </div>
-                        </div>
-                        <!-- Logo 7: HOMEVILLE (Circle top, text bottom) -->
-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 flex-col cursor-pointer">
-                            <div class="w-9 h-9 rounded-full border-4 border-slate-900 mb-2 relative flex items-center justify-center shrink-0">
-                                <div class="w-3 h-3 bg-slate-900 absolute -top-1"></div>
-                            </div>
-                            <span class="text-xs font-black text-slate-900 uppercase tracking-widest">HOMEVILLE</span>
-                        </div>
-                        <!-- Logo 8: iWOV8 -->
-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 flex-col cursor-pointer">
-                            <span class="text-[28px] font-black text-slate-500 tracking-tight leading-none mb-1">iWOV<span class="text-slate-800">8</span></span>
-                            <span class="text-[8px] font-bold text-slate-400 tracking-[0.3em] uppercase">The Coworking Space</span>
-                        </div>
-                        <!-- Logo 9: flickstree (Rounded Box) -->
-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
-                            <div class="bg-slate-700 rounded-[14px] px-4 py-2 shrink-0">
-                                <span class="text-sm font-semibold text-white italic tracking-wider">flickstree</span>
-                            </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
