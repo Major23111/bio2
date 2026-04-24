@@ -17,7 +17,6 @@ class Product extends Model
         'slug',
         'base_sku',
         'is_published',
-        'product_image_id',
         'sku',
         'name',
         'brand',
@@ -35,7 +34,6 @@ class Product extends Model
             'category_id' => 'integer',
             'subcategory_id' => 'integer',
             'product_specifications_id' => 'integer',
-            'product_image_id' => 'integer',
             'gst_rate' => 'decimal:2',
             'is_published' => 'boolean',
             'is_active' => 'boolean',
@@ -60,10 +58,10 @@ class Product extends Model
         return $this->belongsTo(ProductSpecification::class, 'product_specifications_id');
     }
 
-    // This links the product to the selected primary image row.
-    public function primaryImage(): BelongsTo
+    // This links the product to its primary image row directly from the images table.
+    public function primaryImage(): HasOne
     {
-        return $this->belongsTo(ProductImage::class, 'product_image_id');
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
     }
 
     // This loads all images for the product.

@@ -67,7 +67,7 @@ class ProductCrudService
                 'description'      => $productData['description'] ?? null,
                 'product_overview' => $productData['product_overview'] ?? null,
                 'gst_rate'         => $productData['gst_rate'] ?? 0,
-                'visibility_scope' => $productData['visibility_scope'] ?? 'all',
+                'visibility_scope' => $productData['visibility_scope'] ?? 'public',
                 'is_active'        => $productData['is_active'] ?? true,
             ]);
 

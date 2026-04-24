@@ -27,12 +27,12 @@ class DataVisibilityService
         }
 
         if ($this->isFullAdmin($user) || $this->isDelegatedAdmin($user)) {
-            return ['public', 'b2c', 'b2b', 'internal'];
+            return ['public', 'b2c', 'b2b'];
         }
 
         return match ($user->user_type) {
             'b2b' => ['public', 'b2b'],
-            'internal' => ['public', 'internal'],
+            'internal' => ['public'],
             default => ['public', 'b2c'],
         };
     }
@@ -47,7 +47,10 @@ class DataVisibilityService
         return Product::query()
             ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
             ->leftJoin('subcategories', 'subcategories.id', '=', 'products.subcategory_id')
-            ->leftJoin('product_image', 'product_image.id', '=', 'products.product_image_id')
+            ->leftJoin('product_image', function ($join) {
+                $join->on('product_image.product_id', '=', 'products.id')
+                     ->where('product_image.is_primary', true);
+            })
             ->select([
                 'products.*',
                 'categories.name as category_name',

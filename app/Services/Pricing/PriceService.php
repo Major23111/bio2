@@ -26,33 +26,33 @@ class PriceService
     {
         // Business rule: guests can only see public-style pricing.
         if (! $user) {
-            return ['retail', 'public'];
+            return ['retail', 'public', 'base'];
         }
 
         // Business rule: admin-capable users can inspect every standard price ladder.
         if ($this->isAdminCapable($user)) {
-            return ['company_price', 'logged_in', 'dealer', 'institutional', 'retail', 'public'];
+            return ['company_price', 'logged_in', 'dealer', 'institutional', 'retail', 'public', 'base'];
         }
 
         // Business rule: B2C users first see logged-in consumer pricing.
         if ($user->isB2c()) {
-            return ['logged_in', 'retail', 'public'];
+            return ['logged_in', 'retail', 'public', 'base'];
         }
 
         // Business rule: B2B subtype decides the default commercial price ladder.
         if ($user->isB2b()) {
             if (in_array($user->b2b_type, ['dealer', 'distributor'], true)) {
-                return ['company_price', 'dealer', 'logged_in', 'public', 'retail'];
+                return ['company_price', 'dealer', 'logged_in', 'public', 'retail', 'base'];
             }
 
             if (in_array($user->b2b_type, ['lab', 'hospital'], true)) {
-                return ['company_price', 'institutional', 'logged_in', 'public', 'retail'];
+                return ['company_price', 'institutional', 'logged_in', 'public', 'retail', 'base'];
             }
 
-            return ['company_price', 'dealer', 'institutional', 'logged_in', 'public', 'retail'];
+            return ['company_price', 'dealer', 'institutional', 'logged_in', 'public', 'retail', 'base'];
         }
 
-        return ['retail', 'public'];
+        return ['retail', 'public', 'base'];
     }
 
     // This resolves the first purchasable visible price for a full product.

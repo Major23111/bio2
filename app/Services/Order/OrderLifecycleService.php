@@ -42,7 +42,7 @@ class OrderLifecycleService
             'shippingAddress',
             'billingAddress',
             'items' => fn ($builder) => $builder->orderBy('sort_order')->orderBy('id'),
-            'items.product:id,name,sku,product_image_id',
+            'items.product:id,name,sku',
             'items.product.primaryImage:id,file_path',
             'items.variant:id,product_id,sku,variant_name',
         ]);
@@ -785,7 +785,7 @@ class OrderLifecycleService
                 'placedByUser:id,name,email,user_type',
                 'company:id,name,company_type',
                 'items' => fn ($builder) => $builder->orderBy('sort_order')->orderBy('id'),
-                'items.product:id,name,sku,product_image_id',
+                'items.product:id,name,sku',
                 'items.product.primaryImage:id,file_path',
                 'items.variant:id,product_id,sku,variant_name',
             ]);
