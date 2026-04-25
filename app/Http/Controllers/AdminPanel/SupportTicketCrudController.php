@@ -67,4 +67,48 @@ class SupportTicketCrudController extends Controller
             ], 500);
         }
     }
+
+    // Get details of a ticket including comments
+    public function getDetails(int $ticketId)
+    {
+        try {
+            $ticket = $this->supportTicketCrudService->getTicketDetails($ticketId);
+            return response()->json([
+                'success' => true,
+                'ticket' => $ticket
+            ]);
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load ticket details.'
+            ], 500);
+        }
+    }
+
+    // Add a comment to a ticket
+    public function addComment(Request $request, int $ticketId)
+    {
+        try {
+            $validated = $request->validate([
+                'comment' => 'required|string|max:5000'
+            ]);
+
+            // Assuming user is authenticated and we can get their ID
+            // For now, we'll try auth()->id(), fallback to 1 if not authenticated (for testing)
+            $userId = auth()->id() ?? 1;
+
+            $comment = $this->supportTicketCrudService->addTicketComment($ticketId, $userId, $validated['comment']);
+
+            return response()->json([
+                'success' => true,
+                'comment' => $comment,
+                'message' => 'Comment added successfully.'
+            ]);
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add comment: ' . $exception->getMessage()
+            ], 500);
+        }
+    }
 }

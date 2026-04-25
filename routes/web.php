@@ -182,6 +182,8 @@ Route::put('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Orde
     Route::post('/adminPanel/customers/pending/approve', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'approvePending'])->name('admin.customers.pending.approve');
     Route::post('/adminPanel/customers/pending/reject', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'rejectPending'])->name('admin.customers.pending.reject');
     Route::get('/adminPanel/support-tickets', [\App\Http\Controllers\AdminPanel\SupportTicketCrudController::class, 'index'])->name('admin.support-tickets');
+    Route::get('/adminPanel/support-tickets/{ticketId}/details', [\App\Http\Controllers\AdminPanel\SupportTicketCrudController::class, 'getDetails'])->name('admin.support-tickets.details');
+    Route::post('/adminPanel/support-tickets/{ticketId}/comments', [\App\Http\Controllers\AdminPanel\SupportTicketCrudController::class, 'addComment'])->name('admin.support-tickets.comment');
     Route::put('/adminPanel/support-tickets/{ticketId}/priority', [\App\Http\Controllers\AdminPanel\SupportTicketCrudController::class, 'updatePriority'])->name('admin.support-tickets.priority');
     Route::put('/adminPanel/support-tickets/{ticketId}/status', [\App\Http\Controllers\AdminPanel\SupportTicketCrudController::class, 'updateStatus'])->name('admin.support-tickets.status');
 Route::view('/adminPanel/ui-fields-modification', 'admin.support-tickets.ui-fields-modification')->name('admin.ui-fields-modification');

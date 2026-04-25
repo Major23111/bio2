@@ -37,4 +37,34 @@ class SupportTicketCrudService
 
         return $isSaved;
     }
+
+    // Retrieve details for a specific ticket including owner and comments
+    public function getTicketDetails(int $ticketId): SupportTicket
+    {
+        return SupportTicket::with([
+            'ownerUser:id,first_name,last_name',
+            'comments' => function ($query) {
+                $query->orderBy('created_at', 'asc');
+            },
+            'comments.commenter:id,first_name,last_name,role_id' // You can select what you need
+        ])->findOrFail($ticketId);
+    }
+
+    // Add a comment to a ticket
+    public function addTicketComment(int $ticketId, int $userId, string $commentText)
+    {
+        $ticketRecord = SupportTicket::findOrFail($ticketId);
+        
+        $comment = $ticketRecord->comments()->create([
+            'commenter_user_id' => $userId,
+            'comment' => $commentText,
+        ]);
+        
+        // Update last activity
+        $ticketRecord->last_activity_at = now();
+        $ticketRecord->save();
+        
+        // Return the newly created comment loaded with commenter details
+        return $comment->load('commenter:id,first_name,last_name');
+    }
 }

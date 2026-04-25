@@ -60,7 +60,7 @@
                                 default => 'bg-slate-50 text-slate-600 border border-slate-200/60',
                             };
                         @endphp
-                    <tr class="hover:bg-slate-50/60 transition-colors cursor-pointer ticket-row" onclick="selectTicket('{{ $t->ticket_number }}')" data-ticket="{{ $t->ticket_number }}" data-name="{{ strtolower($customerName) }}" data-subject="{{ strtolower($t->subject) }}">
+                    <tr class="hover:bg-slate-50/60 transition-colors cursor-pointer ticket-row" onclick="selectTicket({{ $t->id }}, '{{ $t->ticket_number }}')" data-ticket="{{ $t->id }}" data-ticket-number="{{ $t->ticket_number }}" data-name="{{ strtolower($customerName) }}" data-subject="{{ strtolower($t->subject) }}">
                         <td class="px-6 py-3.5">
                             <span class="text-[13px] font-extrabold text-primary-800">#{{ $t->ticket_number }}</span>
                         </td>
@@ -161,7 +161,7 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Last Update</p>
-                        <span class="text-[12px] font-semibold text-slate-800">14 mins ago</span>
+                        <span class="text-[12px] font-semibold text-slate-800" id="detail-last-update">14 mins ago</span>
                     </div>
                 </div>
             </div>
@@ -172,38 +172,12 @@
                     <svg class="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                     <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Conversation Thread</span>
                 </div>
-                <div class="space-y-4">
-
-                    {{-- Customer message --}}
-                    <div class="flex items-start gap-3">
-                        <div class="h-7 w-7 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">AH</div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-baseline gap-2 mb-1">
-                                <span class="text-[12px] font-bold text-slate-900">Alice Henderson</span>
-                                <span class="text-[10px] text-slate-400">09:12 AM</span>
-                            </div>
-                            <div class="bg-slate-50 border border-slate-100 rounded-xl rounded-tl-sm px-4 py-3 text-[12px] text-slate-700 leading-relaxed">
-                                "Hi, I noticed an extra charge of $49.99 on my account this morning that doesn't seem to match my current subscription tier. Can you please check why this happened?"
-                            </div>
-                        </div>
+                <div class="space-y-4" id="chat-messages-container">
+                    {{-- Messages will be dynamically loaded here --}}
+                    <div class="flex flex-col items-center justify-center py-8 text-slate-400">
+                        <svg class="h-8 w-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        <p class="text-xs font-medium">Select a ticket to view conversation</p>
                     </div>
-
-
-
-                    {{-- Customer followup --}}
-                    <div class="flex items-start gap-3">
-                        <div class="h-7 w-7 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">AH</div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-baseline gap-2 mb-1">
-                                <span class="text-[12px] font-bold text-slate-900">Alice Henderson</span>
-                                <span class="text-[10px] text-slate-400">11:45 AM</span>
-                            </div>
-                            <div class="bg-slate-50 border border-slate-100 rounded-xl rounded-tl-sm px-4 py-3 text-[12px] text-slate-700 leading-relaxed">
-                                "Yes, I did receive two emails. One says 'Order Confirmed' and the other says 'Subscription Updated'."
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
@@ -256,40 +230,198 @@
         });
     });
 
+    let currentTicketId = null;
+
     // ─── Select ticket to view detail ───
-    window.selectTicket = function(id) {
+    window.selectTicket = function(id, ticketNumber) {
         document.querySelectorAll('.ticket-row').forEach(r => r.classList.remove('active-ticket'));
         const row = document.querySelector(`[data-ticket="${id}"]`);
         if (row) row.classList.add('active-ticket');
-        // In a real app you'd fetch the ticket details via AJAX here
+        
+        currentTicketId = id;
+
+        // Fetch the ticket details via AJAX
+        fetch(`/adminPanel/support-tickets/${id}/details`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.ticket) {
+                const t = data.ticket;
+                const ownerName = t.owner_user ? `${t.owner_user.first_name} ${t.owner_user.last_name}` : 'Unknown Customer';
+                
+                // Update header text
+                document.getElementById('detail-title').textContent = `#${t.ticket_number}: ${t.subject}`;
+                
+                // Update meta
+                const openedDate = new Date(t.created_at);
+                const timeAgo = Math.floor((new Date() - openedDate) / 60000);
+                const timeAgoStr = timeAgo < 60 ? `${timeAgo} mins ago` : `${Math.floor(timeAgo / 60)} hours ago`;
+                document.getElementById('detail-meta').textContent = `Opened by ${ownerName} • ${openedDate.toLocaleDateString()}`;
+                
+                // Update badges
+                const statusBadge = document.getElementById('detail-status-badge');
+                statusBadge.textContent = `Status: ${t.status}`;
+                if (t.status === 'Open') statusBadge.className = 'inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 text-[11px] font-bold rounded-full';
+                else if (t.status === 'In progress') statusBadge.className = 'inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200/60 text-[11px] font-bold rounded-full';
+                else statusBadge.className = 'inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px] font-bold rounded-full';
+                
+                const priorityBadge = document.getElementById('detail-priority-badge');
+                priorityBadge.textContent = `Priority: ${t.priority}`;
+                if (t.priority === 'Critical') priorityBadge.className = 'inline-flex items-center px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200/60 text-[11px] font-bold rounded-full';
+                else if (t.priority === 'High') priorityBadge.className = 'inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 text-[11px] font-bold rounded-full';
+                else priorityBadge.className = 'inline-flex items-center px-2.5 py-1 bg-slate-50 text-slate-600 border border-slate-200/60 text-[11px] font-bold rounded-full';
+                
+                // Update category and last update
+                document.getElementById('detail-category').textContent = t.category || 'General';
+                
+                const updateDate = new Date(t.last_activity_at || t.updated_at);
+                const updateAgo = Math.floor((new Date() - updateDate) / 60000);
+                const updateAgoStr = updateAgo < 60 ? `${updateAgo} mins ago` : `${Math.floor(updateAgo / 60)} hours ago`;
+                document.getElementById('detail-last-update').textContent = updateDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + updateDate.toLocaleDateString();
+
+                // Rebuild conversation thread
+                const container = document.getElementById('chat-messages-container');
+                container.innerHTML = ''; // clear existing
+                
+                if (t.comments && t.comments.length > 0) {
+                    t.comments.forEach(c => {
+                        const isOwn = c.commenter_user_id === {{ auth()->id() ?? 1 }}; // Simple check for admin
+                        const commenterName = c.commenter ? `${c.commenter.first_name} ${c.commenter.last_name}` : 'Unknown';
+                        const initials = commenterName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                        const cTime = new Date(c.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                        
+                        const bubble = document.createElement('div');
+                        if (isOwn || (c.commenter && c.commenter.role_id)) {
+                            // Admin / System Bubble
+                            bubble.className = 'flex items-start gap-3 flex-row-reverse';
+                            bubble.innerHTML = `
+                                <div class="h-7 w-7 rounded-full bg-primary-600 text-white flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">${initials}</div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-baseline gap-2 mb-1 justify-end">
+                                        <span class="text-[10px] text-slate-400">${cTime}</span>
+                                        <span class="text-[12px] font-bold text-slate-900">${commenterName}</span>
+                                    </div>
+                                    <div class="bg-primary-600 rounded-xl rounded-tr-sm px-4 py-3 text-[12px] text-white leading-relaxed whitespace-pre-wrap">${c.comment.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+                                </div>`;
+                        } else {
+                            // Customer Bubble
+                            bubble.className = 'flex items-start gap-3';
+                            bubble.innerHTML = `
+                                <div class="h-7 w-7 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">${initials}</div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-baseline gap-2 mb-1">
+                                        <span class="text-[12px] font-bold text-slate-900">${commenterName}</span>
+                                        <span class="text-[10px] text-slate-400">${cTime}</span>
+                                    </div>
+                                    <div class="bg-slate-50 border border-slate-100 rounded-xl rounded-tl-sm px-4 py-3 text-[12px] text-slate-700 leading-relaxed whitespace-pre-wrap">${c.comment.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+                                </div>`;
+                        }
+                        container.appendChild(bubble);
+                    });
+                } else {
+                    container.innerHTML = `
+                        <div class="flex flex-col items-center justify-center py-8 text-slate-400">
+                            <svg class="h-8 w-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                            <p class="text-xs font-medium">No messages yet.</p>
+                        </div>`;
+                }
+                
+                // Scroll to bottom
+                const threadEl = document.getElementById('conversation-thread');
+                threadEl.scrollTop = threadEl.scrollHeight;
+            } else {
+                if(window.AdminToast) window.AdminToast.show('Failed to load ticket details', 'error');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            if(window.AdminToast) window.AdminToast.show('Error communicating with server.', 'error');
+        });
     };
 
     // ─── Mark first row as active on load ───
     const firstRow = document.querySelector('.ticket-row');
-    if (firstRow) firstRow.classList.add('active-ticket');
+    if (firstRow) {
+        selectTicket(firstRow.dataset.ticket, firstRow.dataset.ticketNumber);
+    }
 
     // ─── Send Message ───
     window.sendMessage = function() {
+        if (!currentTicketId) {
+            if(window.AdminToast) window.AdminToast.show('Please select a ticket first.', 'error');
+            return;
+        }
+        
         const input = document.getElementById('reply-input');
         const msg = input?.value?.trim();
         if (!msg) return;
-        const thread = document.getElementById('conversation-thread').querySelector('.space-y-4');
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        const bubble = document.createElement('div');
-        bubble.className = 'flex items-start gap-3 flex-row-reverse';
-        bubble.innerHTML = `
-            <div class="h-7 w-7 rounded-full bg-primary-600 text-white flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">SA</div>
-            <div class="flex-1 min-w-0">
-                <div class="flex items-baseline gap-2 mb-1 justify-end">
-                    <span class="text-[10px] text-slate-400">${timeStr}</span>
-                    <span class="text-[12px] font-bold text-slate-900">Super Admin</span>
-                </div>
-                <div class="bg-primary-600 rounded-xl rounded-tr-sm px-4 py-3 text-[12px] text-white leading-relaxed">${msg.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-            </div>`;
-        thread.appendChild(bubble);
-        input.value = '';
-        bubble.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        
+        // Disable input while sending
+        input.disabled = true;
+        document.getElementById('btn-send-message').disabled = true;
+        
+        fetch(`/adminPanel/support-tickets/${currentTicketId}/comments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ comment: msg })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.comment) {
+                const c = data.comment;
+                const container = document.getElementById('chat-messages-container');
+                
+                // Remove empty state if present
+                if (container.querySelector('.items-center.justify-center.py-8')) {
+                    container.innerHTML = '';
+                }
+                
+                const cTime = new Date(c.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                const commenterName = c.commenter ? `${c.commenter.first_name} ${c.commenter.last_name}` : 'Super Admin';
+                const initials = commenterName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                
+                const bubble = document.createElement('div');
+                bubble.className = 'flex items-start gap-3 flex-row-reverse';
+                bubble.innerHTML = `
+                    <div class="h-7 w-7 rounded-full bg-primary-600 text-white flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">${initials}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-baseline gap-2 mb-1 justify-end">
+                            <span class="text-[10px] text-slate-400">${cTime}</span>
+                            <span class="text-[12px] font-bold text-slate-900">${commenterName}</span>
+                        </div>
+                        <div class="bg-primary-600 rounded-xl rounded-tr-sm px-4 py-3 text-[12px] text-white leading-relaxed whitespace-pre-wrap">${c.comment.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+                    </div>`;
+                container.appendChild(bubble);
+                
+                input.value = '';
+                
+                // Scroll to bottom
+                const threadEl = document.getElementById('conversation-thread');
+                threadEl.scrollTop = threadEl.scrollHeight;
+                
+                if(window.AdminToast) window.AdminToast.show('Message sent successfully', 'success');
+            } else {
+                if(window.AdminToast) window.AdminToast.show(data.message || 'Error sending message', 'error');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            if(window.AdminToast) window.AdminToast.show('Error communicating with server.', 'error');
+        })
+        .finally(() => {
+            // Re-enable input
+            input.disabled = false;
+            document.getElementById('btn-send-message').disabled = false;
+            input.focus();
+        });
     };
 
     // ─── Cell Dropdown handlers ───

@@ -35,9 +35,19 @@
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-[var(--ui-surface-subtle)] text-primary-800">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 00-2-2m4-10a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 01-2 2h-2a2 2 0 01-2-2V9z"></path></svg>
                         </div>
-                        <div class="flex items-center gap-1.5 text-[11px] font-bold text-primary-600 bg-primary-50 px-2.5 py-1 rounded-md mb-auto mt-0.5">
-                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                            +12%
+                        @php
+                            $totalGrowth = $metrics['totalOrdersGrowth'] ?? 0;
+                            $isTotalGrowthPos = $totalGrowth >= 0;
+                        @endphp
+                        <div class="flex items-center gap-1.5 text-[11px] font-bold {{ $isTotalGrowthPos ? 'text-primary-600 bg-primary-50' : 'text-rose-600 bg-rose-50' }} px-2.5 py-1 rounded-md mb-auto mt-0.5">
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                @if($isTotalGrowthPos)
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                @else
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"></path>
+                                @endif
+                            </svg>
+                            {{ $isTotalGrowthPos ? '+' : '' }}{{ $totalGrowth }}%
                         </div>
                     </div>
                     <div class="mt-2">
@@ -52,9 +62,19 @@
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-primary-50 text-primary-600">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         </div>
-                        <div class="flex items-center gap-1.5 text-[11px] font-bold text-primary-600 bg-primary-50 px-2.5 py-1 rounded-md mb-auto mt-0.5">
-                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                            +5%
+                        @php
+                            $todayGrowth = $metrics['todayOrdersGrowth'] ?? 0;
+                            $isTodayGrowthPos = $todayGrowth >= 0;
+                        @endphp
+                        <div class="flex items-center gap-1.5 text-[11px] font-bold {{ $isTodayGrowthPos ? 'text-primary-600 bg-primary-50' : 'text-rose-600 bg-rose-50' }} px-2.5 py-1 rounded-md mb-auto mt-0.5">
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                @if($isTodayGrowthPos)
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                @else
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"></path>
+                                @endif
+                            </svg>
+                            {{ $isTodayGrowthPos ? '+' : '' }}{{ $todayGrowth }}%
                         </div>
                     </div>
                     <div class="mt-2">
@@ -89,9 +109,19 @@
                             <p class="text-[11px] lg:text-xs font-semibold text-[var(--ui-text-muted)] mt-1">Global performance tracking</p>
                             <div class="mt-4 flex flex-wrap items-center gap-3 lg:gap-4">
                                 <h2 class="text-3xl lg:text-4xl font-extrabold text-primary-800 tracking-tight">₹{{ number_format($metrics['totalRevenue'] ?? 0, 2) }}</h2>
-                                <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-primary-600 bg-primary-50 px-2.5 py-1 rounded-md h-fit">
-                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                                    18.2%
+                                @php
+                                    $revGrowth = $metrics['revenueGrowth'] ?? 0;
+                                    $isRevGrowthPos = $revGrowth >= 0;
+                                @endphp
+                                <span class="inline-flex items-center gap-1.5 text-[11px] font-bold {{ $isRevGrowthPos ? 'text-primary-600 bg-primary-50' : 'text-rose-600 bg-rose-50' }} px-2.5 py-1 rounded-md h-fit">
+                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        @if($isRevGrowthPos)
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                        @else
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"></path>
+                                        @endif
+                                    </svg>
+                                    {{ $isRevGrowthPos ? '+' : '' }}{{ $revGrowth }}%
                                 </span>
                             </div>
                         </div>
@@ -103,26 +133,18 @@
                         </div>
                     </div>
 
-                    <!-- Fake Chart Area -->
+                    <!-- Dynamic Chart Area -->
                     <div id="chartBars" class="mt-8 flex-1 grid grid-cols-7 gap-2 lg:gap-4 items-end px-1 lg:px-2 pt-10 min-h-[150px]">
-                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[30%]"></div>
-                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[45%]"></div>
-                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[35%]"></div>
-                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[55%]"></div>
-                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[40%]"></div>
-                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[60%]"></div>
-                        <div class="w-full bg-primary-600 rounded-t-sm h-[85%] shadow-[0_0_15px_rgba(9,27,63,0.3)]"></div>
+                        @foreach($metrics['chartData']['weekly']['percentages'] ?? [30, 45, 35, 55, 40, 60, 85] as $index => $height)
+                        <div class="w-full {{ $loop->last ? 'bg-primary-600 shadow-[0_0_15px_rgba(9,27,63,0.3)]' : 'bg-[var(--ui-surface-subtle)]' }} rounded-t-sm" style="height: {{ $height }}%"></div>
+                        @endforeach
                     </div>
                     
                     <!-- Chart Labels -->
-                    <div class="grid grid-cols-7 gap-2 lg:gap-4 mt-4 px-1 lg:px-2 text-center text-[9px] lg:text-[10px] font-bold text-[var(--ui-text-muted)]">
-                        <span>MON</span>
-                        <span>TUE</span>
-                        <span>WED</span>
-                        <span>THU</span>
-                        <span>FRI</span>
-                        <span>SAT</span>
-                        <span>SUN</span>
+                    <div id="chartLabels" class="grid grid-cols-7 gap-2 lg:gap-4 mt-4 px-1 lg:px-2 text-center text-[9px] lg:text-[10px] font-bold text-[var(--ui-text-muted)]">
+                        @foreach($metrics['chartData']['weekly']['labels'] ?? ['MON','TUE','WED','THU','FRI','SAT','SUN'] as $label)
+                        <span>{{ $label }}</span>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -189,12 +211,15 @@
 
 @push('scripts')
 <script>
-// ─── Revenue Toggle ───
-const chartData = {
-    weekly: [30, 45, 35, 55, 40, 60, 85],
-    monthly: [50, 65, 40, 75, 55, 80, 90],
-    yearly: [70, 55, 80, 60, 75, 85, 95]
-};
+@php
+$defaultChartData = [
+    'weekly' => ['percentages' => [30, 45, 35, 55, 40, 60, 85], 'labels' => ['MON','TUE','WED','THU','FRI','SAT','SUN']],
+    'monthly' => ['percentages' => [50, 65, 40, 75, 55, 80, 90], 'labels' => ['W1','W2','W3','W4','W5','W6','W7']],
+    'yearly' => ['percentages' => [70, 55, 80, 60, 75, 85, 95], 'labels' => ['JAN','FEB','MAR','APR','MAY','JUN','JUL']]
+];
+$finalChartData = $metrics['chartData'] ?? $defaultChartData;
+@endphp
+const chartDataObj = @json($finalChartData);
 
 document.querySelectorAll('.chart-toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -206,10 +231,17 @@ document.querySelectorAll('.chart-toggle-btn').forEach(btn => {
         btn.classList.add('text-primary-800', 'bg-[var(--ui-surface)]', 'shadow-sm');
 
         const bars = document.querySelectorAll('#chartBars > div');
-        const data = chartData[btn.dataset.period];
+        const labelsContainer = document.getElementById('chartLabels');
+        const periodData = chartDataObj[btn.dataset.period];
+        
         bars.forEach((bar, i) => {
             bar.style.transition = 'height 0.4s ease';
-            bar.style.height = data[i] + '%';
+            bar.style.height = (periodData.percentages[i] || 10) + '%';
+        });
+        
+        labelsContainer.innerHTML = '';
+        periodData.labels.forEach(label => {
+            labelsContainer.innerHTML += `<span>${label}</span>`;
         });
     });
 });
