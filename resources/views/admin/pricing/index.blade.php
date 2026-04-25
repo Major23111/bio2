@@ -129,7 +129,7 @@
                 <h2 class="text-[19px] font-bold text-[var(--ui-text)] tracking-tight leading-none">Discount Slabs</h2>
                 <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Volume-based tiering rules</p>
             </div>
-            <button type="button" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-[#f8fafc] px-4 py-2 text-[12px] font-bold text-slate-700 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition hover:bg-white hover:border-slate-300">
+            <button type="button" data-pricing-modal-open="bulkPricingModal" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-[#f8fafc] px-4 py-2 text-[12px] font-bold text-slate-700 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition hover:bg-white hover:border-slate-300">
                 <svg class="w-3.5 h-3.5 text-[#1e293b]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
                 Add Discount Slab
             </button>

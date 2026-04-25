@@ -220,20 +220,15 @@
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5">Order Status</label>
-                            <div class="relative">
-                                <select id="orderStatus" name="order_stage" data-payment-flow="{{ $order['paymentFlowType'] }}" class="w-full appearance-none bg-white border border-slate-200 text-sm rounded-xl px-4 py-3 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 font-semibold text-slate-800 transition shadow-sm hover:border-slate-300">
-                                    <option value="Order Received" {{ $order['selectedStageLabel'] === 'Order Received' ? 'selected' : '' }}>Order Received</option>
-                                    <option value="Payment Received (Prepaid)" {{ $order['selectedStageLabel'] === 'Payment Received (Prepaid)' ? 'selected' : '' }}>Payment Received (Prepaid)</option>
-                                    <option value="Processing" {{ $order['selectedStageLabel'] === 'Processing' ? 'selected' : '' }}>Processing</option>
-                                    <option value="Dispatched" {{ $order['selectedStageLabel'] === 'Dispatched' ? 'selected' : '' }}>Dispatched</option>
-                                    <option value="Delivered" {{ $order['selectedStageLabel'] === 'Delivered' ? 'selected' : '' }}>Delivered</option>
-                                    <option value="Payment Received (COD)" {{ $order['selectedStageLabel'] === 'Payment Received (COD)' ? 'selected' : '' }}>Payment Received (COD)</option>
-                                    <option value="Cancelled" {{ $order['selectedStageLabel'] === 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>
-                                </div>
-                            </div>
+                            <select id="orderStatus" name="order_stage" data-payment-flow="{{ $order['paymentFlowType'] }}" class="w-full bg-white border border-slate-200 text-sm rounded-xl px-4 py-3 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 font-semibold text-slate-800 transition shadow-sm hover:border-slate-300">
+                                <option value="Order Received" {{ $order['selectedStageLabel'] === 'Order Received' ? 'selected' : '' }}>Order Received</option>
+                                <option value="Payment Received (Prepaid)" {{ $order['selectedStageLabel'] === 'Payment Received (Prepaid)' ? 'selected' : '' }}>Payment Received (Prepaid)</option>
+                                <option value="Processing" {{ $order['selectedStageLabel'] === 'Processing' ? 'selected' : '' }}>Processing</option>
+                                <option value="Dispatched" {{ $order['selectedStageLabel'] === 'Dispatched' ? 'selected' : '' }}>Dispatched</option>
+                                <option value="Delivered" {{ $order['selectedStageLabel'] === 'Delivered' ? 'selected' : '' }}>Delivered</option>
+                                <option value="Payment Received (COD)" {{ $order['selectedStageLabel'] === 'Payment Received (COD)' ? 'selected' : '' }}>Payment Received (COD)</option>
+                                <option value="Cancelled" {{ $order['selectedStageLabel'] === 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            </select>
                         </div>
 
                         <div>

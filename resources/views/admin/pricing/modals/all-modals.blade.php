@@ -60,12 +60,11 @@
                     <div>
                         <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">APPLY DISCOUNT TO</label>
                         <div class="relative">
-                            <select class="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 pl-4 pr-10 text-[13px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600 cursor-pointer">
+                            <select class="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 pl-4 pr-4 text-[13px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600 cursor-pointer">
                                 <option>B2C</option>
                                 <option>B2B</option>
                                 <option>Both B2C and B2B</option>
                             </select>
-                            <svg class="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                         </div>
                     </div>
                 </div>
@@ -144,7 +143,6 @@
                                     <option>B2B</option>
                                     <option>Both B2C and B2B</option>
                                 </select>
-                                <svg class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                             </div>
                         </div>
                     </div>

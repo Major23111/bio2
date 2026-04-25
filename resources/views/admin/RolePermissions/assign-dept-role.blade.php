@@ -71,7 +71,7 @@
 
                     <label for="deptRoleType" class="block text-[13px] font-bold text-slate-700 mb-2">System Role Type</label>
                     <div class="relative max-w-md">
-                        <select id="deptRoleType" class="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[14px] text-slate-900 outline-none transition focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-200/50 cursor-pointer">
+                        <select id="deptRoleType" class="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 pr-4 text-[14px] text-slate-900 outline-none transition focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-200/50 cursor-pointer">
                             <option value="" disabled selected>Select a role for this department...</option>
                             <option value="super_admin">Super Admin</option>
                             <option value="sales_manager">Sales Manager</option>
@@ -79,11 +79,6 @@
                             <option value="inventory_manager">Inventory Manager</option>
                             <option value="billing_admin">Billing Admin</option>
                         </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
                     </div>
                     <p class="mt-1.5 text-[12px] text-slate-400">This role will define the default permissions for all users joining this department.</p>
                 </div>

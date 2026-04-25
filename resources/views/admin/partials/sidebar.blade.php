@@ -14,15 +14,19 @@
         </a>
 
         @php
+        // Dynamic badge counts from the database
+        $pendingOrderCount = \App\Models\Order\Order::where('status', \App\Enums\OrderStatus::Submitted->value)->count();
+        $openTicketCount = \App\Models\SupportTicket\SupportTicket::whereIn('status', ['Open', 'In progress'])->count();
+
         $navLinks = [
             ['icon' => 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4', 'title' => 'Products Management', 'route' => 'admin.products', 'active_routes' => ['admin.products', 'admin.products.create', 'admin.products.edit', 'admin.products.update']],
             ['icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z', 'title' => 'Category Management', 'route' => 'admin.categories'],
             ['icon' => 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z', 'title' => 'Pricing Management', 'route' => 'admin.pricing.index'],
             ['icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'title' => 'PI Management', 'route' => 'admin.pi-quotation.index', 'active_routes' => ['admin.pi-quotation.index', 'admin.pi-quotation.create', 'admin.pi-quotation.edit', 'admin.pi-quotation.update']],
-            ['icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z', 'title' => 'Order Management', 'route' => 'admin.orders', 'active_routes' => ['admin.orders', 'admin.orders.view', 'admin.orders.update'], 'badge' => '12'],
+            ['icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z', 'title' => 'Order Management', 'route' => 'admin.orders', 'active_routes' => ['admin.orders', 'admin.orders.view', 'admin.orders.update'], 'badge' => $pendingOrderCount > 0 ? (string) $pendingOrderCount : null],
             ['icon' => 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4', 'title' => 'Delivery & Logistics', 'route' => 'admin.delivery-logistics'],
             ['icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'title' => 'User Management', 'route' => 'admin.customers', 'active_routes' => ['admin.customers', 'admin.customer-directory']],
-            ['icon' => 'M4 6h16M4 10h16M4 14h16M4 18h16', 'title' => 'Support Tickets', 'route' => 'admin.support-tickets', 'active_routes' => ['admin.support-tickets', 'admin.ui-fields-modification'], 'badge' => '3'],
+            ['icon' => 'M4 6h16M4 10h16M4 14h16M4 18h16', 'title' => 'Support Tickets', 'route' => 'admin.support-tickets', 'active_routes' => ['admin.support-tickets', 'admin.ui-fields-modification'], 'badge' => $openTicketCount > 0 ? (string) $openTicketCount : null],
             ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => 'Roles & Permissions', 'route' => 'admin.role-permission'],
             ['icon' => 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Quiz Management', 'route' => 'admin.quiz.index', 'active_routes' => ['admin.quiz.index', 'admin.quiz.create']],
             ['icon' => 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4', 'title' => 'Sync Monitor', 'route' => 'admin.sync-monitor', 'badge' => 'NEW', 'badgeColor' => 'emerald'],
@@ -61,12 +65,19 @@
         @endforeach
 
         {{-- User Profile --}}
+        @php
+            $sidebarUser = auth()->user();
+            $sidebarUserName = $sidebarUser->name ?? ($sidebarUser ? trim(($sidebarUser->first_name ?? '') . ' ' . ($sidebarUser->last_name ?? '')) : 'Admin User');
+            $sidebarUserEmail = $sidebarUser->email ?? 'admin@biogenix.com';
+            $sidebarUserInitials = collect(explode(' ', trim($sidebarUserName)))->filter()->take(2)->map(fn($p) => strtoupper(substr($p, 0, 1)))->implode('');
+            if (empty($sidebarUserInitials)) $sidebarUserInitials = 'A';
+        @endphp
         <div class="mt-6 pt-4 border-t border-[var(--ui-border)]">
             <div class="flex items-center gap-3 px-3 py-2">
-                <div class="h-9 w-9 rounded-full bg-primary-600 text-white flex items-center justify-center text-[11px] font-black flex-shrink-0">SA</div>
+                <div class="h-9 w-9 rounded-full bg-primary-600 text-white flex items-center justify-center text-[11px] font-black flex-shrink-0">{{ $sidebarUserInitials }}</div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-[13px] font-bold text-[var(--ui-text)] truncate">Super Admin</p>
-                    <p class="text-[11px] font-medium text-[var(--ui-text-muted)] truncate">admin@biogenix.com</p>
+                    <p class="text-[13px] font-bold text-[var(--ui-text)] truncate">{{ $sidebarUserName }}</p>
+                    <p class="text-[11px] font-medium text-[var(--ui-text-muted)] truncate">{{ $sidebarUserEmail }}</p>
                 </div>
                 <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">
                     @csrf

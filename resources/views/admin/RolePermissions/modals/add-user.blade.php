@@ -49,7 +49,7 @@
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">DEPARTMENT</label>
                     <div class="relative">
-                        <select name="department_id" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition cursor-pointer appearance-none" style="-webkit-appearance: none; appearance: none;" required>
+                        <select name="department_id" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition cursor-pointer appearance-none" required>
                             <option value="">Select Department</option>
                             @forelse ($departments as $department)
                                 <option value="{{ $department->id }}" {{ (string) old('department_id') === (string) $department->id ? 'selected' : '' }}>
@@ -59,9 +59,6 @@
                                 <option value="" disabled>No departments available</option>
                             @endforelse
                         </select>
-                        <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
                     </div>
                 </div>
 
@@ -69,7 +66,7 @@
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">SELECT ROLE</label>
                     <div class="relative">
-                        <select name="role_id" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition cursor-pointer appearance-none" style="-webkit-appearance: none; appearance: none;" required>
+                        <select name="role_id" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition cursor-pointer appearance-none" required>
                             <option value="">Select assigned permissions role</option>
                             @forelse ($roles as $role)
                                 <option value="{{ $role->id }}" {{ (string) old('role_id') === (string) $role->id ? 'selected' : '' }}>
@@ -79,9 +76,6 @@
                                 <option value="" disabled>No roles available</option>
                             @endforelse
                         </select>
-                        <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
                     </div>
                     <p class="mt-2 text-[11px] text-slate-400 font-medium">This will grant immediate access to the production environment based on role inheritance.</p>
                 </div>

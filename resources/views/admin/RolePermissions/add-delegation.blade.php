@@ -37,17 +37,12 @@
                     <!-- Role Assignment -->
                     <div class="space-y-1.5">
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Role Assignment</label>
-                        <div class="relative">
-                            <select class="h-9 w-full appearance-none rounded-lg border border-slate-200 bg-white px-4 pr-10 text-xs font-bold text-slate-700 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600/20">
-                                <option value="">Select a role to delegate...</option>
-                                <option value="admin">Delegated Administrator</option>
-                                <option value="editor">Content Moderator</option>
-                                <option value="support">Senior Support Agent</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
-                            </div>
-                        </div>
+                        <select class="h-9 w-full rounded-lg border border-slate-200 bg-white px-4 pr-10 text-xs font-bold text-slate-700 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600/20">
+                            <option value="">Select a role to delegate...</option>
+                            <option value="admin">Delegated Administrator</option>
+                            <option value="editor">Content Moderator</option>
+                            <option value="support">Senior Support Agent</option>
+                        </select>
                     </div>
 
                     <!-- Expiration Date -->

@@ -62,12 +62,11 @@
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">APPLY DISCOUNT TO</label>
                     <div class="relative">
-                        <select name="apply_discount_to" class="w-full pl-4 pr-10 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[13px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300 appearance-none cursor-pointer">
+                        <select name="apply_discount_to" class="w-full pl-4 pr-4 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[13px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300 appearance-none cursor-pointer">
                             <option value="B2C">B2C</option>
                             <option value="B2B">B2B</option>
                             <option value="Both B2C and B2B">Both B2C and B2B</option>
                         </select>
-                        <svg class="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
             </div>
