@@ -163,6 +163,9 @@ Route::get('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\
 Route::put('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'update'])->name('admin.products.update');
 Route::delete('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'destroy'])->name('admin.products.destroy');
 Route::get('/adminPanel/pricing', [PricingCrudController::class, 'index'])->name('admin.pricing.index');
+Route::post('/adminPanel/pricing/map-price', [PricingCrudController::class, 'saveMappedPricing'])->name('admin.pricing.map-price.save');
+Route::post('/adminPanel/pricing/edit-price', [PricingCrudController::class, 'updatePricing'])->name('admin.pricing.edit-price.update');
+Route::post('/adminPanel/pricing/company-price', [PricingCrudController::class, 'saveCompanyPricing'])->name('admin.pricing.company-price.save');
 Route::post('/adminPanel/pricing/bulk-price', [PricingCrudController::class, 'saveBulkPricingSlabs'])->name('admin.pricing.bulk-price.save');
 Route::get('/adminPanel/pi-quotation', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'index'])->name('admin.pi-quotation.index');
 Route::get('/adminPanel/pi-quotation/create', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'create'])->name('admin.pi-quotation.create');

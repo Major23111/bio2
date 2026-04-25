@@ -354,7 +354,28 @@ window.PricingModals = {
             const openTrigger = event.target.closest('[data-pricing-modal-open]');
             if (openTrigger) {
                 event.preventDefault();
-                this.open(openTrigger.getAttribute('data-pricing-modal-open'));
+                const modalId = openTrigger.getAttribute('data-pricing-modal-open');
+                
+                // Inject Variant ID if available
+                const variantId = openTrigger.getAttribute('data-variant-id');
+                const modalEl = document.getElementById(modalId);
+                if (modalEl && variantId) {
+                    const variantInput = modalEl.querySelector('input[name="variant_id"]');
+                    if (variantInput) {
+                        variantInput.value = variantId;
+                    }
+                }
+
+                // Inject Company ID if available (for editing company pricing rules if needed)
+                const companyId = openTrigger.getAttribute('data-company-id');
+                if (modalEl && companyId) {
+                    const companyInput = modalEl.querySelector('select[name="company_id"], input[name="company_id"]');
+                    if (companyInput) {
+                        companyInput.value = companyId;
+                    }
+                }
+
+                this.open(modalId);
                 return;
             }
 

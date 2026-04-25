@@ -13,19 +13,21 @@
             </button>
         </div>
 
-        <form class="space-y-5">
+        <form action="{{ route('admin.pricing.edit-price.update') }}" method="POST" class="space-y-5">
+            @csrf
+            <input type="hidden" name="variant_id" id="editPricingVariantId">
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">GUEST PRICE (BASE PRICE)</label>
                     <div class="relative">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                        <input type="text" value="24,500" class="w-full pl-8 pr-4 py-3 bg-white border border-slate-200 rounded-lg text-[14px] font-bold text-slate-800 focus:outline-none focus:border-slate-300 focus:ring-1 focus:ring-slate-300">
+                        <input type="number" step="0.01" name="base_price" required placeholder="0.00" class="w-full pl-8 pr-4 py-3 bg-white border border-slate-200 rounded-lg text-[14px] font-bold text-slate-800 focus:outline-none focus:border-slate-300 focus:ring-1 focus:ring-slate-300">
                     </div>
                 </div>
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">B2C PRICE (%)</label>
                     <div class="relative flex items-center bg-white border border-slate-200 rounded-lg overflow-hidden focus-within:border-slate-300 focus-within:ring-1 focus-within:ring-slate-300">
-                        <input type="text" value="15" class="w-full pl-4 pr-3 py-3 border-none text-[14px] font-bold text-slate-800 focus:outline-none">
+                        <input type="number" step="0.01" name="b2c_percentage" required placeholder="0" class="w-full pl-4 pr-3 py-3 border-none text-[14px] font-bold text-slate-800 focus:outline-none">
                         <span class="px-4 text-slate-400 font-bold bg-[#f8fafc] border-l border-slate-200 h-full flex items-center justify-center">%</span>
                     </div>
                 </div>
@@ -36,13 +38,13 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="relative flex items-center border border-slate-200 rounded-lg overflow-hidden focus-within:border-slate-300 focus-within:ring-1 focus-within:ring-slate-300">
                         <span class="pl-4 pr-1 py-3 text-slate-400 font-bold">₹</span>
-                        <input type="text" value="18,000" class="w-full pr-4 py-3 border-none bg-white text-[14px] font-bold text-slate-800 focus:outline-none">
+                        <input type="number" step="0.01" name="b2b_price" required placeholder="0.00" class="w-full pr-4 py-3 border-none bg-white text-[14px] font-bold text-slate-800 focus:outline-none">
                     </div>
                     <div class="relative flex items-center border border-slate-200 rounded-lg overflow-hidden focus-within:border-slate-300 focus-within:ring-1 focus-within:ring-slate-300">
                         <span class="pl-3 pr-2 py-3 text-slate-400 bg-[#f8fafc] border-r border-slate-100 h-full flex items-center justify-center">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
                         </span>
-                        <input type="text" value="test cases" class="w-full pl-3 pr-4 py-3 border-none bg-white text-[13px] font-bold text-slate-700 focus:outline-none">
+                        <input type="text" name="b2b_units" placeholder="e.g., test cases" class="w-full pl-3 pr-4 py-3 border-none bg-white text-[13px] font-bold text-slate-700 focus:outline-none">
                     </div>
                 </div>
             </div>
@@ -54,17 +56,17 @@
                     <div>
                         <label class="block text-[9px] font-black text-slate-500 tracking-widest uppercase mb-2">DISCOUNT PERCENTAGE</label>
                         <div class="relative flex items-center bg-white border border-slate-200 rounded-lg overflow-hidden">
-                            <input type="text" value="5" class="w-full pl-4 py-2.5 text-[14px] font-bold text-slate-800 border-none focus:outline-none">
+                            <input type="number" step="0.01" name="discount_percentage" placeholder="0" class="w-full pl-4 py-2.5 text-[14px] font-bold text-slate-800 border-none focus:outline-none">
                             <span class="pr-4 text-slate-400 font-bold">%</span>
                         </div>
                     </div>
                     <div>
                         <label class="block text-[9px] font-black text-slate-500 tracking-widest uppercase mb-2">APPLY DISCOUNT TO</label>
                         <div class="relative block w-full bg-white border border-slate-200 rounded-lg">
-                            <select class="w-full px-4 py-2.5 text-[13px] font-bold text-slate-700 outline-none appearance-none bg-transparent cursor-pointer">
-                                <option>B2C</option>
-                                <option>B2B</option>
-                                <option>Both B2C and B2B</option>
+                            <select name="apply_discount_to" class="w-full px-4 py-2.5 text-[13px] font-bold text-slate-700 outline-none appearance-none bg-transparent cursor-pointer">
+                                <option value="B2C">B2C</option>
+                                <option value="B2B">B2B</option>
+                                <option value="Both B2C and B2B">Both B2C and B2B</option>
                             </select>
                             <svg class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                         </div>
@@ -79,7 +81,7 @@
                 </div>
                 <div class="flex gap-2">
                     <button type="button" onclick="window.toggleModal('editProductModal')" class="px-5 py-2.5 text-[13px] font-bold text-slate-600 hover:text-slate-900 transition tracking-wide">Cancel</button>
-                    <button type="button" onclick="window.toggleModal('editProductModal')" class="px-6 py-2.5 bg-[#0b1727] hover:bg-[#1e293b] text-white text-[13px] font-bold rounded-lg transition shadow-md shadow-slate-900/10">Update Pricing</button>
+                    <button type="submit" class="px-6 py-2.5 bg-[#0b1727] hover:bg-[#1e293b] text-white text-[13px] font-bold rounded-lg transition shadow-md shadow-slate-900/10">Update Pricing</button>
                 </div>
             </div>
         </form>

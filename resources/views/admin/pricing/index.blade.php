@@ -66,7 +66,7 @@
                                 {{ $product['b2b_price'] !== null ? '₹' . number_format($product['b2b_price'], 2) : '—' }}
                             </td>
                             <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-900 text-right">
-                                <button type="button" data-pricing-modal-open="editProductModal" class="text-slate-400 hover:text-primary-600 transition p-1">
+                                <button type="button" data-pricing-modal-open="editProductModal" data-variant-id="{{ $product['variant_id'] }}" class="text-slate-400 hover:text-primary-600 transition p-1">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                                 </button>
                             </td>
@@ -109,7 +109,7 @@
                             <td class="py-4 text-[12px] font-medium text-slate-500 tracking-wide uppercase font-mono">{{ $product['catalog_number'] }}</td>
                             <td class="py-4 text-[12px] font-medium text-slate-500">{{ $product['date_added'] }}</td>
                             <td class="py-4 text-right">
-                                <button type="button" data-pricing-modal-open="mapPricingModal" class="text-[11px] font-extrabold text-primary-800 hover:text-primary-600 transition uppercase tracking-widest">MAP PRICING &rsaquo;</button>
+                                <button type="button" data-pricing-modal-open="mapPricingModal" data-variant-id="{{ $product['variant_id'] }}" class="text-[11px] font-extrabold text-primary-800 hover:text-primary-600 transition uppercase tracking-widest">MAP PRICING &rsaquo;</button>
                             </td>
                         </tr>
                     @empty
@@ -140,30 +140,26 @@
                 <thead>
                     <tr class="border-b border-slate-100">
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">PRODUCT RANGE</th>
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">UNIT RATE</th>
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">UNIT RATE</th>
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">UNIT RATE</th>
+                        @foreach ($bulkPricingTable['slab_columns'] as $qty)
+                            <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">MIN QTY: {{ $qty }}</th>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-4 text-[13px] font-medium text-slate-700">Sulfate Series</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-600">₹450</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-600">₹1,000</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-600">₹1,500</td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-4 text-[13px] font-medium text-slate-700">Metallic Base</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-600">₹250</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-600">₹650</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-600">₹1,200</td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-4 text-[13px] font-medium text-slate-700">Accelerator Packs</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-600">₹850</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-600">₹1,700</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-600">₹3,000</td>
-                    </tr>
+                    @forelse ($bulkPricingTable['rows'] as $row)
+                        <tr class="hover:bg-slate-50/50 transition">
+                            <td class="py-4 text-[13px] font-medium text-slate-700">{{ $row['product_name'] }}</td>
+                            @foreach ($bulkPricingTable['slab_columns'] as $qty)
+                                <td class="py-4 text-[13px] font-medium text-slate-600">
+                                    {{ isset($row['prices'][$qty]) ? '₹' . number_format($row['prices'][$qty], 2) : '—' }}
+                                </td>
+                            @endforeach
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="{{ count($bulkPricingTable['slab_columns']) + 1 }}" class="py-8 text-center text-[13px] text-slate-400 font-medium">No discount slabs configured.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -189,75 +185,49 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
-
-            <!-- Card 1 -->
-            <div class="border border-slate-100 rounded-[12px] bg-[#fcfdfd] p-6 relative group hover:border-slate-200 transition duration-200 shadow-[0_2px_12px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
-                <div class="flex items-start justify-between mb-8">
-                    <div class="flex items-center gap-4">
-                        <div class="h-[46px] w-[46px] bg-white border border-slate-100 shadow-sm rounded-lg flex items-center justify-center font-black text-slate-800 text-[15px]">
-                            NC
+            @forelse ($companyPricingList as $company)
+                <!-- Card -->
+                <div class="border border-slate-100 rounded-[12px] bg-[#fcfdfd] p-6 relative group hover:border-slate-200 transition duration-200 shadow-[0_2px_12px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
+                    <div class="flex items-start justify-between mb-8">
+                        <div class="flex items-center gap-4">
+                            <div class="h-[46px] w-[46px] bg-white border border-slate-100 shadow-sm rounded-lg flex items-center justify-center font-black text-slate-800 text-[15px]">
+                                {{ $company['short_name'] }}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-[16px] tracking-tight leading-none mb-1">{{ $company['company_name'] }}</h3>
+                                <p class="text-[9px] font-black tracking-widest text-[#64748b] uppercase">{{ $company['type'] }}</p>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-[16px] tracking-tight leading-none mb-1">Nova Cobalt Corp</h3>
-                            <p class="text-[9px] font-black tracking-widest text-[#64748b] uppercase">STRATEGIC PARTNER</p>
+                        <button type="button" data-pricing-modal-open="companyPricingModal" data-company-id="{{ $company['company_id'] }}" class="rounded-lg border border-slate-200 bg-white p-1.5 text-slate-400 shadow-sm transition hover:border-primary-100 hover:bg-primary-50 hover:text-primary-600">
+                            <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4 mb-8">
+                        <div class="flex justify-between items-center text-[13px]">
+                            <span class="text-slate-500 font-medium">Preferred B2B Rate</span>
+                            <span class="font-extrabold text-slate-900">{{ $company['preferred_rate'] }}</span>
                         </div>
-                    </div>
-                    <button type="button" data-pricing-modal-open="companyPricingModal" class="rounded-lg border border-slate-200 bg-white p-1.5 text-slate-400 shadow-sm transition hover:border-primary-100 hover:bg-primary-50 hover:text-primary-600">
-                        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                    </button>
-                </div>
-
-                <div class="space-y-4 mb-8">
-                    <div class="flex justify-between items-center text-[13px]">
-                        <span class="text-slate-500 font-medium">Preferred B2B Rate</span>
-                        <span class="font-extrabold text-slate-900">-₹1,000 Base</span>
-                    </div>
-                    <div class="flex justify-between items-center text-[13px]">
-                        <span class="text-slate-500 font-medium">Private Slab Active</span>
-                        <span class="font-black text-[#059669] tracking-wider">YES</span>
-                    </div>
-                </div>
-
-                <div class="flex justify-between items-center pt-5 border-t border-slate-100">
-                    <span class="text-slate-400 font-bold text-[10px] uppercase tracking-widest">LAST SYNC: 2H AGO</span>
-                    <a href="#" class="font-bold text-primary-800 text-[12px] hover:text-primary-600 transition tracking-wide">View Matrix</a>
-                </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="border border-slate-100 rounded-[12px] bg-[#fcfdfd] p-6 relative group hover:border-slate-200 transition duration-200 shadow-[0_2px_12px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
-                <div class="flex items-start justify-between mb-8">
-                    <div class="flex items-center gap-4">
-                        <div class="h-[46px] w-[46px] bg-white border border-slate-100 shadow-sm rounded-lg flex items-center justify-center font-black text-slate-800 text-[15px]">
-                            BT
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-[16px] tracking-tight leading-none mb-1">BioTech Solutions</h3>
-                            <p class="text-[9px] font-black tracking-widest text-[#64748b] uppercase">REGULAR CLIENT</p>
+                        <div class="flex justify-between items-center text-[13px]">
+                            <span class="text-slate-500 font-medium">Private Slab Active</span>
+                            @if ($company['has_private_slabs'])
+                                <span class="font-black text-[#059669] tracking-wider">YES</span>
+                            @else
+                                <span class="font-black text-slate-400 tracking-wider">NO</span>
+                            @endif
                         </div>
                     </div>
-                    <button type="button" data-pricing-modal-open="companyPricingModal" class="rounded-lg border border-slate-200 bg-white p-1.5 text-slate-400 shadow-sm transition hover:border-primary-100 hover:bg-primary-50 hover:text-primary-600">
-                        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                    </button>
-                </div>
 
-                <div class="space-y-4 mb-8">
-                    <div class="flex justify-between items-center text-[13px]">
-                        <span class="text-slate-500 font-medium">Preferred B2B Rate</span>
-                        <span class="font-extrabold text-slate-900">-₹400 Base</span>
-                    </div>
-                    <div class="flex justify-between items-center text-[13px]">
-                        <span class="text-slate-500 font-medium">Private Slab Active</span>
-                        <span class="font-black text-slate-400 tracking-wider">NO</span>
+                    <div class="flex justify-between items-center pt-5 border-t border-slate-100">
+                        <span class="text-slate-400 font-bold text-[10px] uppercase tracking-widest">LAST SYNC: {{ strtoupper($company['last_sync']) }}</span>
+                        <a href="#" class="font-bold text-primary-800 text-[12px] hover:text-primary-600 transition tracking-wide">View Matrix</a>
                     </div>
                 </div>
-
-                <div class="flex justify-between items-center pt-5 border-t border-slate-100">
-                    <span class="text-slate-400 font-bold text-[10px] uppercase tracking-widest">LAST SYNC: 1D AGO</span>
-                    <a href="#" class="font-bold text-primary-800 text-[12px] hover:text-primary-600 transition tracking-wide">View Matrix</a>
+            @empty
+                <div class="col-span-full py-8 text-center text-[13px] text-slate-400 font-medium border border-dashed border-slate-200 rounded-xl">
+                    No company specific pricing configured.
                 </div>
-            </div>
-
+            @endforelse
         </div>
     </div>
 </div>

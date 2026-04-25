@@ -13,30 +13,22 @@
             </button>
         </div>
 
-        <form class="space-y-6">
+        <form action="{{ route('admin.pricing.company-price.save') }}" method="POST" class="space-y-6">
+            @csrf
+            <input type="hidden" name="variant_id" id="companyPricingVariantId">
             <!-- Company Selection -->
             <div>
                 <label class="flex items-center gap-2 text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">
                     <svg class="w-[14px] h-[14px] text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    COMPANY NAME (TYPE-AHEAD)
+                    COMPANY NAME
                 </label>
                 <div class="relative">
-                    <input type="text" value="Global Bioceuticals Inc." class="w-full px-4 py-3 bg-[#f8fafc] border border-slate-100 rounded-lg text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:border-slate-300">
-                    <!-- Dropdown simulation for type-ahead -->
-                    <div class="hidden absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-40 overflow-y-auto">
-                        <div class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-[13px] font-medium text-slate-700">Global Bioceuticals Inc.</div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4 mt-3">
-                    <div>
-                        <label class="block text-[10px] font-medium text-slate-500 mb-1.5 px-0.5">Legal Business Name</label>
-                        <input type="text" value="Global Bioceuticals India Pvt Ltd" class="w-full px-3 py-2 bg-[#f8fafc] border border-slate-100 rounded text-[13px] text-slate-600 font-medium">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-medium text-slate-500 mb-1.5 px-0.5">Company Reg. Number</label>
-                        <input type="text" value="CIN: U74999MH2023PTC123456" class="w-full px-3 py-2 bg-[#f8fafc] border border-slate-100 rounded text-[13px] text-slate-600 font-medium">
-                    </div>
+                    <select name="company_id" required class="w-full px-4 py-3 bg-[#f8fafc] border border-slate-100 rounded-lg text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:border-slate-300 cursor-pointer">
+                        <option value="">Select Company</option>
+                        @foreach($companyPricingList as $company)
+                            <option value="{{ $company['company_id'] }}">{{ $company['company_name'] }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 
@@ -49,15 +41,15 @@
                 
                 <div class="flex gap-5 mb-5 flex-wrap">
                     <label class="flex items-center gap-2 cursor-pointer text-[13px] font-bold text-[#0f172a]">
-                        <input type="radio" name="prod_sel" checked class="w-[18px] h-[18px] text-[#0f172a] bg-white border-slate-300 focus:ring-[#0f172a] accent-[#0f172a]">
+                        <input type="radio" name="product_selection" value="Apply to All" checked class="w-[18px] h-[18px] text-[#0f172a] bg-white border-slate-300 focus:ring-[#0f172a] accent-[#0f172a]">
                         Apply to All
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer text-[13px] font-medium text-slate-500 hover:text-slate-700">
-                        <input type="radio" name="prod_sel" class="w-[18px] h-[18px] text-[#0f172a] bg-white border-slate-300 focus:ring-[#0f172a] accent-[#0f172a]">
+                        <input type="radio" name="product_selection" value="Specific Category" class="w-[18px] h-[18px] text-[#0f172a] bg-white border-slate-300 focus:ring-[#0f172a] accent-[#0f172a]">
                         Specific Category
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer text-[13px] font-medium text-slate-500 hover:text-slate-700">
-                        <input type="radio" name="prod_sel" class="w-[18px] h-[18px] text-[#0f172a] bg-white border-slate-300 focus:ring-[#0f172a] accent-[#0f172a]">
+                        <input type="radio" name="product_selection" value="Single Product" class="w-[18px] h-[18px] text-[#0f172a] bg-white border-slate-300 focus:ring-[#0f172a] accent-[#0f172a]">
                         Single Product
                     </label>
                 </div>
@@ -80,7 +72,7 @@
                         </label>
                         <div class="relative flex items-center bg-[#f8fafc] border border-slate-100 rounded-xl overflow-hidden focus-within:ring-1 focus-within:border-slate-300">
                             <span class="pl-4 pr-1 text-slate-400 font-bold">₹</span>
-                            <input type="text" value="12,450" class="w-full py-3.5 pr-4 border-none bg-transparent text-[14px] font-bold text-slate-800 focus:outline-none">
+                            <input type="number" step="0.01" name="specific_b2b_price" required placeholder="0.00" class="w-full py-3.5 pr-4 border-none bg-transparent text-[14px] font-bold text-slate-800 focus:outline-none">
                         </div>
                     </div>
                     <div>
@@ -89,7 +81,7 @@
                             EXCLUSIVE DISCOUNT (%)
                         </label>
                         <div class="relative flex items-center bg-[#f8fafc] border border-slate-100 rounded-xl overflow-hidden focus-within:ring-1 focus-within:border-slate-300">
-                            <input type="text" value="12" class="w-full pl-4 pr-1 py-3.5 border-none bg-transparent text-[14px] font-bold text-slate-800 focus:outline-none">
+                            <input type="number" step="0.01" name="exclusive_discount" placeholder="0" class="w-full pl-4 pr-1 py-3.5 border-none bg-transparent text-[14px] font-bold text-slate-800 focus:outline-none">
                             <span class="pr-4 text-slate-400 font-bold">%</span>
                         </div>
                     </div>
@@ -113,17 +105,17 @@
                 <div class="grid grid-cols-[1fr,1fr,1.3fr] gap-3 mb-4">
                     <div>
                         <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 px-0.5">Min Qty</label>
-                        <input type="text" value="50" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-[13px] font-bold text-slate-800 focus:outline-none">
+                        <input type="number" name="bulk_slabs[0][min_quantity]" placeholder="e.g. 50" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-[13px] font-bold text-slate-800 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 px-0.5">Max Qty</label>
-                        <input type="text" value="200" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-[13px] font-bold text-slate-800 focus:outline-none">
+                        <input type="number" name="bulk_slabs[0][max_quantity]" placeholder="e.g. 200" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-[13px] font-bold text-slate-800 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 px-0.5">Price (₹)</label>
                         <div class="relative flex items-center bg-white border border-slate-200 rounded-lg overflow-hidden">
                             <span class="pl-3 pr-1 py-2.5 text-slate-400 font-bold text-[13px]">₹</span>
-                            <input type="text" value="11,200" class="w-full py-2.5 pr-2 border-none bg-transparent text-[13px] font-bold text-slate-800 focus:outline-none">
+                            <input type="number" step="0.01" name="bulk_slabs[0][amount]" placeholder="0.00" class="w-full py-2.5 pr-2 border-none bg-transparent text-[13px] font-bold text-slate-800 focus:outline-none">
                         </div>
                     </div>
                 </div>
@@ -136,7 +128,7 @@
 
             <div class="flex justify-end gap-3 pt-6 border-t border-slate-100">
                 <button type="button" onclick="window.toggleModal('companyPricingModal')" class="px-5 py-3 text-[13px] font-bold text-slate-500 hover:text-slate-900 transition hover:bg-slate-50 rounded-lg">Cancel</button>
-                <button type="button" onclick="window.toggleModal('companyPricingModal')" class="px-6 py-3 bg-[#0b1727] hover:bg-[#1e293b] text-white flex gap-2.5 items-center text-[13px] font-bold rounded-lg transition shadow-md shadow-slate-900/10">
+                <button type="submit" class="px-6 py-3 bg-[#0b1727] hover:bg-[#1e293b] text-white flex gap-2.5 items-center text-[13px] font-bold rounded-lg transition shadow-md shadow-slate-900/10">
                     <svg class="w-[18px] h-[18px]" fill="currentColor" viewBox="0 0 20 20"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"/><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"/></svg>
                     Save Company Pricing
                 </button>

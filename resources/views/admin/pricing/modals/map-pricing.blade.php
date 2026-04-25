@@ -13,12 +13,14 @@
             </button>
         </div>
 
-        <form class="space-y-6">
+        <form action="{{ route('admin.pricing.map-price.save') }}" method="POST" class="space-y-6">
+            @csrf
+            <input type="hidden" name="variant_id" id="mapPricingVariantId">
             <div>
                 <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">GUEST PRICE (BASE PRICE)</label>
                 <div class="relative">
                     <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-medium">₹</span>
-                    <input type="text" placeholder="0.00" class="w-full pl-8 pr-4 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
+                    <input type="number" step="0.01" name="base_price" required placeholder="0.00" class="w-full pl-8 pr-4 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
                 </div>
             </div>
             
@@ -26,7 +28,7 @@
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">B2C PRICE (%)</label>
                     <div class="relative">
-                        <input type="text" placeholder="e.g., 10%" class="w-full pl-4 pr-10 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
+                        <input type="number" step="0.01" name="b2c_percentage" required placeholder="e.g., 10" class="w-full pl-4 pr-10 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
                         <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                     </div>
                 </div>
@@ -34,7 +36,7 @@
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">B2B PRICE (MANUAL)</label>
                     <div class="relative">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-medium">₹</span>
-                        <input type="text" placeholder="0.00" class="w-full pl-8 pr-4 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
+                        <input type="number" step="0.01" name="b2b_price" required placeholder="0.00" class="w-full pl-8 pr-4 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
                     </div>
                 </div>
             </div>
@@ -46,24 +48,24 @@
 
             <div>
                 <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">B2B UNITS</label>
-                <input type="text" placeholder="e.g., Medical Terms" class="w-full px-4 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
+                <input type="text" name="b2b_units" placeholder="e.g., Medical Terms" class="w-full px-4 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">DISCOUNT (%)</label>
                     <div class="relative">
-                        <input type="text" placeholder="0%" class="w-full pl-4 pr-8 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
+                        <input type="number" step="0.01" name="discount_percentage" placeholder="0" class="w-full pl-4 pr-8 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
                         <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">%</span>
                     </div>
                 </div>
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">APPLY DISCOUNT TO</label>
                     <div class="relative">
-                        <select class="w-full pl-4 pr-10 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[13px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300 appearance-none cursor-pointer">
-                            <option>B2C</option>
-                            <option>B2B</option>
-                            <option>Both B2C and B2B</option>
+                        <select name="apply_discount_to" class="w-full pl-4 pr-10 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[13px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300 appearance-none cursor-pointer">
+                            <option value="B2C">B2C</option>
+                            <option value="B2B">B2B</option>
+                            <option value="Both B2C and B2B">Both B2C and B2B</option>
                         </select>
                         <svg class="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
@@ -72,7 +74,7 @@
 
             <div class="flex justify-end gap-3 pt-6 pb-2 border-t border-slate-100 mt-6">
                 <button type="button" onclick="window.toggleModal('mapPricingModal')" class="px-5 py-2.5 text-[13px] font-bold text-slate-600 hover:text-slate-900 transition tracking-wide">Cancel</button>
-                <button type="button" onclick="window.toggleModal('mapPricingModal')" class="px-7 py-2.5 bg-[#0b1727] hover:bg-[#1e293b] text-white text-[14px] font-bold rounded-lg transition shadow-md shadow-slate-900/10">Apply Pricing</button>
+                <button type="submit" class="px-7 py-2.5 bg-[#0b1727] hover:bg-[#1e293b] text-white text-[14px] font-bold rounded-lg transition shadow-md shadow-slate-900/10">Apply Pricing</button>
             </div>
         </form>
     </div>

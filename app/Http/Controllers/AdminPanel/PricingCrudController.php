@@ -30,12 +30,96 @@ class PricingCrudController extends Controller
         // Load all products for the bulk pricing modal dropdown.
         $allProductsForDropdown = $this->pricingCrudService->getAllProductsForDropdown();
 
+        $companyPricingList = $this->pricingCrudService->getCompanyPricingList();
+
         return view('admin.pricing.index', [
             'mappedProducts'        => $mappedProducts,
             'unmappedProducts'      => $unmappedProducts,
             'bulkPricingTable'      => $bulkPricingTable,
             'allProductsForDropdown' => $allProductsForDropdown,
+            'companyPricingList'    => $companyPricingList,
         ]);
+    }
+
+    public function saveMappedPricing(Request $request): RedirectResponse
+    {
+        try {
+            $validated = $request->validate([
+                'variant_id' => 'required|integer|exists:product_variants,id',
+                'base_price' => 'required|numeric|min:0',
+                'b2c_percentage' => 'required|numeric|min:0',
+                'b2b_price' => 'required|numeric|min:0',
+                'discount_percentage' => 'nullable|numeric|min:0',
+                'apply_discount_to' => 'nullable|string|in:B2C,B2B,Both B2C and B2B',
+            ]);
+
+            $this->pricingCrudService->saveMappedPricing(
+                $validated['variant_id'],
+                $validated['base_price'],
+                $validated['b2c_percentage'],
+                $validated['b2b_price'],
+                $validated['discount_percentage'] ?? 0,
+                $validated['apply_discount_to'] ?? 'B2C'
+            );
+
+            return redirect()->route('admin.pricing.index')->with('success', 'Pricing mapped successfully.');
+        } catch (Throwable $e) {
+            return redirect()->back()->withInput()->with('error', 'Unable to map pricing: ' . $e->getMessage());
+        }
+    }
+
+    public function updatePricing(Request $request): RedirectResponse
+    {
+        try {
+            $validated = $request->validate([
+                'variant_id' => 'required|integer|exists:product_variants,id',
+                'base_price' => 'required|numeric|min:0',
+                'b2c_percentage' => 'required|numeric|min:0',
+                'b2b_price' => 'required|numeric|min:0',
+                'discount_percentage' => 'nullable|numeric|min:0',
+                'apply_discount_to' => 'nullable|string|in:B2C,B2B,Both B2C and B2B',
+            ]);
+
+            $this->pricingCrudService->updatePricing(
+                $validated['variant_id'],
+                $validated['base_price'],
+                $validated['b2c_percentage'],
+                $validated['b2b_price'],
+                $validated['discount_percentage'] ?? 0,
+                $validated['apply_discount_to'] ?? 'B2C'
+            );
+
+            return redirect()->route('admin.pricing.index')->with('success', 'Pricing updated successfully.');
+        } catch (Throwable $e) {
+            return redirect()->back()->withInput()->with('error', 'Unable to update pricing: ' . $e->getMessage());
+        }
+    }
+
+    public function saveCompanyPricing(Request $request): RedirectResponse
+    {
+        try {
+            $validated = $request->validate([
+                'company_id' => 'required|integer|exists:companies,id',
+                'product_selection' => 'required|string|in:Apply to All,Specific Category,Single Product',
+                'variant_id' => 'nullable|integer|exists:product_variants,id',
+                'specific_b2b_price' => 'required|numeric|min:0',
+                'exclusive_discount' => 'nullable|numeric|min:0',
+                'bulk_slabs' => 'nullable|array',
+            ]);
+
+            $this->pricingCrudService->saveCompanyPricing(
+                $validated['company_id'],
+                $validated['product_selection'],
+                $validated['variant_id'] ?? null,
+                $validated['specific_b2b_price'],
+                $validated['exclusive_discount'] ?? 0,
+                $validated['bulk_slabs'] ?? []
+            );
+
+            return redirect()->route('admin.pricing.index')->with('success', 'Company pricing saved successfully.');
+        } catch (Throwable $e) {
+            return redirect()->back()->withInput()->with('error', 'Unable to save company pricing: ' . $e->getMessage());
+        }
     }
 
     // Save bulk pricing slabs submitted from the modal form.
