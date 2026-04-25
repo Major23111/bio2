@@ -201,7 +201,7 @@ class PricingCrudService
     public function getCompanyPricingList(): array
     {
         $companyPrices = ProductPrice::query()
-            ->with(['company:id,name,short_name,type'])
+            ->with(['company:id,name,company_type'])
             ->whereNotNull('company_id')
             ->where('is_active', true)
             ->get();
@@ -241,8 +241,8 @@ class PricingCrudService
             $companyList[] = [
                 'company_id' => $company->id,
                 'company_name' => $company->name,
-                'short_name' => $company->short_name ?? substr($company->name, 0, 2),
-                'type' => $company->type ?? 'STRATEGIC PARTNER',
+                'short_name' => strtoupper(substr($company->name, 0, 2)),
+                'type' => strtoupper($company->company_type ?? 'PARTNER'),
                 'preferred_rate' => $preferredRateText,
                 'has_private_slabs' => $hasPrivateSlabs,
                 'last_sync' => $prices->first()->updated_at?->diffForHumans() ?? 'Unknown',
