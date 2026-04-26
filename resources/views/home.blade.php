@@ -734,81 +734,116 @@
         <section class="bg-white/80 py-6 md:py-8 shadow-[0_4px_30px_rgba(0,0,0,0.03)] border-b border-slate-100 relative z-20 backdrop-blur-md">
             <div class="mx-auto max-w-[1400px] w-full px-4 sm:px-6 lg:px-8">
 
-                {{-- Mobile: horizontal scroll strip; md+: centred wrap --}}
-                <div class="flex gap-x-8 gap-y-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-                            md:flex-wrap md:justify-center md:overflow-visible md:gap-x-16 md:gap-y-8 lg:w-[900px] lg:mx-auto
-                            pb-2 md:pb-0">
+                @php
+                $statsItems = [
+                    [
+                        'value' => '10,000', 'suffix' => '+', 'label' => 'Laboratories &amp; Hospitals Served',
+                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"/>',
+                    ],
+                    [
+                        'value' => '18', 'suffix' => '+', 'label' => 'Years in Diagnostics Industry',
+                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/>',
+                    ],
+                    [
+                        'value' => '500', 'suffix' => '+', 'label' => 'Diagnostic Products &amp; Instruments',
+                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.58 1.838-1.589-5.06-5.044 1.636 1.838-2.58-5.074-1.353 5.06-1.589-.016-.016c.4-.413.916-.704 1.488-.847L12.5 7.5m1.184 9.1l3.529-5.07 5.06 1.589-1.353-5.074 2.58-1.838-5.044 1.636-1.589-5.06-2.58 1.838-4.996-1.332m0 0a9.003 9.003 0 00-4.088 14.887M9.25 5L7 7"/>',
+                    ],
+                    [
+                        'value' => '650', 'suffix' => '+', 'label' => 'Channels and Distributor Partners',
+                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                    ],
+                    [
+                        'value' => '150', 'suffix' => '+', 'label' => 'Government &amp; Institutional Clients',
+                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 10.5l8-8.5 4.5 4.5 7.5-7.5"/>',
+                    ],
+                    [
+                        'value' => '50 Million', 'suffix' => '+', 'label' => 'Test Kits Produced Annually',
+                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>',
+                    ],
+                ];
+                @endphp
 
-                    <!-- Item 1 -->
-                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
-                        <div class="mb-3 text-primary-600">
-                            <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
-                            </svg>
-                        </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">10,000 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Laboratories &amp; Hospitals Served</p>
-                    </div>
+                {{-- ── MOBILE: JS auto+manual marquee (hidden md+) ── --}}
+                <div class="relative overflow-hidden select-none md:hidden" id="statsMarqueeWrapper">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 w-10 z-10 bg-gradient-to-r from-white/90 to-transparent"></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 w-10 z-10 bg-gradient-to-l from-white/90 to-transparent"></div>
 
-                    <!-- Item 2 -->
-                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
-                        <div class="mb-5 text-primary-600">
-                            <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
-                            </svg>
-                        </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">18 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Years in Diagnostics Industry</p>
-                    </div>
-
-                    <!-- Item 3 -->
-                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
-                        <div class="mb-5 text-primary-600">
-                            <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.58 1.838-1.589-5.06-5.044 1.636 1.838-2.58-5.074-1.353 5.06-1.589-.016-.016c.4-.413.916-.704 1.488-.847L12.5 7.5m1.184 9.1l3.529-5.07 5.06 1.589-1.353-5.074 2.58-1.838-5.044 1.636-1.589-5.06-2.58 1.838-4.996-1.332m0 0a9.003 9.003 0 00-4.088 14.887M9.25 5L7 7" />
-                            </svg>
-                        </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">500 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Diagnostic Products &amp; Instruments</p>
-                    </div>
-
-                    <!-- Item 4 -->
-                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
-                        <div class="mb-5 text-primary-600">
-                            <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">650 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Channels and Distributor Partners</p>
-                    </div>
-
-                    <!-- Item 5 -->
-                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
-                        <div class="mb-5 text-primary-600">
-                            <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 10.5l8-8.5 4.5 4.5 7.5-7.5" />
-                            </svg>
-                        </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">150 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Government &amp; Institutional Clients</p>
-                    </div>
-
-                    <!-- Item 6 -->
-                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
-                        <div class="mb-5 text-primary-600">
-                            <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-                            </svg>
-                        </div>
-                        <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">50 Million <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Test Kits Produced Annually</p>
+                    <div class="flex gap-8 cursor-grab active:cursor-grabbing" id="statsMarqueeTrack" style="width:max-content">
+                        @foreach ([1, 2] as $_)
+                            @foreach ($statsItems as $stat)
+                                <div class="flex flex-col items-center text-center w-[148px] shrink-0 py-2">
+                                    <div class="mb-3 text-primary-600">
+                                        <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">{!! $stat['icon'] !!}</svg>
+                                    </div>
+                                    <h4 class="text-[24px] font-bold text-slate-700 tracking-tight">{{ $stat['value'] }} <span class="text-lg">{{ $stat['suffix'] }}</span></h4>
+                                    <p class="mt-1 text-xs font-bold text-slate-500 leading-snug tracking-wide">{!! $stat['label'] !!}</p>
+                                </div>
+                            @endforeach
+                        @endforeach
                     </div>
                 </div>
+
+                <script>
+                (function () {
+                    var wrapper = document.getElementById('statsMarqueeWrapper');
+                    var track   = document.getElementById('statsMarqueeTrack');
+                    if (!wrapper || !track) return;
+
+                    var speed = 0.5, offset = 0, halfWidth = 0, isManual = false, resumeTimer = null;
+
+                    function getHalf() { return track.scrollWidth / 2; }
+
+                    function tick() {
+                        if (!isManual) {
+                            offset += speed;
+                            if (offset >= halfWidth) offset -= halfWidth;
+                            track.style.transform = 'translateX(-' + offset + 'px)';
+                        }
+                        requestAnimationFrame(tick);
+                    }
+
+                    function pause() { isManual = true; clearTimeout(resumeTimer); }
+                    function resume() { resumeTimer = setTimeout(function(){ isManual = false; }, 1500); }
+
+                    var dragStart = 0, dragBase = 0;
+                    wrapper.addEventListener('mousedown', function(e){ pause(); dragStart = e.clientX; dragBase = offset; });
+                    window.addEventListener('mousemove', function(e){
+                        if (!isManual) return;
+                        offset = ((dragBase + dragStart - e.clientX) % halfWidth + halfWidth) % halfWidth;
+                        track.style.transform = 'translateX(-' + offset + 'px)';
+                    });
+                    window.addEventListener('mouseup', function(){ if (isManual) resume(); });
+
+                    var tStart = 0, tBase = 0;
+                    wrapper.addEventListener('touchstart', function(e){ pause(); tStart = e.touches[0].clientX; tBase = offset; }, { passive: true });
+                    wrapper.addEventListener('touchmove', function(e){
+                        offset = ((tBase + tStart - e.touches[0].clientX) % halfWidth + halfWidth) % halfWidth;
+                        track.style.transform = 'translateX(-' + offset + 'px)';
+                    }, { passive: true });
+                    wrapper.addEventListener('touchend', resume);
+
+                    halfWidth = getHalf();
+                    requestAnimationFrame(tick);
+                    window.addEventListener('resize', function(){ halfWidth = getHalf(); });
+                })();
+                </script>
+
+                {{-- ── DESKTOP: centred wrap grid (hidden below md) ── --}}
+                <div class="hidden md:flex flex-wrap justify-center gap-x-16 gap-y-8 lg:w-[900px] lg:mx-auto">
+                    @foreach ($statsItems as $stat)
+                        <div class="flex flex-col items-center text-center max-w-[200px]">
+                            <div class="mb-3 text-primary-600">
+                                <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">{!! $stat['icon'] !!}</svg>
+                            </div>
+                            <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">{{ $stat['value'] }} <span class="text-xl">{{ $stat['suffix'] }}</span></h4>
+                            <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">{!! $stat['label'] !!}</p>
+                        </div>
+                    @endforeach
+                </div>
+
             </div>
         </section>
+
 
 
         <!-- Portfolio Section -->
@@ -842,13 +877,13 @@
                     @endphp
 
                     @if ($portfolioLogoFiles->isNotEmpty())
-                    <div class="mt-8 w-full overflow-hidden relative" id="logoMarqueeWrapper">
+                    <div class="mt-8 w-full overflow-hidden relative select-none" id="logoMarqueeWrapper">
                         {{-- Edge fade masks --}}
                         <div class="pointer-events-none absolute inset-y-0 left-0 w-20 z-10 bg-gradient-to-r from-white to-transparent"></div>
                         <div class="pointer-events-none absolute inset-y-0 right-0 w-20 z-10 bg-gradient-to-l from-white to-transparent"></div>
 
-                        <div class="logo-marquee-track flex gap-5" id="logoMarqueeTrack">
-                            {{-- Render logos twice for seamless infinite loop --}}
+                        <div class="flex gap-5 cursor-grab active:cursor-grabbing" id="logoMarqueeTrack" style="width:max-content">
+                            {{-- Duplicated for seamless loop --}}
                             @foreach ([1, 2] as $_)
                                 @foreach ($portfolioLogoFiles as $logoFile)
                                     @php
@@ -856,33 +891,106 @@
                                         $logoLabel = preg_replace('/\.[^.]+$/', '', $logoName);
                                         $logoUrl   = asset('upload/portfolio/' . rawurlencode($logoName));
                                     @endphp
-                                    <article class="logo-marquee-item flex h-20 w-[150px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                                        <img
-                                            src="{{ $logoUrl }}"
-                                            alt="{{ $logoLabel }}"
-                                            loading="lazy"
-                                            decoding="async"
-                                            class="max-h-full w-full object-contain"
-                                        >
+                                    <article class="flex h-20 w-[150px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-3 shadow-sm pointer-events-none">
+                                        <img src="{{ $logoUrl }}" alt="{{ $logoLabel }}" loading="lazy" decoding="async" class="max-h-full w-full object-contain draggable-false">
                                     </article>
                                 @endforeach
                             @endforeach
                         </div>
                     </div>
 
-                    <style>
-                        .logo-marquee-track {
-                            animation: logoMarquee 40s linear infinite;
-                            width: max-content;
+                    <script>
+                    (function () {
+                        var wrapper = document.getElementById('logoMarqueeWrapper');
+                        var track   = document.getElementById('logoMarqueeTrack');
+                        if (!wrapper || !track) return;
+
+                        var speed       = 0.6;   // px per frame
+                        var offset      = 0;
+                        var halfWidth   = 0;
+                        var rafId       = null;
+                        var isManual    = false;
+                        var resumeTimer = null;
+
+                        function getHalfWidth() {
+                            return track.scrollWidth / 2;
                         }
-                        #logoMarqueeWrapper:hover .logo-marquee-track {
-                            animation-play-state: paused;
+
+                        function tick() {
+                            if (!isManual) {
+                                offset += speed;
+                                if (offset >= halfWidth) offset -= halfWidth;
+                                track.style.transform = 'translateX(-' + offset + 'px)';
+                            }
+                            rafId = requestAnimationFrame(tick);
                         }
-                        @keyframes logoMarquee {
-                            0%   { transform: translateX(0); }
-                            100% { transform: translateX(-50%); }
+
+                        function pauseAuto() {
+                            isManual = true;
+                            clearTimeout(resumeTimer);
                         }
-                    </style>
+
+                        function scheduleResume() {
+                            isManual = false; // resume happens gradually via tick
+                            resumeTimer = setTimeout(function () {
+                                isManual = false;
+                            }, 1500);
+                        }
+
+                        // ── Mouse drag ──
+                        var dragStart = 0;
+                        var dragOffset = 0;
+
+                        wrapper.addEventListener('mousedown', function (e) {
+                            pauseAuto();
+                            dragStart  = e.clientX;
+                            dragOffset = offset;
+                            wrapper.classList.add('cursor-grabbing');
+                        });
+
+                        window.addEventListener('mousemove', function (e) {
+                            if (!isManual) return;
+                            var delta = dragStart - e.clientX;
+                            offset = ((dragOffset + delta) % halfWidth + halfWidth) % halfWidth;
+                            track.style.transform = 'translateX(-' + offset + 'px)';
+                        });
+
+                        window.addEventListener('mouseup', function () {
+                            if (!isManual) return;
+                            wrapper.classList.remove('cursor-grabbing');
+                            scheduleResume();
+                        });
+
+                        // ── Touch swipe ──
+                        var touchStartX = 0;
+                        var touchOffset = 0;
+
+                        wrapper.addEventListener('touchstart', function (e) {
+                            pauseAuto();
+                            touchStartX = e.touches[0].clientX;
+                            touchOffset = offset;
+                        }, { passive: true });
+
+                        wrapper.addEventListener('touchmove', function (e) {
+                            var delta = touchStartX - e.touches[0].clientX;
+                            offset = ((touchOffset + delta) % halfWidth + halfWidth) % halfWidth;
+                            track.style.transform = 'translateX(-' + offset + 'px)';
+                        }, { passive: true });
+
+                        wrapper.addEventListener('touchend', function () {
+                            scheduleResume();
+                        });
+
+                        // ── Init ──
+                        halfWidth = getHalfWidth();
+                        rafId = requestAnimationFrame(tick);
+
+                        // Recalc on resize
+                        window.addEventListener('resize', function () {
+                            halfWidth = getHalfWidth();
+                        });
+                    })();
+                    </script>
                     @else
                         <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-500">
                             No portfolio images found in <span class="font-semibold">public/upload/portfolio</span>.
