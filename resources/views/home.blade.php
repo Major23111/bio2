@@ -882,9 +882,9 @@
                         <div class="pointer-events-none absolute inset-y-0 left-0 w-20 z-10 bg-gradient-to-r from-white to-transparent"></div>
                         <div class="pointer-events-none absolute inset-y-0 right-0 w-20 z-10 bg-gradient-to-l from-white to-transparent"></div>
 
-                        <div class="flex gap-5 cursor-grab active:cursor-grabbing" id="logoMarqueeTrack" style="width:max-content">
-                            {{-- Duplicated for seamless loop --}}
-                            @foreach ([1, 2] as $_)
+                        <div class="grid grid-rows-2 grid-flow-col gap-5 cursor-grab active:cursor-grabbing pb-2" id="logoMarqueeTrack" style="width:max-content">
+                            {{-- Duplicated 4 times to ensure even column distribution for seamless looping --}}
+                            @foreach ([1, 2, 3, 4] as $_)
                                 @foreach ($portfolioLogoFiles as $logoFile)
                                     @php
                                         $logoName  = $logoFile->getFilename();
