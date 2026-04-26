@@ -813,7 +813,7 @@
 
         <!-- Portfolio Section -->
 
-        <section class="bg-white py-16 md:py-20 relative z-10 border-b border-slate-100">
+        <section class="bg-white py-8 md:py-10 relative z-10 border-b border-slate-100">
             <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
                 <div class="w-full">
                     <div class="flex flex-wrap items-end justify-between gap-4">
