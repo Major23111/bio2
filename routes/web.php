@@ -189,7 +189,9 @@ Route::put('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Orde
     Route::put('/adminPanel/support-tickets/{ticketId}/status', [\App\Http\Controllers\AdminPanel\SupportTicketCrudController::class, 'updateStatus'])->name('admin.support-tickets.status');
 Route::view('/adminPanel/ui-fields-modification', 'admin.support-tickets.ui-fields-modification')->name('admin.ui-fields-modification');
 Route::view('/adminPanel/sync-monitor', 'admin.sync-monitor.index')->name('admin.sync-monitor');
-Route::view('/adminPanel/global-settings', 'admin.global-settings.index')->name('admin.global-settings');
+Route::get('/adminPanel/global-settings', [\App\Http\Controllers\AdminPanel\GlobalSettingsController::class, 'index'])->name('admin.global-settings');
+Route::post('/adminPanel/global-settings', [\App\Http\Controllers\AdminPanel\GlobalSettingsController::class, 'save'])->name('admin.global-settings.save');
+Route::post('/adminPanel/global-settings/reset', [\App\Http\Controllers\AdminPanel\GlobalSettingsController::class, 'reset'])->name('admin.global-settings.reset');
 Route::view('/adminPanel/delivery-logistics', 'admin.delivery-logistics')->name('admin.delivery-logistics');
 Route::get('/adminPanel/quiz', [QuizeCrudController::class, 'index'])->name('admin.quiz.index');
 Route::get('/adminPanel/quiz/create', [QuizeCrudController::class, 'create'])->name('admin.quiz.create');

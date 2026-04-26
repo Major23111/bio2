@@ -2,6 +2,36 @@
 
 @section('customer_minimal', 'minimal')
 
+@php
+    // Load per-user admin theme settings
+    $adminUserId = auth()->id();
+    $adminUserSettings = $adminUserId ? \App\Models\UserSetting::getAllForUser($adminUserId) : \App\Models\UserSetting::DEFAULTS;
+    $adminThemeMode = $adminUserSettings['theme.mode'] ?? 'light';
+    $adminColorPreset = $adminUserSettings['theme.color_preset'] ?? 'biogenix-green';
+@endphp
+
+@push('styles')
+<script>
+    // Apply theme settings to <html> immediately (before paint) for admin pages
+    (function() {
+        var mode = @json($adminThemeMode);
+        var preset = @json($adminColorPreset);
+
+        if (mode === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else if (mode === 'system') {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+        }
+
+        if (preset && preset !== 'biogenix-green') {
+            document.documentElement.setAttribute('data-theme-color', preset);
+        }
+    })();
+</script>
+@endpush
+
 @section('content')
 <div class="min-h-screen bg-[var(--ui-page-bg)] py-4 lg:py-8">
     <div class="mx-auto flex w-full max-w-[96rem] gap-0 lg:gap-8 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
