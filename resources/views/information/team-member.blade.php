@@ -17,18 +17,18 @@
         <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row">
             
             <!-- Left Side: Image -->
-            <div class="w-full md:w-5/12 lg:w-2/5 aspect-[4/3] md:aspect-auto bg-slate-100 relative shrink-0">
+            <div class="w-full md:w-5/12 lg:w-[45%] aspect-[4/3] md:aspect-auto bg-slate-100 relative shrink-0">
                 <img src="{{ Str::startsWith($member['img'], 'http') ? $member['img'] : asset($member['img']) }}" alt="{{ $member['name'] }}" class="absolute inset-0 w-full h-full object-cover object-top">
             </div>
 
             <!-- Right Side: Details -->
-            <div class="w-full md:w-7/12 lg:w-3/5 p-8 md:p-12 lg:p-16 flex flex-col">
-                <h1 class="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-2">{{ $member['name'] }}</h1>
-                <p class="text-primary-600 font-bold mb-6 tracking-wide text-sm md:text-base uppercase">{{ $member['role'] }}</p>
+            <div class="w-full md:w-7/12 lg:w-[55%] p-6 md:p-8 lg:p-10 flex flex-col">
+                <h1 class="font-display text-2xl md:text-[32px] leading-tight font-bold text-slate-900 mb-2">{{ $member['name'] }}</h1>
+                <p class="text-primary-600 font-bold mb-5 tracking-wide text-xs md:text-sm uppercase">{{ $member['role'] }}</p>
                 
-                <div class="w-16 h-1 bg-primary-200 mb-8 rounded-full"></div>
+                <div class="w-12 h-1 bg-primary-200 mb-6 rounded-full"></div>
                 
-                <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed text-base md:text-lg">
+                <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed text-sm md:text-[15px]">
                     {!! nl2br(e($member['copy'])) !!}
                 </div>
             </div>
