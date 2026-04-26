@@ -1,0 +1,1218 @@
+﻿diff --git a/config/team.php b/config/team.php
+index 157b44b..90fcbd2 100644
+--- a/config/team.php
++++ b/config/team.php
+@@ -5,13 +5,13 @@
+         [
+             'name' => 'Mr. Santosh Srivastava',
+             'role' => 'Founder & Managing Director',
+-            'img' => 'https://ui-avatars.com/api/?name=Santosh+Srivastava&background=d1f0dd&color=1A4D2E&size=500&bold=true',
++            'img' => 'upload/team/Mr. Santosh Srivastava.JPG',
+             'copy' => "Mr. Santosh Srivastava is the visionary founder and driving force behind Biogenix, with over two decades of deep-rooted experience in the diagnostics and medical devices industry. A postgraduate in Commerce (M.Com.) from Lucknow University, he entered the healthcare sector in the late 1990s, where he spent several years gaining extensive industry exposure and developing a strong foundation in diagnostics and product distribution.\n\nIn 2007, he established Biogenix with a clear vision to build a reliable and growth-oriented healthcare solutions company. Starting as a distribution firm, the company initially focused on ELISA kits, rapid tests, and biochemistry products, where Mr. Srivastava quickly established a strong market presence. His expertise in ELISA products earned him a reputation as a specialist in the segment, making it one of the core strengths of the organization.\n\nWith a forward-looking mindset and a strong belief in vertical integration, he laid the foundation for BiogenixΓÇÖs manufacturing capabilities in 2017, marking a significant transition from distribution to production. Under his leadership, the company has steadily expanded its product portfolio to cater to the evolving needs of hospitals, diagnostic centres, and healthcare institutions across India.\n\nMr. Srivastava is deeply involved in every aspect of the business, maintaining a hands-on leadership style that emphasizes personal engagement over passive oversight. From shaping marketing strategies to directing financial planning and overseeing operational decisions, his involvement spans across all departments. His approach is rooted in precision, experience, and a strong belief in direct interaction and real-world understanding of the business.\n\nOver the years, he has successfully positioned Biogenix both domestically and in international markets, building credibility and recognition for the brand. His leadership continues to be the cornerstone of the companyΓÇÖs growth, resilience, and long-term vision, making him an integral force behind BiogenixΓÇÖs sustained success.\n\nIn recognition of his contributions to the healthcare and diagnostics industry, Mr. Srivastava has been frequently featured in leading business and industry publications, including Forbes and Fortune. His work and leadership have also been highlighted across prominent media platforms such as Times Now, ABP News, and various healthcare and MedTech publications, including Medgate.\n\nHe has received multiple awards and recognitions for his contribution to the medical device industry, including honours from the Government of Uttar Pradesh."
+         ],
+         [
+             'name' => 'Mrs. Dimple Srivastava',
+             'role' => 'Director ΓÇô Operations & Administration',
+-            'img' => 'https://ui-avatars.com/api/?name=Dimple+Srivastava&background=d1f0dd&color=1A4D2E&size=500&bold=true',
++            'img' => 'upload/team/Mrs .Dimple Srivastava.JPG',
+             'copy' => "Mrs. Dimple Srivastava brings a unique blend of academic grounding, discipline, and hands-on operational leadership to Biogenix. Holding a MasterΓÇÖs degree in Commerce (M.Com.) from Lucknow University, she began her professional journey in education, dedicating over a decade to teaching and shaping young minds. This early experience instilled in her a strong sense of structure, responsibility, and people managementΓÇöqualities that continue to define her leadership style today.\n\nTransitioning from academia to business in the 2010s, she gradually became deeply involved in the companyΓÇÖs internal ecosystem and later joined Biogenix full-time. Since then, she has been a central force behind the organizationΓÇÖs operational stability, overseeing a wide range of functions that keep the company running seamlessly on a day-to-day basis.\n\nHer responsibilities span across administration, human resources, production coordination, and logistics management. She plays a key role in workforce management, including payroll structuring and salary administration, while also ensuring discipline and efficiency across departments. From supervising internal workflows to supporting production and SCM operations, her involvement is both comprehensive and detail-oriented.\n\nMrs. SrivastavaΓÇÖs leadership is defined by consistency, accountability, and a deep sense of ownership. Her ability to manage multiple critical functions simultaneously has made her an indispensable pillar of BiogenixΓÇÖs operational framework, ensuring that the organization functions with precision, reliability, and continuity."
+         ],
+         [
+diff --git a/package-lock.json b/package-lock.json
+index 32bb994..75fc47a 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,5 +1,5 @@
+ {
+-    "name": "biogenix-website",
++    "name": "Biogenix-website",
+     "lockfileVersion": 3,
+     "requires": true,
+     "packages": {
+@@ -2031,6 +2031,7 @@
+             "integrity": "sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==",
+             "dev": true,
+             "license": "MIT",
++            "peer": true,
+             "engines": {
+                 "node": ">=12"
+             },
+@@ -2267,6 +2268,7 @@
+             "integrity": "sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==",
+             "dev": true,
+             "license": "MIT",
++            "peer": true,
+             "dependencies": {
+                 "esbuild": "^0.27.0",
+                 "fdir": "^6.5.0",
+diff --git a/resources/views/admin/partials/sidebar.blade.php b/resources/views/admin/partials/sidebar.blade.php
+index 01a937f..fde70f6 100644
+--- a/resources/views/admin/partials/sidebar.blade.php
++++ b/resources/views/admin/partials/sidebar.blade.php
+@@ -68,9 +68,12 @@
+                     <p class="text-[13px] font-bold text-[var(--ui-text)] truncate">Super Admin</p>
+                     <p class="text-[11px] font-medium text-[var(--ui-text-muted)] truncate">admin@biogenix.com</p>
+                 </div>
+-                <button class="h-8 w-8 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-500 transition flex items-center justify-center flex-shrink-0 cursor-pointer" title="Logout">
+-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+-                </button>
++                <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">
++                    @csrf
++                    <button type="submit" class="h-8 w-8 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-500 transition flex items-center justify-center cursor-pointer" title="Logout">
++                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
++                    </button>
++                </form>
+             </div>
+         </div>
+     </nav>
+diff --git a/resources/views/home.blade.php b/resources/views/home.blade.php
+index 9432539..502999d 100644
+--- a/resources/views/home.blade.php
++++ b/resources/views/home.blade.php
+@@ -72,7 +72,7 @@
+             }
+ 
+             .hero-gradient-overlay {
+-                background: linear-gradient(to top, var(--color-primary-800) 5%, rgba(26, 77, 46, 0.7) 60%, rgba(26, 77, 46, 0.3) 100%);
++                background: linear-gradient(to bottom, rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.25), rgba(15, 23, 42, 0.30));
+             }
+ 
+             .testimonial-card {
+@@ -617,9 +617,9 @@
+                     @forelse ($heroSlides ?? [] as $slide)
+                         <article class="relative h-full w-full shrink-0">
+                             <img src="{{ asset($slide['image']) }}" alt="{{ $slide['title'] }}"
+-                                class="absolute inset-0 h-full w-full object-cover" @if ($loop->first) fetchpriority="high"
++                                class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" @if ($loop->first) fetchpriority="high"
+                                 @else loading="lazy" @endif decoding="async">
+-                            <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
++                            <div class="hero-gradient-overlay absolute inset-0 z-0"></div>
+ 
+                             <div
+                                 class="relative z-10 mx-auto flex min-h-[83vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
+@@ -676,8 +676,8 @@ class="home-primary-button inline-flex items-center justify-center px-8 py-3.5 t
+                     @empty
+                         <article class="relative h-full w-full shrink-0">
+                             <img src="{{ asset('upload/corousel/image1.jpg') }}" alt="Precision Diagnostics"
+-                                class="absolute inset-0 h-full w-full object-cover" fetchpriority="high" decoding="async">
+-                            <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
++                                class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" fetchpriority="high" decoding="async">
++                            <div class="hero-gradient-overlay absolute inset-0 z-0"></div>
+                             <div
+                                 class="relative z-10 mx-auto flex min-h-[83vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
+                                 <div
+@@ -814,15 +814,13 @@ class="inline-flex h-10 w-10 items-center justify-center rounded-full border bor
+         <!-- Portfolio Section -->
+ 
+         <section class="bg-white py-16 md:py-20 relative z-10 border-b border-slate-100">
+-            <div class="mx-auto max-w-[1300px] w-full px-4 sm:px-6 lg:px-8">
+-                <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center lg:items-center">
+-                    <!-- Left Side -->
+-                    <div class="w-full lg:w-5/12 flex flex-col items-start lg:shrink-0">
+-                        <span class="text-primary-600 font-medium text-[15px] tracking-wide mb-1">Showcase</span>
+-                        <h2 class="text-4xl md:text-[44px] font-bold text-slate-800 tracking-tight mb-5 font-display">Portfolio</h2>
+-                        <p class="text-[17px] text-slate-500 mb-8 leading-relaxed max-w-md font-medium">
+-                            Since 2016, Biogenix has backed over 110 startups across multiple sectors. We take immense pride in our founders achievements.
+-                        </p>
++            <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
++                <div class="w-full">
++                    <div class="flex flex-wrap items-end justify-between gap-4">
++                        <div>
++                            <span class="text-primary-600 font-medium text-[15px] tracking-wide mb-1 block">Showcase</span>
++                            <h2 class="text-4xl md:text-[44px] font-bold text-slate-800 tracking-tight font-display">Portfolio</h2>
++                        </div>
+                         <a href="{{ route('portfolio') }}" class="inline-flex items-center gap-3 text-primary-600 font-bold text-lg hover:text-primary-700 transition group">
+                             <span class="flex items-center justify-center w-[42px] h-[42px] rounded-full border-2 border-primary-600 group-hover:bg-primary-50 group-hover:scale-105 transition">
+                                 <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+@@ -832,78 +830,71 @@ class="inline-flex h-10 w-10 items-center justify-center rounded-full border bor
+                             See All
+                         </a>
+                     </div>
++                    <p class="mt-5 text-[17px] text-slate-500 leading-relaxed max-w-3xl font-medium">
++                        Since 2016, Biogenix has backed over 110 startups across multiple sectors. We take immense pride in our founders achievements.
++                    </p>
++
++                    @php
++                        $portfolioLogoFiles = collect(\Illuminate\Support\Facades\File::files(public_path('upload/portfolio')))
++                            ->sortBy(fn ($file) => strtolower($file->getFilename()))
++                            ->values();
++                    @endphp
++                    <div class="mt-8 w-full">
++                        @if ($portfolioLogoFiles->isNotEmpty())
++                            @php
++                                $portfolioPerRow = (int) ceil($portfolioLogoFiles->count() / 2);
++                                $portfolioRows = [
++                                    $portfolioLogoFiles->slice(0, $portfolioPerRow)->values(),
++                                    $portfolioLogoFiles->slice($portfolioPerRow)->values(),
++                                ];
++                            @endphp
+ 
+-                    <!-- Right Side (Grid of Logos) -->
+-                    <div class="w-full lg:w-7/12 grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-12 items-center justify-items-center">
+-                        <!-- Logo 1: BEARDO (Bold Serif) -->
+-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
+-                            <div class="flex items-center gap-2">
+-                                <div class="w-9 h-9 rounded-full border-2 border-slate-800 flex items-center justify-center overflow-hidden shrink-0">
+-                                    <svg class="h-6 w-6 text-slate-800" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+-                                </div>
+-                                <span class="text-2xl font-black tracking-tight text-slate-800 uppercase" style="transform: scaleY(1.2);">BEARDO</span>
++                            <div class="flex gap-3 overflow-x-auto pb-2 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
++                                @foreach ($portfolioLogoFiles as $logoFile)
++                                    @php
++                                        $logoName = $logoFile->getFilename();
++                                        $logoLabel = preg_replace('/\.[^.]+$/', '', $logoName);
++                                        $logoUrl = asset('upload/portfolio/' . rawurlencode($logoName));
++                                    @endphp
++                                    <article class="flex h-20 w-[138px] shrink-0 snap-start items-center justify-center rounded-xl border border-slate-200 bg-white p-2.5 shadow-sm">
++                                        <img
++                                            src="{{ $logoUrl }}"
++                                            alt="{{ $logoLabel }}"
++                                            loading="lazy"
++                                            decoding="async"
++                                            class="max-h-full w-full object-contain"
++                                        >
++                                    </article>
++                                @endforeach
+                             </div>
+-                        </div>
+-                        <!-- Logo 2: BharatPe (Sans Serif bold) -->
+-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
+-                            <div class="flex items-center gap-2">
+-                                <div class="w-8 h-8 rounded-full border-4 border-slate-500 flex items-center justify-center -rotate-45 shrink-0">
+-                                    <div class="w-4 h-1 bg-slate-500"></div>
+-                                    <div class="w-4 h-1 bg-slate-500 absolute rotate-90"></div>
+-                                </div>
+-                                <span class="text-[22px] font-extrabold tracking-tight text-slate-800">Bharat<span class="font-normal text-slate-500">Pe</span></span>
+-                            </div>
+-                        </div>
+-                        <!-- Logo 3: COUTLOOT (Clean Sans) -->
+-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 flex-col cursor-pointer">
+-                            <div class="w-10 h-10 bg-slate-600 text-white rounded-lg flex items-center justify-center mb-1 relative overflow-hidden shrink-0">
+-                                <span class="text-[32px] font-bold pt-1">C</span>
+-                                <div class="absolute w-2 h-2 bg-white rounded-full top-2 right-2"></div>
+-                            </div>
+-                            <span class="text-xs font-bold tracking-[0.2em] text-slate-600 uppercase">COUTLOOT</span>
+-                        </div>
+-                        <!-- Logo 4: Fynd -->
+-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
+-                            <div class="flex items-center gap-2">
+-                                <svg class="h-10 w-10 text-slate-600 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+-                                <span class="text-3xl font-extrabold text-slate-600 tracking-tighter">Fynd</span>
+-                            </div>
+-                        </div>
+-                        <!-- Logo 5: SUPR DAILY -->
+-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
+-                            <div class="flex items-center gap-3">
+-                                <svg class="h-10 w-10 text-slate-400 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9z"/></svg>
+-                                <div class="flex flex-col">
+-                                    <span class="text-xl font-black text-slate-500 tracking-widest uppercase leading-none mb-1">SUPR</span>
+-                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none">DAILY</span>
+-                                </div>
+-                            </div>
+-                        </div>
+-                        <!-- Logo 6: PEE SAFE (Boxed) -->
+-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
+-                            <div class="border-2 border-slate-800 px-3 py-1.5 flex flex-col items-center justify-center bg-white shadow-[2px_2px_0_rgba(30,41,59,1)]">
+-                                <span class="text-[17px] font-black text-slate-800 uppercase leading-[0.9]">PEE</span>
+-                                <span class="text-[17px] font-black text-slate-800 uppercase leading-[0.9]">SAFE</span>
+-                            </div>
+-                        </div>
+-                        <!-- Logo 7: HOMEVILLE (Circle top, text bottom) -->
+-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 flex-col cursor-pointer">
+-                            <div class="w-9 h-9 rounded-full border-4 border-slate-900 mb-2 relative flex items-center justify-center shrink-0">
+-                                <div class="w-3 h-3 bg-slate-900 absolute -top-1"></div>
++
++                            <div class="hidden space-y-4 md:block">
++                                @foreach ($portfolioRows as $portfolioRow)
++                                    <div class="flex gap-4 overflow-x-auto pb-1 md:overflow-x-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
++                                        @foreach ($portfolioRow as $logoFile)
++                                            @php
++                                                $logoName = $logoFile->getFilename();
++                                                $logoLabel = preg_replace('/\.[^.]+$/', '', $logoName);
++                                                $logoUrl = asset('upload/portfolio/' . rawurlencode($logoName));
++                                            @endphp
++                                            <article class="flex h-24 min-w-[170px] items-center justify-center rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:min-w-[180px] md:min-w-0 lg:min-w-[190px]">
++                                                <img
++                                                    src="{{ $logoUrl }}"
++                                                    alt="{{ $logoLabel }}"
++                                                    loading="lazy"
++                                                    decoding="async"
++                                                    class="max-h-full w-full object-contain"
++                                                >
++                                            </article>
++                                        @endforeach
++                                    </div>
++                                @endforeach
+                             </div>
+-                            <span class="text-xs font-black text-slate-900 uppercase tracking-widest">HOMEVILLE</span>
+-                        </div>
+-                        <!-- Logo 8: iWOV8 -->
+-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 flex-col cursor-pointer">
+-                            <span class="text-[28px] font-black text-slate-500 tracking-tight leading-none mb-1">iWOV<span class="text-slate-800">8</span></span>
+-                            <span class="text-[8px] font-bold text-slate-400 tracking-[0.3em] uppercase">The Coworking Space</span>
+-                        </div>
+-                        <!-- Logo 9: flickstree (Rounded Box) -->
+-                        <div class="h-20 w-32 flex items-center justify-center grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100 cursor-pointer">
+-                            <div class="bg-slate-700 rounded-[14px] px-4 py-2 shrink-0">
+-                                <span class="text-sm font-semibold text-white italic tracking-wider">flickstree</span>
++                        @else
++                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-500">
++                                No portfolio images found in <span class="font-semibold">public/upload/portfolio</span>.
+                             </div>
+-                        </div>
++                        @endif
+                     </div>
+                 </div>
+             </div>
+diff --git a/resources/views/information/about.blade.php b/resources/views/information/about.blade.php
+index 1af7290..de5f093 100644
+--- a/resources/views/information/about.blade.php
++++ b/resources/views/information/about.blade.php
+@@ -14,8 +14,8 @@
+ <div class="min-h-screen bg-gradient-to-b from-white via-primary-50/20 to-white">
+     <!-- Premium Hero Section -->
+     <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
+-        <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="Biogenix company profile" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
+-        <div class="absolute inset-0 bg-gradient-to-t from-primary-800/95 via-primary-800/70 to-primary-600/30"></div>
++        <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="Biogenix company profile" class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" loading="lazy" decoding="async">
++        <div class="absolute inset-0 bg-gradient-to-b from-slate-900/35 via-slate-900/25 to-slate-900/30"></div>
+         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
+             <h1 class="mx-auto max-w-5xl {{ $titleClass }}">
+                 Driving Precision Diagnostics Across India.
+diff --git a/resources/views/information/book-meeting.blade.php b/resources/views/information/book-meeting.blade.php
+index 439f2e6..1b5975c 100644
+--- a/resources/views/information/book-meeting.blade.php
++++ b/resources/views/information/book-meeting.blade.php
+@@ -24,8 +24,8 @@
+ 
+ <div class="bg-gradient-to-b from-white via-primary-50/20 to-white">
+     <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
+-        <img src="{{ asset('upload/backgrounds/meeting-bg.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-40" style="filter: blur(3.5px); transform: scale(1.03);" loading="lazy" decoding="async">
+-        <div class="absolute inset-0 bg-gradient-to-t from-[#013b2a]/85 via-[#013b2a]/80 to-[#013b2a]/75"></div>
++        <img src="{{ asset('upload/backgrounds/meeting-bg.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-85" loading="lazy" decoding="async">
++        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/45 via-slate-900/35 to-slate-900/40"></div>
+         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
+            
+             <h1 class="mx-auto max-w-5xl font-display text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl">
+diff --git a/resources/views/information/contact.blade.php b/resources/views/information/contact.blade.php
+index f111231..f8f6711 100644
+--- a/resources/views/information/contact.blade.php
++++ b/resources/views/information/contact.blade.php
+@@ -26,8 +26,8 @@
+     <div class="bg-primary-50/10">
+         <section class="relative overflow-hidden bg-primary-800 py-12 text-white lg:py-18">
+             <img src="{{ asset('upload/corousel/image2.jpg') }}" alt="Contact Biogenix"
+-                class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
+-            <div class="absolute inset-0 bg-gradient-to-t from-primary-800/95 via-primary-800/70 to-primary-600/30"></div>
++                class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" loading="lazy" decoding="async">
++            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/35 via-slate-900/25 to-slate-900/30"></div>
+             <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
+                 <h1
+                     class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl">
+@@ -298,4 +298,4 @@ class="inline-flex min-h-9 w-full items-center justify-center rounded-xl bg-prim
+             });
+         </script>
+     @endpush
+-@endsection
+\ No newline at end of file
++@endsection
+diff --git a/resources/views/information/faq.blade.php b/resources/views/information/faq.blade.php
+index bd3cc9a..f4db7ca 100644
+--- a/resources/views/information/faq.blade.php
++++ b/resources/views/information/faq.blade.php
+@@ -6,11 +6,24 @@
+ @php
+     $inputClass = 'h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-primary-600/40';
+     $faqCategories = [
+-        ['key' => 'product-info', 'label' => 'Product Info'],
+-        ['key' => 'ordering-process', 'label' => 'Ordering Process'],
+-        ['key' => 'delivery-payment', 'label' => 'Delivery & Payment'],
++        ['key' => 'payments', 'label' => 'Payments'],
++        ['key' => 'refunds', 'label' => 'Refunds'],
++        ['key' => 'services', 'label' => 'Services'],
++    ];
++    $faqItems = [
++        ['category' => 'payments', 'question' => 'What payment methods do you accept?', 'answer' => 'We accept Credit Cards, Debit Cards, Net Banking, UPI, and supported Wallets through Razorpay.'],
++        ['category' => 'payments', 'question' => 'Is it safe to make payments on your website?', 'answer' => 'Yes. Payments are processed through Razorpay with secure encryption and PCI-DSS compliant systems. We do not store your card number, CVV, or banking credentials.'],
++        ['category' => 'payments', 'question' => 'Will I receive a confirmation after payment?', 'answer' => 'Yes. After successful payment, confirmation is shown on website and sent by email/SMS when contact details are provided.'],
++        ['category' => 'payments', 'question' => 'What happens if my payment fails?', 'answer' => 'Failed payment amounts are usually auto-reversed within 5-7 business days depending on your bank or payment provider.'],
++        ['category' => 'refunds', 'question' => 'Can I cancel my order after making payment?', 'answer' => 'Yes, based on the Cancellation Policy time window. Once a service is processed or delivered, cancellation may not be possible.'],
++        ['category' => 'refunds', 'question' => 'How will I receive my refund?', 'answer' => 'Refunds are made to the original payment method: card to same card, UPI to same UPI ID, and net banking to originating account.'],
++        ['category' => 'refunds', 'question' => 'Are there any additional charges on payments?', 'answer' => 'There are no hidden fees from our side. Your bank or payment provider may apply transaction charges or taxes.'],
++        ['category' => 'services', 'question' => 'What should I do if payment is successful but I did not receive service/product?', 'answer' => 'Please contact support with transaction ID, payment details, and order details so we can verify and resolve quickly.'],
++        ['category' => 'payments', 'question' => 'Do you store my payment information?', 'answer' => 'No. Sensitive payment details are handled directly by Razorpay in line with industry standards.'],
++        ['category' => 'payments', 'question' => 'What should I do if I was charged multiple times?', 'answer' => 'Check your bank statement first. If duplicate charges are confirmed, extra charges are refunded automatically, and support can help if needed.'],
++        ['category' => 'services', 'question' => 'Can I get an invoice for my payment?', 'answer' => 'Yes. You may request an invoice from support, and in many cases it is automatically sent to your registered email after successful payment.'],
++        ['category' => 'services', 'question' => 'Who should I contact for payment-related issues?', 'answer' => 'For payment-related help, contact Biogenix support and include transaction details for faster resolution.'],
+     ];
+-    $hasDefaultOpen = $faqs->contains(fn ($faq) => (bool) $faq->is_default_open);
+ @endphp
+ 
+ <div class="min-h-screen bg-slate-50">
+@@ -18,8 +31,8 @@
+         <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="FAQ Background" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
+         <div class="absolute inset-0 bg-gradient-to-t from-primary-800/95 via-primary-800/70 to-primary-600/30"></div>
+         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
+-            <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl">Frequently Asked Questions</h1>
+-            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-secondary-600 md:text-lg">Got questions about products, ordering, or delivery? We&apos;ve got answers.</p>
++            <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl">Frequently Asked Questions (FAQ)</h1>
++            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-secondary-600 md:text-lg">Last Updated: 22/04/2026</p>
+         </div>
+     </section>
+ 
+@@ -33,7 +46,7 @@
+                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                             </span>
+-                            <input id="faqSearch" type="text" class="{{ $inputClass }} pl-10" placeholder="e.g. shipping time...">
++                            <input id="faqSearch" type="text" class="{{ $inputClass }} pl-10" placeholder="Search payment, refund, or service queries">
+                         </div>
+                     </div>
+                     <div class="mt-2 md:col-span-3">
+@@ -54,42 +67,30 @@
+ 
+     <section class="py-12">
+         <div class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 xl:px-10">
+-            @if ($faqs->count())
+-                <div id="faqAccordion" class="space-y-6">
+-                    @foreach ($faqs as $faq)
+-                        @php
+-                            $categoryKey = \Illuminate\Support\Str::slug($faq->category);
+-                            $isOpen = (bool) $faq->is_default_open || (! $hasDefaultOpen && $loop->first);
+-                            $searchText = strtolower($faq->category . ' ' . $faq->question . ' ' . $faq->answer);
+-                        @endphp
+-                        <div
+-                            class="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm transition hover:border-primary-200"
+-                            data-faq-item
+-                            data-faq-category="{{ $categoryKey }}"
+-                            data-faq-search-text="{{ $searchText }}"
+-                        >
+-                            <x-accordion :title="$faq->question" :open="$isOpen">
+-                                <p class="text-slate-600">{{ $faq->answer }}</p>
+-                            </x-accordion>
+-                        </div>
+-                    @endforeach
+-                </div>
+-            @else
+-                <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+-                    <h3 class="text-lg font-semibold text-slate-900">FAQ content is not available yet</h3>
+-                    <p class="mt-2 text-sm text-slate-500">Please check back shortly while our team publishes the latest help content.</p>
+-                </div>
+-            @endif
++            <div id="faqAccordion" class="space-y-6">
++                @foreach ($faqItems as $index => $faq)
++                    @php
++                        $searchText = strtolower($faq['question'] . ' ' . $faq['answer'] . ' ' . $faq['category']);
++                    @endphp
++                    <div
++                        class="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm transition hover:border-primary-200"
++                        data-faq-item
++                        data-faq-category="{{ $faq['category'] }}"
++                        data-faq-search-text="{{ $searchText }}"
++                    >
++                        <x-accordion :title="$faq['question']" :open="$index === 0">
++                            <p class="text-slate-600">{{ $faq['answer'] }}</p>
++                        </x-accordion>
++                    </div>
++                @endforeach
++            </div>
+ 
+             <div id="faqEmptyState" class="mt-8 hidden rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+                 <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                 </div>
+                 <h3 class="text-lg font-semibold text-slate-900">No results found</h3>
+-                <p class="mt-2 text-sm text-slate-500">We couldn&apos;t find any FAQs matching your search or filter. Try adjusting your keywords.</p>
+-                <div class="mt-6">
+-                    <a href="{{ route('contact') }}" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Contact Support Instead</a>
+-                </div>
++                <p class="mt-2 text-sm text-slate-500">Please adjust your search or filter to view relevant entries.</p>
+             </div>
+         </div>
+     </section>
+diff --git a/resources/views/information/generate-quotation.blade.php b/resources/views/information/generate-quotation.blade.php
+index c663cae..88f9e80 100644
+--- a/resources/views/information/generate-quotation.blade.php
++++ b/resources/views/information/generate-quotation.blade.php
+@@ -59,8 +59,8 @@
+     <div id="toast-container" class="fixed right-6 top-24 z-[1000] flex flex-col gap-3"></div>
+ 
+     <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
+-        <img src="{{ asset('upload/backgrounds/quotation-bg.png') }}" alt="Biogenix Quotation" class="absolute inset-0 h-full w-full object-cover opacity-30" style="filter: blur(6px); transform: scale(1.05);" loading="lazy" decoding="async">
+-        <div class="absolute inset-0 bg-gradient-to-b from-[#013b2a]/85 via-[#013b2a]/80 to-[#013b2a]/75"></div>
++        <img src="{{ asset('upload/backgrounds/quotation-bg.png') }}" alt="Biogenix Quotation" class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" loading="lazy" decoding="async">
++        <div class="absolute inset-0 bg-gradient-to-b from-slate-900/35 via-slate-900/25 to-slate-900/30"></div>
+         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
+             <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl text-shadow-lg">
+                 {{ $pageTitle }}
+diff --git a/resources/views/information/privacy.blade.php b/resources/views/information/privacy.blade.php
+index becf63a..fcb5947 100644
+--- a/resources/views/information/privacy.blade.php
++++ b/resources/views/information/privacy.blade.php
+@@ -3,59 +3,37 @@
+ @section('title', 'Privacy Policy')
+ 
+ @section('content')
+-{{-- Privacy Policy ΓÇô accordion style matching Terms & Conditions design --}}
+ <div class="min-h-screen bg-slate-50 pb-24">
+-    {{-- Hero header --}}
+     <section class="border-b border-slate-200 bg-white py-12 md:py-16">
+         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+             <h1 class="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Privacy Policy</h1>
+-            <p class="mt-3 flex items-center gap-2 text-sm text-primary-600">
+-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+-                Last updated: October 2023
+-            </p>
++            <p class="mt-3 flex items-center gap-2 text-sm text-primary-600">Last Updated: 22/04/2026</p>
+         </div>
+     </section>
+ 
+     <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+-        {{-- Intro box --}}
+         <div class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+-            <p class="text-base leading-8 text-slate-700">Welcome to Biogenix. This privacy policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our biotechnological solutions and research platform. Please read this privacy policy carefully.</p>
++            <p class="text-base leading-8 text-slate-700">
++                Welcome to Biogenix Inc Pvt Ltd ("Company", "we", "our", "us"). We are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner.
++                This Privacy Policy describes how we collect, use, disclose, and safeguard your information when you visit our website biogenix.in and use our services.
++            </p>
+         </div>
+ 
+-        {{-- Accordion sections --}}
+         <div class="space-y-4">
+             @php
+                 $privacySections = [
+-                    [
+-                        'num' => 1,
+-                        'title' => 'Information We Collect',
+-                        'content' => '<p class="leading-relaxed text-slate-600">We collect information that you provide directly to us, including personal details during registration, quotation requests, support interactions, and account operations. This includes your name, email address, phone number, organization details, and any other information you choose to provide.</p><p class="mt-4 leading-relaxed text-slate-600">We also automatically collect certain information when you access our services, including your IP address, browser type, operating system, and usage patterns.</p>'
+-                    ],
+-                    [
+-                        'num' => 2,
+-                        'title' => 'How We Use Your Information',
+-                        'content' => '<p class="leading-relaxed text-slate-600">We use the information we collect to provide, maintain, and improve our services, process transactions, send transactional messages, and provide customer support. We may also use the information to send you technical notices, updates, security alerts, and product announcements.</p>'
+-                    ],
+-                    [
+-                        'num' => 3,
+-                        'title' => 'Data Sharing & Disclosure',
+-                        'content' => '<p class="leading-relaxed text-slate-600">We do not sell your personal data. We may share your information with trusted service providers who assist us in operating our platform, conducting business, or servicing you. These third parties are contractually obligated to keep your information confidential and use it only for the purposes for which we disclose it to them.</p>'
+-                    ],
+-                    [
+-                        'num' => 4,
+-                        'title' => 'Data Security',
+-                        'content' => '<p class="leading-relaxed text-slate-600">We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. This includes encryption, secure authentication protocols, and regular security audits of our systems.</p>'
+-                    ],
+-                    [
+-                        'num' => 5,
+-                        'title' => 'Your Rights & Choices',
+-                        'content' => '<p class="leading-relaxed text-slate-600">You have the right to access, correct, or delete your personal information. You can also opt out of receiving marketing communications from us at any time. To exercise any of these rights, please contact our Data Protection Officer at <a href="mailto:support@biogenix.com" class="font-semibold text-primary-700 underline decoration-primary-200 underline-offset-4 hover:decoration-primary-600">support@biogenix.com</a>.</p>'
+-                    ],
+-                    [
+-                        'num' => 6,
+-                        'title' => 'Cookies & Tracking',
+-                        'content' => '<p class="leading-relaxed text-slate-600">We use cookies and similar tracking technologies to track the activity on our service and hold certain information. Cookies are files with a small amount of data which may include an anonymous unique identifier. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.</p>'
+-                    ],
++                    ['num' => 1, 'title' => 'Information We Collect', 'content' => '<p class="leading-relaxed text-slate-600">We may collect the following types of information:</p><p class="mt-3 leading-relaxed text-slate-600"><strong>a) Personal Information</strong><br>When you interact with our website, we may collect: Full Name, Email Address, Phone Number, Billing and Shipping Address, and any other information you voluntarily provide.</p><p class="mt-3 leading-relaxed text-slate-600"><strong>b) Payment Information</strong><br>We do not store your payment details such as card numbers, CVV, or banking credentials. All payment transactions are securely processed through our payment gateway partner (Razorpay).</p><p class="mt-3 leading-relaxed text-slate-600"><strong>c) Technical & Usage Data</strong><br>We may automatically collect: IP Address, Browser type and version, Device information, Pages visited and time spent, Cookies and tracking technologies.</p>'],
++                    ['num' => 2, 'title' => 'How We Use Your Information', 'content' => '<p class="leading-relaxed text-slate-600">We use your information for the following purposes: to process transactions and provide services, to communicate with you (order updates, support, notifications), to improve our website and services, to prevent fraud and ensure security, and to comply with legal obligations.</p>'],
++                    ['num' => 3, 'title' => 'Payment Processing', 'content' => '<p class="leading-relaxed text-slate-600">All payments on our website are processed securely via third-party payment gateways such as Razorpay. Your financial information is encrypted and handled directly by Razorpay. We do not store or have access to your full payment details. Razorpay complies with PCI-DSS standards for secure transactions. You are advised to review Razorpay\'s privacy policy for more details on how they handle your data.</p>'],
++                    ['num' => 4, 'title' => 'Cookies & Tracking Technologies', 'content' => '<p class="leading-relaxed text-slate-600">We use cookies and similar tracking technologies to enhance user experience, understand user behavior, and store user preferences. You can disable cookies through your browser settings, though some website features may be affected.</p>'],
++                    ['num' => 5, 'title' => 'Data Sharing & Disclosure', 'content' => '<p class="leading-relaxed text-slate-600">We do not sell or rent your personal information. However, we may share your data with trusted service providers (payment gateways, hosting, analytics), legal authorities when required by law, and business partners when necessary to provide services. All third-party partners are obligated to keep your information secure.</p>'],
++                    ['num' => 6, 'title' => 'Data Retention', 'content' => '<p class="leading-relaxed text-slate-600">We retain your personal information only for as long as necessary to fulfill the purposes outlined in this policy and to comply with legal, accounting, or regulatory requirements. Once data is no longer required, it is securely deleted or anonymized.</p>'],
++                    ['num' => 7, 'title' => 'Data Security', 'content' => '<p class="leading-relaxed text-slate-600">We implement appropriate technical and organizational security measures to protect your data, including secure servers and encryption, restricted access to personal information, and regular monitoring for vulnerabilities. However, no online system is 100% secure, and we cannot guarantee absolute security.</p>'],
++                    ['num' => 8, 'title' => 'Your Rights', 'content' => '<p class="leading-relaxed text-slate-600">You have the following rights regarding your personal data: access your personal information, request correction of inaccurate data, request deletion of your data, and withdraw consent at any time. To exercise your rights, please contact us at the details provided below.</p>'],
++                    ['num' => 9, 'title' => 'Third-Party Links', 'content' => '<p class="leading-relaxed text-slate-600">Our website may contain links to third-party websites. We are not responsible for their privacy practices or content. We recommend reviewing their policies before sharing any information.</p>'],
++                    ['num' => 10, 'title' => 'Children\'s Privacy', 'content' => '<p class="leading-relaxed text-slate-600">Our services are not intended for individuals under the age of 18. We do not knowingly collect personal data from children.</p>'],
++                    ['num' => 11, 'title' => 'Changes to This Privacy Policy', 'content' => '<p class="leading-relaxed text-slate-600">We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last Updated" date.</p>'],
++                    ['num' => 12, 'title' => 'Contact Us', 'content' => '<p class="leading-relaxed text-slate-600">If you have any questions or concerns about this Privacy Policy, you can contact us:</p><p class="mt-3 leading-relaxed text-slate-600">Company Name: Biogenix Inc Pvt Ltd<br>Email:<br>Phone:<br>Address:</p>'],
+                 ];
+             @endphp
+ 
+@@ -80,35 +58,7 @@ class="flex w-full items-center gap-4 px-6 py-5 text-left transition hover:bg-sl
+                 </div>
+             @endforeach
+         </div>
+-
+-        {{-- Contact box --}}
+-        <div class="mt-10 rounded-2xl border border-primary-100 bg-primary-50/60 p-6">
+-            <h2 class="mb-2 flex items-center text-xl font-semibold text-slate-900">
+-                <svg class="mr-2 h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+-                Contact for Privacy Requests
+-            </h2>
+-            <p class="text-slate-600">For any privacy-related queries, data deletion requests, or concerns, please contact our Data Protection Officer at <a href="mailto:support@biogenix.com" class="font-semibold text-primary-700 underline decoration-primary-100 underline-offset-4 transition hover:decoration-primary-600">support@biogenix.com</a>.</p>
+-        </div>
+     </section>
+-
+-    {{-- Footer bar --}}
+-    <div class="border-t border-slate-200 bg-white py-6">
+-        <div class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+-            <div class="flex items-center gap-3">
+-                <div class="relative h-9 w-9 rounded-xl bg-primary-600">
+-                    <span class="absolute left-2 top-2 h-2 w-2 rounded-sm bg-white"></span>
+-                    <span class="absolute bottom-2 right-2 h-2 w-2 rounded-sm bg-white"></span>
+-                </div>
+-                <span class="text-sm font-semibold text-slate-900">Biogenix Labs</span>
+-            </div>
+-            <p class="text-sm text-slate-500">&copy; 2023 Biogenix International. All rights reserved.</p>
+-            <nav class="flex flex-wrap gap-6">
+-                <a href="{{ route('terms') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Terms of Service</a>
+-                <a href="{{ route('privacy') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Cookie Policy</a>
+-                <a href="{{ route('contact') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Compliance</a>
+-            </nav>
+-        </div>
+-    </div>
+ </div>
+ 
+ @push('scripts')
+diff --git a/resources/views/information/refund.blade.php b/resources/views/information/refund.blade.php
+index a73416b..908af22 100644
+--- a/resources/views/information/refund.blade.php
++++ b/resources/views/information/refund.blade.php
+@@ -3,222 +3,90 @@
+ @section('title', 'Refund & Cancellation Policy')
+ 
+ @section('content')
+-{{-- Refund & Cancellation Policy ΓÇô matching reference image with tabs, icons, and process steps --}}
+ <div class="min-h-screen bg-slate-50 pb-24">
+-    {{-- Hero header --}}
+     <section class="border-b border-slate-200 bg-white py-12 md:py-16">
+         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+-            <nav class="mb-4 text-sm text-slate-500">
+-                <a href="{{ route('home') }}" class="text-slate-500 no-underline hover:text-primary-600">Home</a>
+-                <span class="mx-2">&rsaquo;</span>
+-                <span class="text-slate-700">Legal</span>
+-            </nav>
+             <h1 class="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Refund &amp; Cancellation Policy</h1>
+-            <p class="mt-3 max-w-xl text-base leading-7 text-slate-600">Standard guidelines for reagents, laboratory equipment, and cold-chain logistics to ensure product integrity and research continuity.</p>
++            <p class="mt-3 max-w-xl text-base leading-7 text-slate-600">Last Updated: 22/04/2026</p>
++            <p class="mt-3 text-sm leading-7 text-slate-600">
++                At Biogenix Inc Pvt Ltd, we strive to provide high-quality products and services. This policy outlines the terms under which cancellations and refunds are processed for transactions made on biogenix.in.
++            </p>
+         </div>
+     </section>
+ 
+     <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+-        {{-- Tab navigation --}}
+         <div class="mb-10 border-b border-slate-200">
+             <nav class="flex gap-6" id="refund-tabs">
+-                <button type="button" class="refund-tab active border-b-2 border-primary-600 pb-3 text-sm font-semibold text-primary-700 transition" data-tab="reagents" onclick="switchRefundTab('reagents')">Reagents &amp; Biologicals</button>
+-                <button type="button" class="refund-tab border-b-2 border-transparent pb-3 text-sm font-semibold text-slate-500 transition hover:text-slate-700" data-tab="equipment" onclick="switchRefundTab('equipment')">Lab Equipment</button>
+-                <button type="button" class="refund-tab border-b-2 border-transparent pb-3 text-sm font-semibold text-slate-500 transition hover:text-slate-700" data-tab="general" onclick="switchRefundTab('general')">General Policy</button>
++                <button type="button" class="refund-tab active border-b-2 border-primary-600 pb-3 text-sm font-semibold text-primary-700 transition" data-tab="cancellation" onclick="switchRefundTab('cancellation')">Cancellation</button>
++                <button type="button" class="refund-tab border-b-2 border-transparent pb-3 text-sm font-semibold text-slate-500 transition hover:text-slate-700" data-tab="refunds" onclick="switchRefundTab('refunds')">Refunds</button>
++                <button type="button" class="refund-tab border-b-2 border-transparent pb-3 text-sm font-semibold text-slate-500 transition hover:text-slate-700" data-tab="support" onclick="switchRefundTab('support')">Support & Updates</button>
+             </nav>
+         </div>
+ 
+-        {{-- Tab content: Reagents & Biologicals --}}
+-        <div class="refund-tab-content" id="tab-reagents">
+-            {{-- Section 1: Cancellation Policy --}}
+-            <div class="mb-10">
+-                <h2 class="flex items-center gap-3 text-xl font-bold text-slate-900">
+-                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50 text-sm font-bold text-primary-600">1</span>
+-                    Cancellation Policy
+-                </h2>
+-
+-                <div class="mt-6 grid gap-4 md:grid-cols-2">
+-                    {{-- Reagents card --}}
+-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+-                        <div class="mb-3 flex items-center gap-2">
+-                            <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+-                            <h3 class="text-base font-semibold text-primary-700">Reagents &amp; Perishables</h3>
+-                        </div>
+-                        <p class="text-sm leading-7 text-slate-600">Cancellations for temperature-sensitive reagents must be made within <strong>4 hours</strong> of order placement. Due to the high-precision nature of biological formulations, once packaging for refrigerated/frozen shipping commences, cancellations are not permitted.</p>
+-                    </div>
+-
+-                    {{-- Lab Equipment card --}}
+-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+-                        <div class="mb-3 flex items-center gap-2">
+-                            <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+-                            <h3 class="text-base font-semibold text-primary-700">Laboratory Equipment</h3>
+-                        </div>
+-                        <p class="text-sm leading-7 text-slate-600">Standard hardware orders can be cancelled within <strong>24 hours</strong> without penalty. Custom-configured instrumentation or specialized robotic systems may incur a 15% restocking fee if cancelled after manufacturing has initiated.</p>
+-                    </div>
+-                </div>
+-            </div>
+-
+-            {{-- Section 2: Refund Process --}}
+-            <div class="mb-10">
+-                <h2 class="flex items-center gap-3 text-xl font-bold text-slate-900">
+-                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50 text-sm font-bold text-primary-600">2</span>
+-                    Refund Process
+-                </h2>
+-
+-                <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+-                    <p class="mb-5 text-sm leading-7 text-slate-600">Biogenix ensures a rigorous validation process for all refund requests to maintain the integrity of our biotech supply chain.</p>
+-
+-                    <div class="space-y-5">
+-                        <div class="flex gap-4">
+-                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50">
+-                                <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+-                            </div>
+-                            <div>
+-                                <h4 class="text-sm font-semibold text-slate-900">Integrity Validation</h4>
+-                                <p class="mt-1 text-sm leading-7 text-slate-600">Refunds are only processed for reagents that remain in their original, unopened manufacturer packaging with intact tamper-evident seals.</p>
+-                            </div>
+-                        </div>
+-
+-                        <div class="flex gap-4">
+-                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary-50">
+-                                <svg class="h-5 w-5 text-secondary-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+-                            </div>
+-                            <div>
+-                                <h4 class="text-sm font-semibold text-slate-900">Reimbursement Timeline</h4>
+-                                <p class="mt-1 text-sm leading-7 text-slate-600">Approved refunds will be credited back to the original funding source (Grant P-Card, Institutional Wire, etc.) within 7-10 business days.</p>
+-                            </div>
+-                        </div>
+-
+-                        <div class="flex gap-4">
+-                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50">
+-                                <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+-                            </div>
+-                            <div>
+-                                <h4 class="text-sm font-semibold text-slate-900">Cold Chain Exclusion</h4>
+-                                <p class="mt-1 text-sm leading-7 text-slate-600">Products requiring -20┬░C or -80┬░C storage are non-returnable once they leave our facility to ensure zero risk of thermal degradation for other researchers.</p>
+-                            </div>
+-                        </div>
+-                    </div>
++        <div class="refund-tab-content" id="tab-cancellation">
++            <div class="space-y-6">
++                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++                    <h2 class="text-lg font-semibold text-slate-900">1. Cancellation Policy</h2>
++                    <p class="mt-3 text-sm leading-7 text-slate-600"><strong>A. Order Cancellation by User:</strong> You may request cancellation within [X hours/days] of placing the order through official channels (email/phone). Orders already processed, shipped, or delivered may not be eligible.</p>
++                    <p class="mt-3 text-sm leading-7 text-slate-600"><strong>B. Cancellation by Company:</strong> We may cancel if product/service is unavailable, payment is unsuccessful, suspicious transaction is detected, or pricing/technical errors occur. In such cases, full refund is made to the original payment method.</p>
+                 </div>
+-            </div>
+-
+-            {{-- Section 3: Damaged Goods & Logistics --}}
+-            <div class="mb-10">
+-                <h2 class="flex items-center gap-3 text-xl font-bold text-slate-900">
+-                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50 text-sm font-bold text-primary-600">3</span>
+-                    Damaged Goods &amp; Logistics
+-                </h2>
+-
+-                <div class="mt-6">
+-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+-                        <h3 class="text-base font-semibold text-slate-900">Immediate Action Required</h3>
+-                        <p class="mt-2 text-sm leading-7 text-slate-600">If laboratory equipment arrives damaged or reagents show signs of temperature excursion (thawed dry ice or triggered heat indicators):</p>
+-
+-                        <div class="mt-5 grid gap-4 sm:grid-cols-3">
+-                            <div class="rounded-xl border border-slate-200 bg-white p-4">
+-                                <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary-50">
+-                                    <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>
+-                                </div>
+-                                <p class="text-xs font-semibold uppercase tracking-wide text-primary-600">Step 1</p>
+-                                <p class="mt-1 text-sm text-slate-700">Document packaging &amp; indicators</p>
+-                            </div>
+-
+-                            <div class="rounded-xl border border-slate-200 bg-white p-4">
+-                                <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary-50">
+-                                    <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-5 5v-5zM4.868 20.132A9 9 0 1120.132 4.868M5 12h14"/></svg>
+-                                </div>
+-                                <p class="text-xs font-semibold uppercase tracking-wide text-primary-600">Step 2</p>
+-                                <p class="mt-1 text-sm text-slate-700">Notify within 24 hours of receipt</p>
+-                            </div>
+-
+-                            <div class="rounded-xl border border-slate-200 bg-white p-4">
+-                                <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary-50">
+-                                    <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+-                                </div>
+-                                <p class="text-xs font-semibold uppercase tracking-wide text-primary-600">Step 3</p>
+-                                <p class="mt-1 text-sm text-slate-700">Contact logistics@biogenix.com</p>
+-                            </div>
+-                        </div>
+-                    </div>
++                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++                    <h2 class="text-lg font-semibold text-slate-900">6. Failed Transactions</h2>
++                    <p class="mt-3 text-sm leading-7 text-slate-600">If a transaction fails but amount is debited, it is usually reversed automatically by your bank within 5-7 business days. If delayed, contact us with transaction details.</p>
+                 </div>
+             </div>
+         </div>
+ 
+-        {{-- Tab content: Lab Equipment --}}
+-        <div class="refund-tab-content hidden" id="tab-equipment">
+-            <div class="mb-10">
+-                <h2 class="flex items-center gap-3 text-xl font-bold text-slate-900">
+-                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50 text-sm font-bold text-primary-600">1</span>
+-                    Equipment Cancellation
+-                </h2>
+-                <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+-                    <p class="text-sm leading-7 text-slate-600">Standard laboratory equipment orders can be cancelled within <strong>24 hours</strong> of placement without any restocking fee. Custom-configured or built-to-order instrumentation may incur cancellation charges of up to 15% after the manufacturing process has initiated.</p>
++        <div class="refund-tab-content hidden" id="tab-refunds">
++            <div class="space-y-6">
++                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++                    <h2 class="text-lg font-semibold text-slate-900">2. Refund Policy</h2>
++                    <p class="mt-3 text-sm leading-7 text-slate-600"><strong>Eligibility:</strong> Refunds are processed when payment is successful but service/product is not delivered, order is cancelled in allowed period, duplicate payment occurs, or a failed transaction still debits amount.</p>
++                    <p class="mt-3 text-sm leading-7 text-slate-600"><strong>Non-Refundable Cases:</strong> Rendered services, accessed/downloaded digital products, late requests beyond cancellation period, and misuse or Terms violations.</p>
+                 </div>
+-            </div>
+-            <div class="mb-10">
+-                <h2 class="flex items-center gap-3 text-xl font-bold text-slate-900">
+-                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50 text-sm font-bold text-primary-600">2</span>
+-                    Equipment Returns
+-                </h2>
+-                <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+-                    <p class="text-sm leading-7 text-slate-600">Equipment must be returned in its original packaging within <strong>14 days</strong> of receipt. Items must be unused and in the same condition as received. Biogenix will arrange pickup for approved returns. Refunds will be processed within 10-14 business days.</p>
++                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++                    <h2 class="text-lg font-semibold text-slate-900">3. Refund Process</h2>
++                    <p class="mt-3 text-sm leading-7 text-slate-600">Approved refunds are initiated within [2 - 5 business days], processed to the original payment method, and notified by email.</p>
+                 </div>
+-            </div>
+-        </div>
+-
+-        {{-- Tab content: General Policy --}}
+-        <div class="refund-tab-content hidden" id="tab-general">
+-            <div class="mb-10">
+-                <h2 class="flex items-center gap-3 text-xl font-bold text-slate-900">
+-                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50 text-sm font-bold text-primary-600">1</span>
+-                    General Refund Guidelines
+-                </h2>
+-                <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+-                    <p class="text-sm leading-7 text-slate-600">All refund requests must be submitted through the Biogenix support portal or by emailing <a href="mailto:support@biogenix.com" class="font-semibold text-primary-700 underline underline-offset-4">support@biogenix.com</a>. Include your order number, reason for refund, and any supporting documentation (photographs, temperature logs, etc.).</p>
++                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++                    <h2 class="text-lg font-semibold text-slate-900">4. Refund Timeline</h2>
++                    <p class="mt-3 text-sm leading-7 text-slate-600">Typical credit timeline is 5 - 7 business days depending on bank/payment provider.</p>
++                    <p class="mt-2 text-sm leading-7 text-slate-600">UPI: 2 - 5 working days | Credit/Debit Cards: 5 - 7 working days | Net Banking: 5 - 7 working days</p>
+                 </div>
+-            </div>
+-            <div class="mb-10">
+-                <h2 class="flex items-center gap-3 text-xl font-bold text-slate-900">
+-                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50 text-sm font-bold text-primary-600">2</span>
+-                    Non-Refundable Items
+-                </h2>
+-                <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+-                    <p class="text-sm leading-7 text-slate-600">Certain products are non-refundable, including custom-synthesized reagents, opened consumables, software licenses, and calibration services. These items are clearly marked during the ordering process.</p>
++                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++                    <h2 class="text-lg font-semibold text-slate-900">5. Payment Gateway Charges</h2>
++                    <p class="mt-3 text-sm leading-7 text-slate-600">In certain cases, payment gateway/transaction fees may be deducted based on provider policy. Such charges are non-refundable.</p>
++                </div>
++                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++                    <h2 class="text-lg font-semibold text-slate-900">7. Partial Refunds</h2>
++                    <p class="mt-3 text-sm leading-7 text-slate-600">Partial refunds may apply where part of service is delivered or cancellation is requested after partial processing. Amount is determined at company discretion.</p>
+                 </div>
+             </div>
+         </div>
+ 
+-        {{-- CTA Banner --}}
+-        <div class="mt-12 rounded-2xl bg-slate-900 px-8 py-8 text-center text-white">
+-            <h2 class="text-xl font-bold text-white">Need specialized assistance?</h2>
+-            <p class="mt-2 text-sm text-slate-300">Our biotech logistics specialists are available to discuss complex institutional procurement needs.</p>
+-            <div class="mt-6 flex flex-wrap items-center justify-center gap-4">
+-                <a href="{{ route('contact') }}" class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary-600 px-6 text-sm font-semibold text-white no-underline shadow-sm transition hover:bg-primary-700">
+-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+-                    Contact Support
+-                </a>
+-                <a href="{{ route('faq') }}" class="inline-flex h-11 items-center gap-2 rounded-xl border border-slate-500 bg-transparent px-6 text-sm font-semibold text-white no-underline transition hover:bg-white/10">View FAQ</a>
++        <div class="refund-tab-content hidden" id="tab-support">
++            <div class="space-y-6">
++                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++                    <h2 class="text-lg font-semibold text-slate-900">8. How to Request a Refund or Cancellation</h2>
++                    <p class="mt-3 text-sm leading-7 text-slate-600">Share: Full Name, Registered Email Address, Transaction ID / Order ID, and reason for request.</p>
++                    <p class="mt-3 text-sm leading-7 text-slate-600">Contact Details:<br>Email:<br>Phone:<br>Address:</p>
++                </div>
++                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++                    <h2 class="text-lg font-semibold text-slate-900">9. Dispute Resolution</h2>
++                    <p class="mt-3 text-sm leading-7 text-slate-600">If you are not satisfied with the resolution, you may escalate to our support team. We make reasonable efforts to resolve disputes in a fair and timely manner.</p>
++                </div>
++                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++                    <h2 class="text-lg font-semibold text-slate-900">10. Policy Updates</h2>
++                    <p class="mt-3 text-sm leading-7 text-slate-600">We may modify this policy at any time without prior notice. Changes are posted on this page, and continued use of services implies acceptance of the updated policy.</p>
++                </div>
+             </div>
+         </div>
+     </section>
+-
+-    {{-- Footer bar --}}
+-    <div class="mt-8 border-t border-slate-200 bg-white py-6">
+-        <div class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+-            <p class="text-sm text-slate-500">&copy; 2024 Biogenix Biotech Solutions. All rights reserved.</p>
+-            <nav class="flex flex-wrap gap-6">
+-                <a href="{{ route('terms') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Terms of Service</a>
+-                <a href="{{ route('privacy') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Privacy Policy</a>
+-                <a href="{{ route('contact') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Compliance</a>
+-            </nav>
+-        </div>
+-    </div>
+ </div>
+ 
+ @push('scripts')
+ <script>
+ function switchRefundTab(tab) {
+-    // Update tab buttons
+     document.querySelectorAll('.refund-tab').forEach(function(btn) {
+         var isActive = btn.getAttribute('data-tab') === tab;
+         btn.classList.toggle('active', isActive);
+@@ -228,7 +96,6 @@ function switchRefundTab(tab) {
+         btn.classList.toggle('text-slate-500', !isActive);
+     });
+ 
+-    // Update tab content
+     document.querySelectorAll('.refund-tab-content').forEach(function(content) {
+         content.classList.add('hidden');
+     });
+diff --git a/resources/views/information/terms.blade.php b/resources/views/information/terms.blade.php
+index 1d7c76c..401dee4 100644
+--- a/resources/views/information/terms.blade.php
++++ b/resources/views/information/terms.blade.php
+@@ -1,56 +1,42 @@
+ @extends('layouts.app')
+ 
+-@section('title', 'Terms & Conditions')
++@section('title', 'Terms of Use')
+ 
+ @section('content')
+-{{-- Terms & Conditions ΓÇô matches reference image with accordion sections --}}
+ <div class="min-h-screen bg-slate-50 pb-24">
+-    {{-- Hero header --}}
+     <section class="border-b border-slate-200 bg-white py-12 md:py-16">
+         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+-            <h1 class="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Terms &amp; Conditions</h1>
+-            <p class="mt-3 flex items-center gap-2 text-sm text-primary-600">
+-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+-                Last updated: October 2023
+-            </p>
++            <h1 class="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Terms of Use</h1>
++            <p class="mt-3 flex items-center gap-2 text-sm text-primary-600">Last Updated: 22/04/2026</p>
+         </div>
+     </section>
+ 
+     <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+-        {{-- Intro box --}}
+         <div class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+-            <p class="text-base leading-8 text-slate-700">Welcome to Biogenix. We provide cutting-edge biotechnological solutions and research data. By accessing our platform, you agree to comply with and be bound by the following terms and conditions of use, which together with our privacy policy govern Biogenix's relationship with you in relation to this website.</p>
++            <p class="text-base leading-8 text-slate-700">
++                Welcome to Biogenix Inc Pvt Ltd ("Company", "we", "our", "us"). These Terms of Use ("Terms") govern your access to and use of our website and the services provided through it.
++                By accessing or using our website, you agree to be bound by these Terms. If you do not agree, please do not use our services.
++            </p>
+         </div>
+ 
+-        {{-- Accordion sections --}}
+-        <div class="space-y-4" x-data="{ openSection: 1 }">
++        <div class="space-y-4">
+             @php
+                 $sections = [
+-                    [
+-                        'num' => 1,
+-                        'title' => 'Acceptance of Terms',
+-                        'content' => '<p class="leading-relaxed text-slate-600">By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.</p><p class="mt-4 leading-relaxed text-slate-600">Any participation in this service will constitute acceptance of this agreement. If you do not agree to abide by the above, please do not use this service.</p>'
+-                    ],
+-                    [
+-                        'num' => 2,
+-                        'title' => 'Use of Website',
+-                        'content' => '<p class="leading-relaxed text-slate-600">You agree to use this website only for lawful purposes and in a way that does not infringe the rights of, restrict, or inhibit anyone else\'s use and enjoyment of the website. Prohibited behavior includes harassing or causing distress to any other user, transmitting obscene or offensive content, or disrupting the normal flow of dialogue within the website.</p>'
+-                    ],
+-                    [
+-                        'num' => 3,
+-                        'title' => 'Intellectual Property',
+-                        'content' => '<p class="leading-relaxed text-slate-600">All content included on this site, such as text, graphics, logos, button icons, images, audio clips, digital downloads, data compilations, and software, is the property of Biogenix or its content suppliers and protected by international copyright laws. The compilation of all content on this site is the exclusive property of Biogenix.</p>'
+-                    ],
+-                    [
+-                        'num' => 4,
+-                        'title' => 'Limitation of Liability',
+-                        'content' => '<p class="leading-relaxed text-slate-600">Biogenix shall not be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the services.</p>'
+-                    ],
+-                    [
+-                        'num' => 5,
+-                        'title' => 'Governing Law (Lucknow Jurisdiction)',
+-                        'content' => '<p class="leading-relaxed text-slate-600">These terms shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts located in Lucknow, Uttar Pradesh, India.</p>'
+-                    ],
++                    ['num' => 1, 'title' => 'Eligibility', 'content' => '<p class="leading-relaxed text-slate-600">By using this website, you confirm that you are at least 18 years of age, legally capable of entering into binding agreements, and will use the website in accordance with these Terms and applicable laws.</p>'],
++                    ['num' => 2, 'title' => 'User Responsibilities', 'content' => '<p class="leading-relaxed text-slate-600">When using our website, you agree to provide accurate, current, and complete information; not use the website for unlawful or fraudulent activity; not attempt unauthorized access; not interfere with website functionality; and not misuse or copy website content without permission. You are responsible for keeping your account credentials confidential.</p>'],
++                    ['num' => 3, 'title' => 'Services', 'content' => '<p class="leading-relaxed text-slate-600">We provide products/services through our website as described on respective pages. We reserve the right to modify, suspend, or discontinue any service without prior notice. Prices and availability may change at any time. We do not guarantee that all services will always be available or error-free.</p>'],
++                    ['num' => 4, 'title' => 'Payments & Billing', 'content' => '<p class="leading-relaxed text-slate-600">All payments are processed through secure third-party payment gateways such as Razorpay. You agree to provide valid and accurate payment information. We do not store card or banking details. Payment authorization is subject to approval by your bank or payment provider. Failed transactions are refunded as per gateway policies.</p>'],
++                    ['num' => 5, 'title' => 'Refunds & Cancellations', 'content' => '<p class="leading-relaxed text-slate-600">Refunds and cancellations are governed by our Refund & Cancellation Policy available on our website. By making a purchase, you agree to that policy.</p>'],
++                    ['num' => 6, 'title' => 'Intellectual Property Rights', 'content' => '<p class="leading-relaxed text-slate-600">All content on this website including text, graphics, logos, images, and software is the property of Biogenix Inc Pvt Ltd and protected under applicable intellectual property laws. You may not copy, reproduce, distribute, or exploit any content without prior written permission.</p>'],
++                    ['num' => 7, 'title' => 'Prohibited Activities', 'content' => '<p class="leading-relaxed text-slate-600">You agree not to use the website for illegal purposes, upload harmful code, attempt to hack/disrupt/damage the website, engage in data mining or scraping, or violate any applicable laws or regulations. Violations may result in termination of access.</p>'],
++                    ['num' => 8, 'title' => 'Third-Party Services & Links', 'content' => '<p class="leading-relaxed text-slate-600">Our website may include links or integrations with third-party services. We are not responsible for their content, policies, or practices. Use of such services is at your own risk.</p>'],
++                    ['num' => 9, 'title' => 'Disclaimer of Warranties', 'content' => '<p class="leading-relaxed text-slate-600">Our website and services are provided on an "as is" and "as available" basis. We do not guarantee uninterrupted or error-free availability, accuracy or reliability of content, or that defects will be corrected. Your use of the website is at your sole risk.</p>'],
++                    ['num' => 10, 'title' => 'Limitation of Liability', 'content' => '<p class="leading-relaxed text-slate-600">To the maximum extent permitted by law, Biogenix Inc Pvt Ltd shall not be liable for indirect, incidental, or consequential damages; loss of data, revenue, or profits; or damages arising from use or inability to use our services.</p>'],
++                    ['num' => 11, 'title' => 'Indemnification', 'content' => '<p class="leading-relaxed text-slate-600">You agree to indemnify and hold harmless Biogenix Inc Pvt Ltd, its employees, and affiliates from claims, damages, or expenses arising from your use of the website, violation of these Terms, or infringement of third-party rights.</p>'],
++                    ['num' => 12, 'title' => 'Termination', 'content' => '<p class="leading-relaxed text-slate-600">We reserve the right to suspend or terminate your access to the website at any time and remove any content or data if you violate these Terms or engage in harmful activities.</p>'],
++                    ['num' => 13, 'title' => 'Governing Law', 'content' => '<p class="leading-relaxed text-slate-600">These Terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts in Lucknow, Uttar Pradesh.</p>'],
++                    ['num' => 14, 'title' => 'Changes to Terms', 'content' => '<p class="leading-relaxed text-slate-600">We may update these Terms at any time without prior notice. Updated Terms will be posted on this page. Continued use of the website implies acceptance of revised Terms.</p>'],
++                    ['num' => 15, 'title' => 'Contact Information', 'content' => '<p class="leading-relaxed text-slate-600">If you have any questions regarding these Terms, please contact us:</p><p class="mt-3 leading-relaxed text-slate-600">Company Name: Biogenix Inc Pvt Ltd<br>Email:<br>Phone:<br>Address:</p>'],
+                 ];
+             @endphp
+ 
+@@ -76,30 +62,10 @@ class="flex w-full items-center gap-4 px-6 py-5 text-left transition hover:bg-sl
+             @endforeach
+         </div>
+     </section>
+-
+-    {{-- Footer bar --}}
+-    <div class="border-t border-slate-200 bg-white py-6">
+-        <div class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+-            <div class="flex items-center gap-3">
+-                <div class="relative h-9 w-9 rounded-xl bg-primary-600">
+-                    <span class="absolute left-2 top-2 h-2 w-2 rounded-sm bg-white"></span>
+-                    <span class="absolute bottom-2 right-2 h-2 w-2 rounded-sm bg-white"></span>
+-                </div>
+-                <span class="text-sm font-semibold text-slate-900">Biogenix Labs</span>
+-            </div>
+-            <p class="text-sm text-slate-500">&copy; 2023 Biogenix International. All rights reserved.</p>
+-            <nav class="flex flex-wrap gap-6">
+-                <a href="{{ route('privacy') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Privacy Policy</a>
+-                <a href="{{ route('privacy') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Cookie Policy</a>
+-                <a href="{{ route('contact') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Compliance</a>
+-            </nav>
+-        </div>
+-    </div>
+ </div>
+ 
+ @push('scripts')
+ <script>
+-    // Open section 1 by default
+     document.addEventListener('DOMContentLoaded', function() {
+         toggleTermsSection(1);
+     });
+@@ -112,12 +78,10 @@ function toggleTermsSection(num) {
+ 
+         var isOpen = !panel.classList.contains('hidden');
+ 
+-        // Close all panels
+         document.querySelectorAll('.terms-panel').forEach(function(p) { p.classList.add('hidden'); });
+         document.querySelectorAll('.terms-chevron').forEach(function(c) { c.classList.remove('rotate-180'); });
+         document.querySelectorAll('[id^="terms-btn-"]').forEach(function(b) { b.setAttribute('aria-expanded', 'false'); });
+ 
+-        // Toggle if was closed
+         if (!isOpen) {
+             panel.classList.remove('hidden');
+             chevron.classList.add('rotate-180');
+diff --git a/resources/views/partials/header.blade.php b/resources/views/partials/header.blade.php
+index 6203f83..a6f7199 100644
+--- a/resources/views/partials/header.blade.php
++++ b/resources/views/partials/header.blade.php
+@@ -126,7 +126,6 @@ class="header-nav-link relative whitespace-nowrap rounded-lg font-semibold no-un
+                                 <div class="w-[220px] bg-white border-r border-slate-100 py-6" id="mm-level1-container">
+                                     <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="solutions">Solutions</button>
+                                     <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="products">Products</button>
+-                                    <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="community">Community</button>
+                                 </div>
+                                 
+                                 <!-- Middle Column (Level 2) -->
+@@ -134,8 +133,8 @@ class="header-nav-link relative whitespace-nowrap rounded-lg font-semibold no-un
+                                     <!-- Populated by JS -->
+                                 </div>
+                                 
+-                                <!-- Right Column (Level 3 & Image) -->
+-                                <div class="flex-1 bg-slate-50 flex" id="mm-level3-container">
++                                <!-- Right Column (Level 3) -->
++                                <div class="flex-1 bg-slate-50" id="mm-level3-container">
+                                     <!-- Populated by JS -->
+                                 </div>
+                             </div>
+@@ -664,51 +663,89 @@ class="inline-flex h-11 items-center justify-center rounded-2xl bg-primary-600 p
+             solutions: {
+                 categories: [
+                     {
+-                        id: "sol-1",
++                        id: "sol-hospitalwide",
+                         label: "Hospitalwide Solution",
+-                        subcategories: ["For ER", "For ICU", "For CCU", "For OR", "M-Connect IT Solution", "View all"]
++                        href: "/solutions/hospitalwide-solution",
++                        subcategories: [
++                            { label: "For ER", href: "/solutions/hospitalwide-solution?segment=er" },
++                            { label: "For ICU", href: "/solutions/hospitalwide-solution?segment=icu" },
++                            { label: "For CCU", href: "/solutions/hospitalwide-solution?segment=ccu" }
++                        ]
+                     },
+                     {
+-                        id: "sol-2",
++                        id: "sol-emergency",
+                         label: "Emergency Care",
+-                        subcategories: ["Pre-hospital", "Emergency Room", "View all"]
++                        href: "/solutions/emergency-care",
++                        subcategories: [
++                            { label: "Response Systems", href: "/solutions/emergency-care?segment=response" },
++                            { label: "Care Workflows", href: "/solutions/emergency-care?segment=workflow" }
++                        ]
+                     },
+-                    { id: "sol-3", label: "Critical Care", subcategories: [] },
+-                    { id: "sol-4", label: "Perioperative Care", subcategories: [] },
+-                    { id: "sol-5", label: "Minimally Invasive Surgery", subcategories: [] },
+-                    { 
+-                        id: "sol-6", 
+-                        label: "Laboratory Diagnostics", 
+-                        subcategories: ["Small-volume Laboratories", "Mid-volume Laboratories", "High-volume Laboratories", "View all"] 
++                    {
++                        id: "sol-critical",
++                        label: "Critical Care",
++                        href: "/solutions/critical-care",
++                        subcategories: [
++                            { label: "ICU Programs", href: "/solutions/critical-care?segment=icu" },
++                            { label: "Monitoring Solutions", href: "/solutions/critical-care?segment=monitoring" }
++                        ]
++                    },
++                    {
++                        id: "sol-perioperative",
++                        label: "Perioperative Care",
++                        href: "/solutions/perioperative-care",
++                        subcategories: [
++                            { label: "OT Readiness", href: "/solutions/perioperative-care?segment=ot-readiness" },
++                            { label: "Procedure Support", href: "/solutions/perioperative-care?segment=procedure-support" }
++                        ]
++                    },
++                    {
++                        id: "sol-mis",
++                        label: "Minimally Invasive Surgery",
++                        href: "/solutions/minimally-invasive-surgery",
++                        subcategories: [
++                            { label: "Procedure Suites", href: "/solutions/minimally-invasive-surgery?segment=suites" },
++                            { label: "Device Portfolio", href: "/solutions/minimally-invasive-surgery?segment=devices" }
++                        ]
+                     },
+-                    { id: "sol-7", label: "Medical Imaging", subcategories: ["General Imaging", "Women's Healthcare", "Cardiology", "POC", "View all"] },
+-                    { id: "sol-8", label: "Cybersecurity", subcategories: [] },
+-                    { id: "sol-9", label: "View all", subcategories: [] }
+-                ]
+-            },
+-            products: {
+-                categories: [
+                     {
+-                        id: "prod-1",
+-                        label: "Patient Monitoring",
+-                        subcategories: ["Continuous Patient Monitoring", "Transport Monitoring", "Wearable Monitoring", "Telemetry Monitoring", "Vital Signs Monitoring", "Centralized Monitoring", "Patient Monitoring Accessories", "Mobile Application", "View all"]
++                        id: "sol-lab",
++                        label: "Laboratory Diagnostics",
++                        href: "/solutions/laboratory-diagnostics",
++                        subcategories: [
++                            { label: "Small-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=small" },
++                            { label: "Mid-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=mid" },
++                            { label: "High-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=high" }
++                        ]
+                     },
+-                    { id: "prod-2", label: "Anesthesia", subcategories: [] },
+-                    { id: "prod-3", label: "Ventilators", subcategories: [] },
+-                    { id: "prod-4", label: "Infusion System", subcategories: [] },
+-                    { id: "prod-5", label: "Defibrillation System", subcategories: [] },
+-                    { id: "prod-6", label: "Electrocardiograph (ECG)", subcategories: [] },
+-                    { id: "prod-7", label: "Laboratory Diagnostics", subcategories: [] },
+-                    { id: "prod-8", label: "Reagents", subcategories: [] },
+-                    { id: "prod-9", label: "Ultrasound", subcategories: [] },
+-                    { id: "prod-10", label: "Radiology", subcategories: [] }
++                    {
++                        id: "sol-cyber",
++                        label: "Cybersecurity",
++                        href: "/solutions/cybersecurity",
++                        subcategories: [
++                            { label: "Endpoint Security", href: "/solutions/cybersecurity?segment=endpoint" },
++                            { label: "Network Protection", href: "/solutions/cybersecurity?segment=network" }
++                        ]
++                    }
+                 ]
+             },
+-            community: {
++            products: {
+                 categories: [
+-                    { id: "com-1", label: "Nuewa Club", subcategories: [] },
+-                    { id: "com-2", label: "Global Clinical Institute", subcategories: [] },
+-                    { id: "com-3", label: "U-Studio", subcategories: [] }
++                    { id: "prod-biochemistry", label: "Biochemistry", href: "/product-categories/biochemistry", subcategories: [] },
++                    { id: "prod-blood-culture-bottle", label: "Blood Culture Bottle", href: "/product-categories/blood-culture-bottle", subcategories: [] },
++                    { id: "prod-elisa-kits", label: "Elisa Kits", href: "/product-categories/elisa-kits", subcategories: [] },
++                    { id: "prod-haematology", label: "Haematology", href: "/product-categories/haematology", subcategories: [] },
++                    { id: "prod-instrument", label: "Instrument", href: "/product-categories/instrument", subcategories: [] },
++                    { id: "prod-poct", label: "POCT", href: "/product-categories/poct", subcategories: [] },
++                    { id: "prod-rapid", label: "Rapid", href: "/product-categories/rapid", subcategories: [] },
++                    { id: "prod-serology", label: "Serology", href: "/product-categories/serology", subcategories: [] },
++                    { id: "prod-urinalysis", label: "Urinalysis", href: "/product-categories/urinalysis", subcategories: [] },
++                    { id: "prod-special-chemistry", label: "Special Chemistry", href: "/product-categories/special-chemistry", subcategories: [] },
++                    { id: "prod-clia", label: "CLIA", href: "/product-categories/clia", subcategories: [] },
++                    { id: "prod-veterinary", label: "Veterinary", href: "/product-categories/veterinary", subcategories: [] },
++                    { id: "prod-molecular", label: "Molecular", href: "/product-categories/molecular", subcategories: [] },
++                    { id: "prod-microbiology", label: "Microbiology", href: "/product-categories/microbiology", subcategories: [] },
++                    { id: "prod-ivd-instruments", label: "IVD Instruments", href: "/product-categories/ivd-instruments", subcategories: [] }
+                 ]
+             }
+         };
+@@ -740,7 +777,7 @@ function renderLevel2(targetId) {
+             categories.forEach(cat => {
+                 const hasArrow = cat.subcategories && cat.subcategories.length > 0;
+                 html += `
+-                    <button class="mm-level2-btn w-full text-left px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-slate-600 hover:text-primary-700 transition-colors border-b border-transparent hover:border-slate-100" data-id="${cat.id}">
++                    <button class="mm-level2-btn w-full text-left px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-slate-600 hover:text-primary-700 transition-colors border-b border-transparent hover:border-slate-100" data-id="${cat.id}" data-href="${cat.href || '#'}">
+                         <span>${cat.label}</span>
+                         ${hasArrow ? `<svg class="w-3 h-3 text-slate-400 group-hover:text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>` : ''}
+                     </button>
+@@ -754,6 +791,11 @@ function renderLevel2(targetId) {
+                 btn.addEventListener('mouseenter', () => {
+                     renderLevel3(targetId, btn.dataset.id);
+                 });
++                btn.addEventListener('click', () => {
++                    if (btn.dataset.href) {
++                        window.location.href = btn.dataset.href;
++                    }
++                });
+             });
+ 
+             // Auto-select first item
+@@ -790,32 +832,20 @@ function renderLevel3(l1Id, l2Id) {
+                 }
+             });
+ 
+-            let html = '<div class="w-1/2 p-8 border-r border-slate-100/50 flex flex-col gap-2">';
++            let html = '<div class="w-full p-8 flex flex-col gap-2">';
+             if (cat.subcategories && cat.subcategories.length > 0) {
+                 cat.subcategories.forEach(sub => {
++                    const href = sub.href || cat.href || '#';
++                    const label = sub.label || '';
+                     html += `
+-                        <a href="#" class="px-2 py-2 text-[13px] font-medium text-slate-600 hover:text-primary-700 transition-colors border-b border-slate-100 last:border-0">${sub}</a>
++                        <a href="${href}" class="px-2 py-2 text-[13px] font-medium text-slate-600 hover:text-primary-700 transition-colors border-b border-slate-100 last:border-0">${label}</a>
+                     `;
+                 });
+             } else {
+-                html += `<div class="text-sm text-slate-400 italic">No subcategories available.</div>`;
++                html += `<div class="text-sm text-slate-500">Browse category overview.</div>`;
+             }
+             html += '</div>';
+ 
+-            // Image right side
+-            html += `
+-                <div class="w-1/2 p-8 relative flex flex-col items-center justify-center overflow-hidden">
+-                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-20" alt="bg">
+-                    <div class="relative z-10 text-center">
+-                        <h3 class="text-xl font-bold text-slate-800 mb-2">${cat.label}</h3>
+-                        <a href="#" class="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold rounded-full transition-colors shadow-md">
+-                            Explore
+-                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+-                        </a>
+-                    </div>
+-                </div>
+-            `;
+-
+             level3Container.innerHTML = html;
+         }
+ 
+diff --git a/routes/web.php b/routes/web.php
+index c8538a8..9f32841 100644
+--- a/routes/web.php
++++ b/routes/web.php
+@@ -108,6 +108,24 @@
+     ]);
+ })->name('meet-team.show');
+ Route::view('/portfolio', 'information.portfolio')->name('portfolio');
++Route::get('/solutions/{solutionSlug}', function (string $solutionSlug) {
++    $displayName = str_replace('-', ' ', $solutionSlug);
++    $displayName = ucwords($displayName);
++
++    return view('information.solution-dummy', [
++        'solutionSlug' => $solutionSlug,
++        'solutionName' => $displayName,
++    ]);
++})->name('solutions.detail');
++Route::get('/product-categories/{categorySlug}', function (string $categorySlug) {
++    $displayName = str_replace('-', ' ', $categorySlug);
++    $displayName = ucwords($displayName);
++
++    return view('product.product-category-dummy', [
++        'categorySlug' => $categorySlug,
++        'categoryName' => $displayName,
++    ]);
++})->name('products.category.detail');
+ Route::get('/contact', [ContactUsController::class, 'index'])->middleware('permission:contact')->name('contact');
+ Route::post('/contact', [ContactUsController::class, 'store'])->middleware('permission:contact.store')->name('contact.store');
+ Route::view('/privacy', 'information.privacy')->middleware('permission:privacy')->name('privacy');
+@@ -190,4 +208,3 @@
+     Route::view('/role-permission/add-delegation', 'admin.RolePermissions.add-delegation')->name('role-permission.add-delegation');
+     Route::view('/role-permission/grant-impersonation', 'admin.RolePermissions.grant-impersonation')->name('role-permission.grant-impersonation');
+ });
+-

@@ -1,0 +1,35 @@
+﻿biogenix_price_list_inserts_sanitized.sql.txt
+Caddyfile
+nixpacks.toml
+test-db-ssl.cjs
+public\upload\portfolio\All India Institute of Medical Sciences (AIIMS).png
+public\upload\portfolio\Armed Forces Medical Stores Depots (AFMSD).png
+public\upload\portfolio\Assam Medical Services Corporation Limited (AMSCL).jpg
+public\upload\portfolio\Banaras Hindu University (BHU).png
+public\upload\portfolio\Bihar Medical Services and Infrastructure Corporation Limited (BMSICL).png
+public\upload\portfolio\Chandan Hospital.png
+public\upload\portfolio\Chhattisgarh Medical Services Corporation Ltd. (CGMSCL).jpg
+public\upload\portfolio\Command Hospital.gif
+public\upload\portfolio\Dehradun Health and Family Welfare.png
+public\upload\portfolio\Dr. Ram Manohar Lohia Institute of Medical Sciences (RMLIMS).png
+public\upload\portfolio\Government E Marketplace (GeM).png
+public\upload\portfolio\Government of West Bengal.png
+public\upload\portfolio\Gujarat Medical Services Corporation Ltd (GMSCL).jpg
+public\upload\portfolio\Haryana Medical Services Corporation Limited (HMSCL).png
+public\upload\portfolio\Himachal Pradesh Medical Services Corporation Limited (HPMSCL).jpg
+public\upload\portfolio\Indian Council of Medical Research (ICMR).png
+public\upload\portfolio\Janaushadhi.jpg
+public\upload\portfolio\King George's Medical University (KGMU).png
+public\upload\portfolio\Madhya Pradesh Public health Service Corporation Limited (MPPHSCL).png
+public\upload\portfolio\Maharashtra Medical Goods Procurement Authority (MMGPA).jpeg
+public\upload\portfolio\Odisha State Medical Corporation Ltd (OSMC).jpg
+public\upload\portfolio\Sanjay Gandhi Postgraduate Institute of Medical Sciences (SGPGI).png
+public\upload\portfolio\Tamil Nadu Medical Services Corporation Limited (TNMSC).jpg
+public\upload\portfolio\Thyrocare.png
+public\upload\portfolio\Uttar Pradesh Medical Supplies Corporation Limited (UPMSCL).jpeg
+public\upload\team\dimple-srivastava.jpg
+public\upload\team\Mr. Santosh Srivastava.JPG
+public\upload\team\Mrs .Dimple Srivastava.JPG
+public\upload\team\santosh-srivastava.jpg
+resources\views\information\solution-dummy.blade.php
+resources\views\product\product-category-dummy.blade.php

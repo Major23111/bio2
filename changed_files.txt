@@ -1,0 +1,16 @@
+﻿.gitignore
+.phpunit.result.cache
+package-lock.json
+config\team.php
+resources\views\home.blade.php
+resources\views\admin\partials\sidebar.blade.php
+resources\views\information\about.blade.php
+resources\views\information\book-meeting.blade.php
+resources\views\information\contact.blade.php
+resources\views\information\faq.blade.php
+resources\views\information\generate-quotation.blade.php
+resources\views\information\privacy.blade.php
+resources\views\information\refund.blade.php
+resources\views\information\terms.blade.php
+resources\views\partials\header.blade.php
+routes\web.php
