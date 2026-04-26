@@ -15,6 +15,50 @@ class PricingCrudController extends Controller
     {
     }
 
+    // Show the dedicated Map Pricing page for a single variant.
+    public function showMapPricingForm(Request $request): View
+    {
+        $variantId = (int) $request->query('variant_id', 0);
+
+        $variant = \App\Models\Product\ProductVariant::with([
+            'product:id,name,sku,category_id',
+            'product.category:id,name',
+            'prices',
+            'bulkPrices' => fn($q) => $q->where('is_active', true)->orderBy('min_quantity'),
+        ])->findOrFail($variantId);
+
+        // Load sibling variants (other pack sizes of the same product).
+        $siblingVariants = \App\Models\Product\ProductVariant::where('product_id', $variant->product_id)
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->get(['id', 'variant_name', 'catalog_number']);
+
+        // Extract current prices.
+        $basePrice = $variant->prices->where('price_type', 'base')->where('is_active', true)->first();
+        $b2cPrice  = $variant->prices->where('price_type', 'b2c')->where('is_active', true)->first();
+        $b2bPrice  = $variant->prices->where('price_type', 'b2b')->where('is_active', true)->first();
+
+        // Load company-specific pricing for this variant.
+        $companyPrices = \App\Models\Product\ProductPrice::with(['company:id,name,company_type'])
+            ->where('product_variant_id', $variantId)
+            ->whereNotNull('company_id')
+            ->where('is_active', true)
+            ->get();
+
+        // Load all products for dropdown (reuse existing service method).
+        $allProductsForDropdown = $this->pricingCrudService->getAllProductsForDropdown();
+
+        return view('admin.pricing.map-pricing', [
+            'variant'              => $variant,
+            'siblingVariants'      => $siblingVariants,
+            'basePrice'            => $basePrice,
+            'b2cPrice'             => $b2cPrice,
+            'b2bPrice'             => $b2bPrice,
+            'companyPrices'        => $companyPrices,
+            'allProductsForDropdown' => $allProductsForDropdown,
+        ]);
+    }
+
     // Load the pricing management page with all section data from the database.
     public function index(): View
     {

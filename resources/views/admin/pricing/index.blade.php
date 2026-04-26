@@ -79,15 +79,21 @@
                 </tbody>
             </table>
         </div>
+
+        @if ($mappedProducts->hasPages())
+            <div class="px-6 lg:px-8 py-4 border-t border-slate-100">
+                {{ $mappedProducts->links() }}
+            </div>
+        @endif
     </div>
 
     <!-- Unmapped Products Box -->
     <div class="bg-[var(--ui-surface)] rounded-[16px] shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] p-6 lg:p-8">
         <div class="flex items-center gap-3.5 mb-8">
             <h2 class="text-[19px] font-bold text-[var(--ui-text)] tracking-tight leading-none">Unmapped Products</h2>
-            @if (count($unmappedProducts) > 0)
+            @if ($unmappedProducts->total() > 0)
                 <span class="bg-red-50 text-[#e11d48] px-2.5 py-1 rounded-[4px] text-[9px] font-bold tracking-widest uppercase border border-red-100/50">
-                    {{ count($unmappedProducts) }} Pending Configuration
+                    {{ $unmappedProducts->total() }} Pending Configuration
                 </span>
             @endif
         </div>
@@ -109,7 +115,7 @@
                             <td class="py-4 text-[12px] font-medium text-slate-500 tracking-wide uppercase font-mono">{{ $product['catalog_number'] }}</td>
                             <td class="py-4 text-[12px] font-medium text-slate-500">{{ $product['date_added'] }}</td>
                             <td class="py-4 text-right">
-                                <button type="button" data-pricing-modal-open="mapPricingModal" data-variant-id="{{ $product['variant_id'] }}" class="text-[11px] font-extrabold text-primary-800 hover:text-primary-600 transition uppercase tracking-widest">MAP PRICING &rsaquo;</button>
+                                <a href="{{ route('admin.pricing.map-price.form', ['variant_id' => $product['variant_id']]) }}" class="ajax-link text-[11px] font-extrabold text-primary-800 hover:text-primary-600 transition uppercase tracking-widest">MAP PRICING &rsaquo;</a>
                             </td>
                         </tr>
                     @empty
@@ -120,116 +126,15 @@
                 </tbody>
             </table>
         </div>
+
+        @if ($unmappedProducts->hasPages())
+            <div class="px-6 lg:px-8 py-4 border-t border-slate-100">
+                {{ $unmappedProducts->links() }}
+            </div>
+        @endif
     </div>
 
-    <!-- Discount Slabs Box -->
-    <div class="bg-[var(--ui-surface)] rounded-[16px] shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] p-6 lg:p-8">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
-            <div>
-                <h2 class="text-[19px] font-bold text-[var(--ui-text)] tracking-tight leading-none">Discount Slabs</h2>
-                <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Volume-based tiering rules</p>
-            </div>
-            <button type="button" data-pricing-modal-open="bulkPricingModal" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-[#f8fafc] px-4 py-2 text-[12px] font-bold text-slate-700 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition hover:bg-white hover:border-slate-300">
-                <svg class="w-3.5 h-3.5 text-[#1e293b]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
-                Add Discount Slab
-            </button>
-        </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[700px]">
-                <thead>
-                    <tr class="border-b border-slate-100">
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">PRODUCT RANGE</th>
-                        @foreach ($bulkPricingTable['slab_columns'] as $qty)
-                            <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">MIN QTY: {{ $qty }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @forelse ($bulkPricingTable['rows'] as $row)
-                        <tr class="hover:bg-slate-50/50 transition">
-                            <td class="py-4 text-[13px] font-medium text-slate-700">{{ $row['product_name'] }}</td>
-                            @foreach ($bulkPricingTable['slab_columns'] as $qty)
-                                <td class="py-4 text-[13px] font-medium text-slate-600">
-                                    {{ isset($row['prices'][$qty]) ? '₹' . number_format($row['prices'][$qty], 2) : '—' }}
-                                </td>
-                            @endforeach
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="{{ count($bulkPricingTable['slab_columns']) + 1 }}" class="py-8 text-center text-[13px] text-slate-400 font-medium">No discount slabs configured.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Company Specific Pricing Box -->
-    <div class="bg-[var(--ui-surface)] rounded-[16px] shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] p-6 lg:p-8">
-        <div class="flex flex-col lg:flex-row justify-between lg:items-center mb-8 gap-6">
-            <div>
-                <h2 class="text-[19px] font-bold text-slate-900 tracking-tight leading-none">Company Specific Pricing</h2>
-                <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Custom B2B rates and negotiated slabs for key accounts</p>
-            </div>
-            <div class="flex flex-col sm:flex-row gap-3">
-                <div class="relative border border-slate-200/80 rounded-[8px] overflow-hidden flex items-center bg-white hover:border-slate-300 transition">
-                    <svg class="h-4 w-4 text-slate-400 absolute left-3 flex-shrink-0 bg-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    <input type="text" placeholder="Search Company Name..." class="w-full sm:w-64 pl-9 pr-4 py-2 border-none outline-none text-[13px] placeholder:text-slate-400 focus:bg-[#f8fafc] transition shadow-inner shadow-white">
-                </div>
-                <button type="button" data-pricing-modal-open="companyPricingModal" class="inline-flex items-center justify-center gap-2.5 rounded-xl bg-primary-600 px-5 py-2.5 text-[13px] font-bold text-white shadow-md shadow-primary-600/20 transition hover:bg-primary-700 whitespace-nowrap">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    Add Company Pricing
-                </button>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
-            @forelse ($companyPricingList as $company)
-                <!-- Card -->
-                <div class="border border-slate-100 rounded-[12px] bg-[#fcfdfd] p-6 relative group hover:border-slate-200 transition duration-200 shadow-[0_2px_12px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
-                    <div class="flex items-start justify-between mb-8">
-                        <div class="flex items-center gap-4">
-                            <div class="h-[46px] w-[46px] bg-white border border-slate-100 shadow-sm rounded-lg flex items-center justify-center font-black text-slate-800 text-[15px]">
-                                {{ $company['short_name'] }}
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-slate-900 text-[16px] tracking-tight leading-none mb-1">{{ $company['company_name'] }}</h3>
-                                <p class="text-[9px] font-black tracking-widest text-[#64748b] uppercase">{{ $company['type'] }}</p>
-                            </div>
-                        </div>
-                        <button type="button" data-pricing-modal-open="companyPricingModal" data-company-id="{{ $company['company_id'] }}" class="rounded-lg border border-slate-200 bg-white p-1.5 text-slate-400 shadow-sm transition hover:border-primary-100 hover:bg-primary-50 hover:text-primary-600">
-                            <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                        </button>
-                    </div>
-
-                    <div class="space-y-4 mb-8">
-                        <div class="flex justify-between items-center text-[13px]">
-                            <span class="text-slate-500 font-medium">Preferred B2B Rate</span>
-                            <span class="font-extrabold text-slate-900">{{ $company['preferred_rate'] }}</span>
-                        </div>
-                        <div class="flex justify-between items-center text-[13px]">
-                            <span class="text-slate-500 font-medium">Private Slab Active</span>
-                            @if ($company['has_private_slabs'])
-                                <span class="font-black text-[#059669] tracking-wider">YES</span>
-                            @else
-                                <span class="font-black text-slate-400 tracking-wider">NO</span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between items-center pt-5 border-t border-slate-100">
-                        <span class="text-slate-400 font-bold text-[10px] uppercase tracking-widest">LAST SYNC: {{ strtoupper($company['last_sync']) }}</span>
-                        <a href="#" class="font-bold text-primary-800 text-[12px] hover:text-primary-600 transition tracking-wide">View Matrix</a>
-                    </div>
-                </div>
-            @empty
-                <div class="col-span-full py-8 text-center text-[13px] text-slate-400 font-medium border border-dashed border-slate-200 rounded-xl">
-                    No company specific pricing configured.
-                </div>
-            @endforelse
-        </div>
-    </div>
 </div>
 
 

@@ -11,28 +11,22 @@ use Illuminate\Validation\ValidationException;
 
 class PricingCrudService
 {
-    // Load all products that have at least one base price row (these are mapped).
-    public function getMappedProducts(): array
+    public function getMappedProducts(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        // Load variants that have a base price, with product and all prices eager loaded.
-        $mappedVariantList = ProductVariant::query()
+        $paginator = ProductVariant::query()
             ->with(['product:id,name,sku,category_id', 'prices'])
             ->whereHas('prices', function ($query) {
                 $query->where('price_type', 'base')->where('is_active', true);
             })
             ->where('is_active', true)
-            ->get();
+            ->paginate(10, ['*'], 'mapped_page');
 
-        // Build the final display rows.
-        $mappedProductList = [];
-
-        foreach ($mappedVariantList as $variant) {
-            // Read the base, b2b, and b2c price amounts from the loaded prices.
+        $paginator->getCollection()->transform(function ($variant) {
             $basePrice  = $variant->prices->where('price_type', 'base')->first();
             $b2bPrice   = $variant->prices->where('price_type', 'b2b')->first();
             $b2cPrice   = $variant->prices->where('price_type', 'b2c')->first();
 
-            $mappedProductList[] = [
+            return [
                 'variant_id'   => (int) $variant->id,
                 'product_name' => $variant->product?->name ?? 'Unknown Product',
                 'sku'          => $variant->product?->sku ?? $variant->sku,
@@ -40,37 +34,33 @@ class PricingCrudService
                 'b2c_price'    => $b2cPrice  ? (float) $b2cPrice->amount  : null,
                 'b2b_price'    => $b2bPrice  ? (float) $b2bPrice->amount  : null,
             ];
-        }
+        });
 
-        return $mappedProductList;
+        return $paginator;
     }
 
     // Load all products that have NO base price row (these need pricing mapped).
-    public function getUnmappedProducts(): array
+    public function getUnmappedProducts(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        // Load variants with no base price row at all.
-        $unmappedVariantList = ProductVariant::query()
+        $paginator = ProductVariant::query()
             ->with(['product:id,name,sku'])
             ->whereDoesntHave('prices', function ($query) {
                 $query->where('price_type', 'base');
             })
             ->where('is_active', true)
             ->orderByDesc('id')
-            ->get();
+            ->paginate(10, ['*'], 'unmapped_page');
 
-        // Build the final display rows.
-        $unmappedProductList = [];
-
-        foreach ($unmappedVariantList as $variant) {
-            $unmappedProductList[] = [
+        $paginator->getCollection()->transform(function ($variant) {
+            return [
                 'variant_id'     => (int) $variant->id,
                 'product_name'   => $variant->product?->name ?? 'Unknown Product',
                 'catalog_number' => $variant->catalog_number ?? $variant->sku,
                 'date_added'     => $variant->created_at?->format('Y-m-d') ?? '—',
             ];
-        }
+        });
 
-        return $unmappedProductList;
+        return $paginator;
     }
 
     // Load all products for the bulk pricing modal dropdown.

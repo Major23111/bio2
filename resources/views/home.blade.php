@@ -901,8 +901,10 @@
             </div>
         </section>
 
-        <section class="home-categories bg-transparent py-12 md:py-16">
-            <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
+        <section class="home-categories relative py-12 md:py-16 overflow-hidden">
+            <img src="{{ asset('upload/categories/core-categories-bg.jpg') }}" alt="" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">
+            <div class="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-[2px]"></div>
+            <div class="relative z-10 mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
                 <div class="home-reveal home-categories-heading text-slate-900">
                     <x-ui.section-heading title="Core Product Categories"
                         subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
@@ -926,7 +928,21 @@
                         @forelse ($productCategories as $category)
                             @php
                                 $tileClass = 'home-category-tile--standard';
-                                $imagePath = $category->default_image_path ?: 'upload/categories/image1.jpg';
+                                // Try to find a matching image in public/upload/categories/ by category name
+                                $catImagePath = null;
+                                $catName = $category->name;
+                                $catDir = public_path('upload/categories');
+                                if (is_dir($catDir)) {
+                                    $catFiles = scandir($catDir);
+                                    foreach ($catFiles as $catFile) {
+                                        $fileBaseName = pathinfo($catFile, PATHINFO_FILENAME);
+                                        if (strcasecmp($fileBaseName, $catName) === 0) {
+                                            $catImagePath = 'upload/categories/' . $catFile;
+                                            break;
+                                        }
+                                    }
+                                }
+                                $imagePath = $catImagePath ?: ($category->default_image_path ?: 'upload/categories/image1.jpg');
                                 $categoryCopy = \Illuminate\Support\Str::limit($category->description ?: $category->application ?: 'Explore products from this category.', 60);
                             @endphp
                             <article
@@ -1143,7 +1159,7 @@
 
                         <div
                             class="relative min-h-[240px] lg:min-h-[360px] overflow-hidden rounded-[var(--ui-radius-card)]">
-                            <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="Biogenix Distribution Network"
+                            <img src="{{ asset('upload/corousel/nationwide-bg.jpg') }}" alt="Biogenix Distribution Network"
                                 class="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async">
                             <div
                                 class="absolute bottom-4 right-4 z-10 rounded-2xl border border-secondary-700/20 bg-secondary-600 px-4 py-2.5 shadow-sm sm:bottom-5 sm:right-5 text-center">
