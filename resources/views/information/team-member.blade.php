@@ -3,11 +3,11 @@
 @section('title', 'Meet ' . $member['name'])
 
 @section('content')
-<div class="min-h-screen bg-slate-50 py-12 md:py-20">
+<div class="min-h-screen bg-slate-50 pt-6 md:pt-8 pb-12 md:pb-20">
     <div class="mx-auto w-[90%] md:w-[80%]">
         
         <!-- Back Navigation -->
-        <a href="{{ route('meet-team') }}" class="inline-flex items-center text-primary-600 hover:text-primary-800 font-semibold mb-8 transition-colors">
+        <a href="{{ route('meet-team') }}" class="inline-flex items-center text-primary-600 hover:text-primary-800 font-semibold mb-5 transition-colors">
             <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
