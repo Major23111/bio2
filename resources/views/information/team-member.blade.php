@@ -17,8 +17,8 @@
         <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row">
             
             <!-- Left Side: Image -->
-            <div class="w-full md:w-5/12 lg:w-2/5 aspect-[4/3] md:aspect-auto bg-primary-50 relative shrink-0">
-                <img src="{{ Str::startsWith($member['img'], 'http') ? $member['img'] : asset($member['img']) }}" alt="{{ $member['name'] }}" class="absolute inset-0 w-full h-full object-cover">
+            <div class="w-full md:w-5/12 lg:w-2/5 aspect-[4/3] md:aspect-auto bg-slate-100 relative shrink-0">
+                <img src="{{ Str::startsWith($member['img'], 'http') ? $member['img'] : asset($member['img']) }}" alt="{{ $member['name'] }}" class="absolute inset-0 w-full h-full object-cover object-top">
             </div>
 
             <!-- Right Side: Details -->
