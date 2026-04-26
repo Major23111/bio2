@@ -731,17 +731,17 @@
         </section>
 
         <!-- Highlighted Numbering Section -->
-        <section class="bg-white/80 py-12 md:py-16 shadow-[0_4px_30px_rgba(0,0,0,0.03)] border-b border-slate-100 relative z-20 backdrop-blur-md">
+        <section class="bg-white/80 py-6 md:py-8 shadow-[0_4px_30px_rgba(0,0,0,0.03)] border-b border-slate-100 relative z-20 backdrop-blur-md">
             <div class="mx-auto max-w-[1400px] w-full px-4 sm:px-6 lg:px-8">
 
                 {{-- Mobile: horizontal scroll strip; md+: centred wrap --}}
-                <div class="flex gap-x-8 gap-y-12 overflow-x-auto scroll-smooth snap-x snap-mandatory [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-                            md:flex-wrap md:justify-center md:overflow-visible md:gap-x-20 md:gap-y-16 lg:w-[900px] lg:mx-auto
+                <div class="flex gap-x-8 gap-y-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
+                            md:flex-wrap md:justify-center md:overflow-visible md:gap-x-16 md:gap-y-8 lg:w-[900px] lg:mx-auto
                             pb-2 md:pb-0">
 
                     <!-- Item 1 -->
                     <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
-                        <div class="mb-5 text-primary-600">
+                        <div class="mb-3 text-primary-600">
                             <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
