@@ -1034,16 +1034,19 @@
                                 if (is_dir($catDir)) {
                                     $catFiles = scandir($catDir);
                                     foreach ($catFiles as $catFile) {
-                                        $fileBaseName = pathinfo($catFile, PATHINFO_FILENAME);
-                                        if (strcasecmp($fileBaseName, $catName) === 0) {
+                                        // Strip all extensions properly to handle files like .JPG.jpeg
+                                        $cleanFileBaseName = preg_replace('/(\.[a-zA-Z0-9]+)+$/', '', $catFile);
+                                        if (strcasecmp($cleanFileBaseName, $catName) === 0) {
                                             $catImagePath = 'upload/categories/' . $catFile;
                                             break;
                                         }
                                     }
                                 }
-                                $imagePath = $catImagePath ?: ($category->default_image_path ?: 'upload/categories/image1.jpg');
+                                $imagePath = $catImagePath;
                                 $categoryCopy = \Illuminate\Support\Str::limit($category->description ?: $category->application ?: 'Explore products from this category.', 60);
                             @endphp
+                            
+                            @if ($imagePath)
                             <article
                                 class="home-category-tile glass-card hover-lift home-reveal group {{ $tileClass }} rounded-[var(--ui-radius-card)]">
                                 <div class="home-category-tile__media">
@@ -1062,9 +1065,6 @@
                                         <h3 class="font-display text-lg font-semibold tracking-tight text-slate-950">
                                             {{ $category->name }}
                                         </h3>
-                                        <p class="home-category-copy mt-1.5 text-[13px] leading-5.5">
-                                            {{ $categoryCopy }}
-                                        </p>
                                     </div>
                                     <div class="mt-auto">
                                         <a href="{{ route('products.index', ['category' => $category->slug ?? $category->id]) }}"
@@ -1072,6 +1072,7 @@
                                     </div>
                                 </div>
                             </article>
+                            @endif
                         @empty
                             <article class="home-panel sm:col-span-2 xl:col-span-5">
                                 <h3 class="text-lg font-semibold text-slate-900">Categories will appear here</h3>
