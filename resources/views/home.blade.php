@@ -840,24 +840,23 @@
                             ->sortBy(fn ($file) => strtolower($file->getFilename()))
                             ->values();
                     @endphp
-                    <div class="mt-8 w-full">
-                        @if ($portfolioLogoFiles->isNotEmpty())
-                            @php
-                                $portfolioPerRow = (int) ceil($portfolioLogoFiles->count() / 2);
-                                $portfolioRows = [
-                                    $portfolioLogoFiles->slice(0, $portfolioPerRow)->values(),
-                                    $portfolioLogoFiles->slice($portfolioPerRow)->values(),
-                                ];
-                            @endphp
 
-                            <div class="flex gap-3 overflow-x-auto pb-2 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
+                    @if ($portfolioLogoFiles->isNotEmpty())
+                    <div class="mt-8 w-full overflow-hidden relative" id="logoMarqueeWrapper">
+                        {{-- Edge fade masks --}}
+                        <div class="pointer-events-none absolute inset-y-0 left-0 w-20 z-10 bg-gradient-to-r from-white to-transparent"></div>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 w-20 z-10 bg-gradient-to-l from-white to-transparent"></div>
+
+                        <div class="logo-marquee-track flex gap-5" id="logoMarqueeTrack">
+                            {{-- Render logos twice for seamless infinite loop --}}
+                            @foreach ([1, 2] as $_)
                                 @foreach ($portfolioLogoFiles as $logoFile)
                                     @php
-                                        $logoName = $logoFile->getFilename();
+                                        $logoName  = $logoFile->getFilename();
                                         $logoLabel = preg_replace('/\.[^.]+$/', '', $logoName);
-                                        $logoUrl = asset('upload/portfolio/' . rawurlencode($logoName));
+                                        $logoUrl   = asset('upload/portfolio/' . rawurlencode($logoName));
                                     @endphp
-                                    <article class="flex h-20 w-[138px] shrink-0 snap-start items-center justify-center rounded-xl border border-slate-200 bg-white p-2.5 shadow-sm">
+                                    <article class="logo-marquee-item flex h-20 w-[150px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                                         <img
                                             src="{{ $logoUrl }}"
                                             alt="{{ $logoLabel }}"
@@ -867,36 +866,28 @@
                                         >
                                     </article>
                                 @endforeach
-                            </div>
-
-                            <div class="hidden space-y-4 md:block">
-                                @foreach ($portfolioRows as $portfolioRow)
-                                    <div class="flex gap-4 overflow-x-auto pb-1 md:overflow-x-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                                        @foreach ($portfolioRow as $logoFile)
-                                            @php
-                                                $logoName = $logoFile->getFilename();
-                                                $logoLabel = preg_replace('/\.[^.]+$/', '', $logoName);
-                                                $logoUrl = asset('upload/portfolio/' . rawurlencode($logoName));
-                                            @endphp
-                                            <article class="flex h-24 min-w-[170px] items-center justify-center rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:min-w-[180px] md:min-w-0 lg:min-w-[190px]">
-                                                <img
-                                                    src="{{ $logoUrl }}"
-                                                    alt="{{ $logoLabel }}"
-                                                    loading="lazy"
-                                                    decoding="async"
-                                                    class="max-h-full w-full object-contain"
-                                                >
-                                            </article>
-                                        @endforeach
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-500">
-                                No portfolio images found in <span class="font-semibold">public/upload/portfolio</span>.
-                            </div>
-                        @endif
+                            @endforeach
+                        </div>
                     </div>
+
+                    <style>
+                        .logo-marquee-track {
+                            animation: logoMarquee 40s linear infinite;
+                            width: max-content;
+                        }
+                        #logoMarqueeWrapper:hover .logo-marquee-track {
+                            animation-play-state: paused;
+                        }
+                        @keyframes logoMarquee {
+                            0%   { transform: translateX(0); }
+                            100% { transform: translateX(-50%); }
+                        }
+                    </style>
+                    @else
+                        <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-500">
+                            No portfolio images found in <span class="font-semibold">public/upload/portfolio</span>.
+                        </div>
+                    @endif
                 </div>
             </div>
         </section>
