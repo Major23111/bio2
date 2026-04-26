@@ -1,6 +1,6 @@
 <div id="globalPageLoader" aria-hidden="true" class="fixed inset-0 z-[9999] opacity-100 visible transition-opacity duration-200">
-    <div class="h-full w-full overflow-hidden relative bg-slate-950">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.18),transparent_35%),radial-gradient(circle_at_bottom,rgba(34,197,94,0.12),transparent_30%)]"></div>
+    <div class="h-full w-full overflow-hidden relative bg-[#051009]">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(26,77,46,0.4),transparent_50%),radial-gradient(circle_at_bottom,rgba(253,224,71,0.12),transparent_40%)]"></div>
 
         {{-- Top Left Logo --}}
         <div class="absolute left-6 top-6 z-20 flex items-center gap-3 md:left-10 md:top-10">
@@ -16,7 +16,7 @@
 
                 {{-- Rotating Subtext Container --}}
                 <div class="mt-6 h-8 text-center sm:mt-8">
-                    <p id="rotatingLoaderText" class="text-sm font-medium tracking-wide text-slate-300 transition-all duration-500 md:text-base">
+                    <p id="rotatingLoaderText" class="text-sm font-medium tracking-wide text-primary-200/80 transition-all duration-500 md:text-base">
                         Loading relevant diagnostics and solutions
                     </p>
                 </div>
@@ -24,7 +24,7 @@
                 {{-- Loading Bar --}}
                 <div class="mt-8 w-64 max-w-[80vw] sm:mt-10">
                     <div class="h-[2px] w-full overflow-hidden rounded-full bg-white/10">
-                        <div class="loader-bar h-full rounded-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-amber-300"></div>
+                        <div class="loader-bar h-full rounded-full bg-gradient-to-r from-emerald-500 via-green-600 to-secondary-500"></div>
                     </div>
                 </div>
             </div>

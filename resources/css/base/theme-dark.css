@@ -8,8 +8,8 @@ html.dark {
     color-scheme: dark;
 
     /* UI - Dark neutral tones (harmonized with green primary) */
-    --ui-page-bg: #0f172a;
-    --ui-page-bg-gradient: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+    --ui-page-bg: #051009;
+    --ui-page-bg-gradient: linear-gradient(180deg, #051009 0%, #020402 100%);
     --ui-surface: #1e293b;
     --ui-surface-muted: #1a2332;
     --ui-surface-subtle: #334155;
