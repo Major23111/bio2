@@ -51,30 +51,30 @@
             </span>
             <h2 class="text-lg font-bold tracking-tight text-slate-900">PI Header Info</h2>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">PI Number</label>
-                <input id="piNumber" type="text" name="pi_number" placeholder="Enter PI Number"
-                    value="{{ old('pi_number', $proforma['piNumber'] ?? '') }}"
-                    class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition">
-            </div>
-            <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Date</label>
-                <input id="piDate" type="date" name="pi_date"
-                    value="{{ old('pi_date', $proforma['piDate'] ?? '') }}"
-                    class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none focus:border-primary-600">
-            </div>
-            <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">State</label>
-                <input id="piStateCode" type="text" name="seller_state_code" placeholder="27 (Maharashtra)"
-                    value="{{ old('seller_state_code', $proforma['sellerStateCode'] ?? '') }}"
-                    class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">
-            </div>
-            <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">GSTIN</label>
-                <input id="piGstin" type="text" name="seller_gstin" placeholder="27AAACB1234F1Z5"
-                    value="{{ old('seller_gstin', $proforma['sellerGstin'] ?? '') }}"
-                    class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">
+        <div class="hidden">
+            <input id="piNumber" type="hidden" name="pi_number" value="{{ old('pi_number', $proforma['piNumber'] ?? '') }}">
+            <input id="piDate" type="hidden" name="pi_date" value="{{ old('pi_date', $proforma['piDate'] ?? '') }}">
+            <input id="piStateCode" type="hidden" name="seller_state_code" value="{{ old('seller_state_code', $proforma['sellerStateCode'] ?? '') }}">
+            <input id="piGstin" type="hidden" name="seller_gstin" value="{{ old('seller_gstin', $proforma['sellerGstin'] ?? '') }}">
+        </div>
+
+        {{-- Biogenix Address Info --}}
+        <div class="rounded-xl bg-slate-50 p-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">PI Number</label>
+                    <div id="piNumberDisplay" class="h-10 w-full rounded-lg border border-slate-200 bg-slate-100 px-3 flex items-center text-xs font-bold text-slate-800 cursor-not-allowed"></div>
+                </div>
+                <div>
+                    <label class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Biogenix Address</label>
+                    <div class="rounded-lg border border-slate-200 bg-slate-100 px-3 py-3 text-[0.75rem] leading-relaxed text-slate-700 cursor-not-allowed">
+                        B19/A, S.I.L. Ancillary Estate,<br>
+                        Amausi Industrial Area, Nadarganj-226008,<br>
+                        Lucknow (U.P.)<br>
+                        <span class="font-bold text-slate-800 mt-1 block">Mob.: <span class="font-medium text-slate-700">9889485222, 9616105666</span></span>
+                        <span class="font-bold text-slate-800">E-mail: <span class="font-medium text-slate-700">biogenix2007@yahoo.com, info@biogenixinc.com</span></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -496,6 +496,18 @@
 
     if (piDateInput && !piDateInput.value) {
         piDateInput.value = now.toISOString().split('T')[0];
+    }
+
+    // ─── Sync PI Number to display field ───
+    var piNumberDisplay = document.getElementById('piNumberDisplay');
+    function syncPiNumberDisplay() {
+        if (piNumberDisplay && piNumberInput) {
+            piNumberDisplay.textContent = piNumberInput.value || '—';
+        }
+    }
+    syncPiNumberDisplay();
+    if (piNumberInput) {
+        piNumberInput.addEventListener('input', syncPiNumberDisplay);
     }
 
     // ─── Same as Billing toggle ───
