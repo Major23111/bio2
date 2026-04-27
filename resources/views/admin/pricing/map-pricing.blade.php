@@ -39,22 +39,24 @@
             {{-- Pack Size Tabs --}}
             <div class="flex items-center gap-1.5 flex-wrap">
                 @php
-                    $packSizes = ['15 ML', '30 ML', '60 ML'];
-                    $currentIndex = 0; // Default to first tab active
-                    // If there are sibling variants, map them to tabs
+                    // Dynamic pack sizes from sibling variants or current variant fallback
+                    $currentIndex = 0;
                     if ($siblingVariants->count() > 1) {
                         $currentIndex = $siblingVariants->search(fn($s) => $s->id === $variant->id);
                     }
                 @endphp
-                @foreach($packSizes as $idx => $size)
-                    @if($idx === $currentIndex || ($siblingVariants->count() <= 1 && $idx === 0))
-                        <span class="px-5 py-2 rounded-lg bg-primary-600 text-white text-[12px] font-extrabold tracking-wide shadow-md cursor-default">{{ $size }}</span>
-                    @elseif($siblingVariants->count() > 1 && isset($siblingVariants[$idx]))
-                        <a href="{{ route('admin.pricing.map-price.form', ['variant_id' => $siblingVariants[$idx]->id]) }}" class="ajax-link px-5 py-2 rounded-lg border border-slate-200 bg-white text-[12px] font-bold text-slate-600 hover:border-primary-300 hover:text-primary-700 transition">{{ $size }}</a>
-                    @else
-                        <span class="px-5 py-2 rounded-lg border border-slate-200 bg-white text-[12px] font-bold text-slate-600 cursor-default">{{ $size }}</span>
-                    @endif
-                @endforeach
+                @if($siblingVariants->count() > 0)
+                    @foreach($siblingVariants as $idx => $sibling)
+                        @php $sizeLabel = $sibling->pack_size ?: $sibling->variant_name; @endphp
+                        @if($idx === $currentIndex)
+                            <span class="px-5 py-2 rounded-lg bg-primary-600 text-white text-[12px] font-extrabold tracking-wide shadow-md cursor-default">{{ strtoupper($sizeLabel) }}</span>
+                        @else
+                            <a href="{{ route('admin.pricing.map-price.form', ['variant_id' => $sibling->id]) }}" class="ajax-link px-5 py-2 rounded-lg border border-slate-200 bg-white text-[12px] font-bold text-slate-600 hover:border-primary-300 hover:text-primary-700 transition">{{ strtoupper($sizeLabel) }}</a>
+                        @endif
+                    @endforeach
+                @else
+                    <span class="px-5 py-2 rounded-lg bg-primary-600 text-white text-[12px] font-extrabold tracking-wide shadow-md cursor-default">{{ strtoupper($variant->pack_size ?: $variant->variant_name) }}</span>
+                @endif
             </div>
         </div>
     </div>
@@ -74,10 +76,10 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                        <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">GUEST PRICE (MRP)</label>
+                        <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">MRP</label>
                         <div class="relative">
                             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[13px]">₹</span>
-                            <input type="number" step="0.01" name="base_price" id="basePriceInput" value="{{ $basePrice ? number_format((float)$basePrice->amount, 2, '.', '') : '' }}" required placeholder="0.00" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                            <input type="number" step="0.01" name="mrp" id="basePriceInput" value="{{ $mrp ? number_format((float)$mrp, 2, '.', '') : '' }}" required placeholder="0.00" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
                         </div>
                     </div>
                     <div>
@@ -177,14 +179,14 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50" id="bulkSlabBody">
-                    @php $basePriceVal = $basePrice ? (float)$basePrice->amount : 0; @endphp
+                    @php $mrpVal = (float)($mrp ?? 0); @endphp
                     @forelse($variant->bulkPrices as $bp)
                         <tr class="hover:bg-slate-50/50 transition">
                             <td class="py-4 text-[13px] font-semibold text-slate-700">{{ $bp->min_quantity }}{{ $bp->max_quantity ? ' - ' . $bp->max_quantity : '+' }} Units</td>
                             <td class="py-4 text-[13px] font-bold text-slate-800">₹{{ number_format((float)$bp->amount, 2) }}</td>
                             <td class="py-4">
-                                @if($basePriceVal > 0)
-                                    <span class="text-[13px] font-bold text-emerald-600">{{ number_format((($basePriceVal - (float)$bp->amount) / $basePriceVal) * 100, 2) }}% Off</span>
+                                @if($mrpVal > 0)
+                                    <span class="text-[13px] font-bold text-emerald-600">{{ number_format((($mrpVal - (float)$bp->amount) / $mrpVal) * 100, 2) }}% Off</span>
                                 @else
                                     <span class="text-[13px] text-slate-400">—</span>
                                 @endif
@@ -231,14 +233,19 @@
                         <tr class="hover:bg-slate-50/50 transition">
                             <td class="py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="h-8 w-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-[11px] font-black text-slate-600">{{ strtoupper(substr($cp->company?->name ?? '?', 0, 2)) }}</div>
-                                    <span class="text-[13px] font-semibold text-slate-800">{{ $cp->company?->name ?? 'Unknown' }}</span>
+                                    <div class="h-8 w-8 rounded-lg bg-primary-50 border border-primary-100 flex items-center justify-center text-[11px] font-black text-primary-600">{{ strtoupper(substr($cp->company?->name ?? '?', 0, 2)) }}</div>
+                                    <div class="flex flex-col">
+                                        <span class="text-[13px] font-semibold text-slate-800">{{ $cp->company?->name ?? 'Unknown' }}</span>
+                                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">{{ $cp->company?->company_type ?? 'PARTNER' }}</span>
+                                    </div>
                                 </div>
                             </td>
                             <td class="py-4 text-[13px] font-extrabold text-slate-900">₹{{ number_format((float)$cp->amount, 2) }}</td>
-                            <td class="py-4"><span class="text-[12px] font-medium text-slate-500">• No</span></td>
-                            <td class="py-4 text-[12px] font-medium text-slate-500">—</td>
-                            <td class="py-4 text-right"><span class="text-[11px] font-extrabold text-primary-800 hover:text-primary-600 cursor-pointer transition uppercase tracking-widest">MODIFY TERMS</span></td>
+                            <td class="py-4 text-[12px] font-bold text-emerald-600">{{ $cp->Discount > 0 ? $cp->Discount . '%' : 'Fixed' }}</td>
+                            <td class="py-4 text-[11px] font-bold text-slate-400">{{ $cp->created_at->format('d M, Y') }}</td>
+                            <td class="py-4 text-right">
+                                <button class="text-[11px] font-extrabold text-red-500 hover:text-red-600 transition uppercase tracking-widest">REMOVE</button>
+                            </td>
                         </tr>
                     @empty
                         <tr><td colspan="5" class="py-8 text-center text-[13px] text-slate-400 font-medium">No company specific pricing configured for this product.</td></tr>
@@ -265,7 +272,7 @@
                 </button>
             </div>
 
-            <form id="bulkSlabForm" method="POST" class="px-7 py-6">
+            <form id="bulkSlabForm" action="{{ route('admin.pricing.bulk-price.save') }}" method="POST" class="px-7 py-6">
                 @csrf
                 <input type="hidden" name="variant_id" value="{{ $variant->id }}">
 
@@ -333,15 +340,22 @@
                 @csrf
                 <input type="hidden" name="variant_id" value="{{ $variant->id }}">
 
-                {{-- Company Name Search --}}
+                {{-- Product Selection (hidden defaults for this specific variant view) --}}
+                <input type="hidden" name="product_selection" value="Single Product">
+
+                {{-- Company Selection --}}
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2 flex items-center justify-between">
-                        COMPANY NAME SEARCH
+                        SELECT COMPANY
                         <svg class="w-3.5 h-3.5 text-primary-600 opacity-70" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
                     </label>
                     <div class="relative">
-                        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/></svg>
-                        <input type="text" name="company_name" id="companySearchInput" placeholder="Start typing company name..." autocomplete="off" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                        <select name="company_id" id="companySearchInput" required class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600 cursor-pointer">
+                            <option value="">Choose a company...</option>
+                            @foreach($companies as $company)
+                                <option value="{{ $company->id }}">{{ $company->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
 
@@ -367,7 +381,7 @@
                         <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">SPECIFIC B2B PRICE (AMOUNT)</label>
                         <div class="relative">
                             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[13px]">₹</span>
-                            <input type="number" step="0.01" name="b2b_price" placeholder="0.00" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                            <input type="number" step="0.01" name="specific_b2b_price" placeholder="0.00" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
                         </div>
                     </div>
                     <div>
@@ -390,9 +404,14 @@
                             <p class="text-[11px] text-slate-500 font-medium">Add tiered pricing for high-volume orders specific to this client.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openBulkSlabModal()" class="flex w-full justify-center items-center gap-2 rounded-xl border border-slate-200 bg-white py-3 text-[11px] font-extrabold tracking-widest uppercase text-slate-600 transition hover:text-slate-800 hover:bg-slate-50 hover:border-slate-300">
+                    
+                    <div id="companyBulkSlabRows" class="space-y-4 mb-4">
+                        {{-- Rows will be added here via JS --}}
+                    </div>
+
+                    <button type="button" id="addCompanyMoreSlabBtn" class="flex w-full justify-center items-center gap-2 rounded-xl border border-slate-200 bg-white py-3 text-[11px] font-extrabold tracking-widest uppercase text-slate-600 transition hover:text-slate-800 hover:bg-slate-50 hover:border-slate-300">
                         <svg class="w-3.5 h-3.5 text-primary-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
-                        Add Specific Bulk Pricing Slab
+                        Add Company Bulk Slab
                     </button>
                 </div>
 
@@ -519,36 +538,51 @@
     if (openCpBtn) openCpBtn.addEventListener('click', openCompanyPricingModal);
 
     // ─── Add More Slab Rows ───
-    let slabIndex = 1;
+    function createSlabRow(index, namePrefix) {
+        const row = document.createElement('div');
+        row.className = 'bulk-slab-row space-y-4 mb-5 pt-5 border-t border-slate-100 relative';
+        row.innerHTML = `
+            <button type="button" onclick="this.parentElement.remove()" class="absolute right-0 top-4 text-slate-300 hover:text-red-500 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">BULK PRICE (AMOUNT)</label>
+                <div class="relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[13px]">₹</span>
+                    <input type="number" step="0.01" name="${namePrefix}[${index}][amount]" placeholder="0.00" required class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">MINIMUM QUANTITY</label>
+                    <input type="number" name="${namePrefix}[${index}][min_quantity]" placeholder="e.g. 50" required class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">MAXIMUM QUANTITY</label>
+                    <input type="number" name="${namePrefix}[${index}][max_quantity]" placeholder="e.g. 500" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                </div>
+            </div>
+        `;
+        return row;
+    }
+
+    let globalSlabIndex = 1;
     const addMoreBtn = document.getElementById('addMoreSlabBtn');
     const slabContainer = document.getElementById('bulkSlabRows');
 
-    if (addMoreBtn) {
+    if (addMoreBtn && slabContainer) {
         addMoreBtn.addEventListener('click', () => {
-            const row = document.createElement('div');
-            row.className = 'bulk-slab-row space-y-4 mb-5 pt-5 border-t border-slate-100';
-            row.innerHTML = `
-                <div>
-                    <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">BULK PRICE (AMOUNT)</label>
-                    <div class="relative">
-                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[13px]">₹</span>
-                        <input type="number" step="0.01" name="slabs[${slabIndex}][amount]" placeholder="0.00" required class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">MINIMUM QUANTITY</label>
-                        <input type="number" name="slabs[${slabIndex}][min_quantity]" placeholder="e.g. 50" required class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">MAXIMUM QUANTITY</label>
-                        <input type="number" name="slabs[${slabIndex}][max_quantity]" placeholder="e.g. 500" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
-                    </div>
-                </div>
-            `;
-            slabContainer.appendChild(row);
-            slabIndex++;
-            row.querySelector('input[type="number"]').focus();
+            slabContainer.appendChild(createSlabRow(globalSlabIndex++, 'slabs'));
+        });
+    }
+
+    let companySlabIndex = 0;
+    const addCompanyMoreSlabBtn = document.getElementById('addCompanyMoreSlabBtn');
+    const companySlabContainer = document.getElementById('companyBulkSlabRows');
+
+    if (addCompanyMoreSlabBtn && companySlabContainer) {
+        addCompanyMoreSlabBtn.addEventListener('click', () => {
+            companySlabContainer.appendChild(createSlabRow(companySlabIndex++, 'bulk_slabs'));
         });
     }
 })();

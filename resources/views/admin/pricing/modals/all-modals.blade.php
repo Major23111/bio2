@@ -16,7 +16,7 @@
 
             <form class="space-y-6 px-8 py-7">
                 <div>
-                    <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">GUEST PRICE (BASE PRICE)</label>
+                    <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">MRP (MARKET RETAIL PRICE)</label>
                     <div class="relative">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-medium">Rs.</span>
                         <input type="text" placeholder="0.00" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
@@ -78,90 +78,6 @@
     </div>
 </div>
 
-<!-- 2. Edit Product Pricing Modal -->
-<div id="editProductModal" class="fixed inset-0 z-[9999] hidden" data-pricing-modal-root>
-    <div id="editProductBackdrop" class="absolute inset-0 bg-slate-950/50 opacity-0 backdrop-blur-[2px] transition-opacity duration-300"></div>
-    <div class="fixed inset-0 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
-        <div id="editProductDialog" class="pointer-events-auto relative w-full max-w-2xl translate-y-2 scale-95 opacity-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.16)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[90vh] overflow-y-auto">
-
-            <div class="flex items-start justify-between border-b border-slate-100 px-8 pb-6 pt-8">
-                <div>
-                    <h3 class="text-[19px] font-extrabold text-slate-900 tracking-tight leading-none mb-1.5">Edit Product Pricing</h3>
-                    <p class="text-[10px] text-slate-400 tracking-widest font-black uppercase">PRICING SPECIFICATION ENGINE V4.2</p>
-                </div>
-                <button onclick="window.PricingModals.close('editProductModal')" class="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-
-            <form class="space-y-6 px-8 py-7">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">GUEST PRICE (BASE PRICE)</label>
-                        <div class="relative">
-                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">Rs.</span>
-                            <input type="text" value="24,500" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">B2C PRICE (%)</label>
-                        <div class="relative flex h-12 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-primary-600 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary-600">
-                            <input type="text" value="15" class="w-full bg-transparent pl-4 pr-3 text-[14px] font-bold text-slate-800 outline-none">
-                            <span class="flex h-full items-center self-stretch border-l border-slate-200 bg-white px-4 text-slate-400 font-bold">%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">B2B RATE CONFIGURATION</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="relative flex h-12 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-primary-600 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary-600">
-                            <span class="pl-4 pr-1 py-3 text-slate-400 font-bold">Rs.</span>
-                            <input type="text" value="18,000" class="w-full bg-transparent pr-4 text-[14px] font-bold text-slate-800 outline-none">
-                        </div>
-                        <div class="relative flex h-12 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-primary-600 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary-600">
-                            <input type="text" value="test cases" class="w-full bg-transparent px-4 text-[13px] font-bold text-slate-700 outline-none">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-6">
-                    <h4 class="text-[13px] font-extrabold text-primary-800 mb-4 tracking-tight">Global Promotional Rules</h4>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[9px] font-black text-slate-500 tracking-widest uppercase mb-2">DISCOUNT PERCENTAGE</label>
-                            <div class="relative flex h-11 items-center overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-primary-600 focus-within:ring-1 focus-within:ring-primary-600">
-                                <input type="text" value="5" class="w-full pl-4 text-[14px] font-bold text-slate-800 outline-none">
-                                <span class="pr-4 text-slate-400 font-bold">%</span>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-[9px] font-black text-slate-500 tracking-widest uppercase mb-2">APPLY DISCOUNT TO</label>
-                            <div class="relative rounded-xl border border-slate-200 bg-white transition focus-within:border-primary-600 focus-within:ring-1 focus-within:ring-primary-600">
-                                <select class="h-11 w-full appearance-none bg-transparent px-4 text-[13px] font-bold text-slate-700 outline-none cursor-pointer">
-                                    <option>B2C</option>
-                                    <option>B2B</option>
-                                    <option>Both B2C and B2B</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between border-t border-slate-100 pt-6">
-                    <span class="text-[11px] font-medium text-slate-400 italic flex items-center gap-1.5">
-                        <svg class="h-[14px] w-[14px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Last modified: 24 May, 2024
-                    </span>
-                    <div class="flex gap-2">
-                        <button type="button" onclick="window.PricingModals.close('editProductModal')" class="inline-flex h-11 items-center justify-center rounded-xl px-5 text-[13px] font-bold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900">Cancel</button>
-                        <button type="button" class="inline-flex items-center justify-center rounded-xl bg-primary-600 px-6 py-2.5 text-[13px] font-bold text-white shadow-md shadow-primary-600/20 transition hover:bg-primary-700">Update Pricing</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <!-- 3. Bulk Pricing Configuration Modal -->
 <div id="bulkPricingModal" class="fixed inset-0 z-[9999] hidden" data-pricing-modal-root>
@@ -251,7 +167,7 @@
                     <p class="text-[10px] text-slate-400 tracking-widest font-black uppercase">OVERRIDE CONFIGURATION ENGINE</p>
                 </div>
                 <button onclick="window.PricingModals.close('companyPricingModal')" class="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
@@ -334,7 +250,7 @@
 
 <script>
 window.PricingModals = {
-    _modals: ['mapPricingModal', 'editProductModal', 'bulkPricingModal', 'companyPricingModal'],
+    _modals: ['mapPricingModal', 'bulkPricingModal', 'companyPricingModal'],
     _isInitialised: false,
 
     init() {

@@ -49,6 +49,9 @@
         $categoryLabel = trim((string) ($product->category_name ?? 'Laboratory Equipment'));
         $applicationLabel = trim((string) ($product->subcategory_name ?? 'Clinical Diagnostics'));
         $modelLabel = trim((string) ($product->visible_variant_sku ?? $product->sku ?? 'N/A'));
+        $packSizeText = filled($product->visible_pack_size ?? null)
+            ? 'Pack Size: ' . trim((string) $product->visible_pack_size)
+            : '';
         $imageUrl = asset($product->image_path ?: 'upload/icons/logo.jpg');
         $galleryImages = collect([
             ['label' => 'Main View', 'src' => $imageUrl],
@@ -220,6 +223,9 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <x-ui.status-badge type="product" :value="$primaryBadge" :label="$primaryBadge" />
                                 <x-ui.status-badge type="product" :value="$secondaryBadge" :label="$secondaryBadge" />
+                                @if (filled($product->bulk_price_tiers ?? null) && collect($product->bulk_price_tiers)->count() > 1)
+                                    <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-700 shadow-sm">Bulk Offer</span>
+                                @endif
                             </div>
                             {{-- ══ Share + Wishlist Buttons ══ --}}
                             <div class="flex items-center gap-2">
@@ -245,7 +251,7 @@
                         <div class="space-y-3">
                             <h1 class="font-display text-3xl font-bold tracking-tight text-slate-950 md:text-4xl leading-tight">{{ $productTitle }}</h1>
                             <div class="space-y-1 text-sm font-medium text-slate-500">
-                                <p>Model No: {{ $modelLabel }} | Professional Grade Biotech System</p>
+                                <p>Model No: {{ $modelLabel }}@if ($packSizeText !== '') | {{ $packSizeText }}@endif | Professional Grade Biotech System</p>
                             </div>
                             <p class="text-sm leading-7 text-slate-600 md:text-base">{{ $product->description ?: 'Professional scientific product engineered for institutional procurement and precision workflows.' }}</p>
                         </div>
@@ -317,6 +323,30 @@
                                     </p>
                                 </div>
                             </div>
+                            
+                            {{-- Pack Size Dropdown --}}
+                            @if ($product->all_variants && $product->all_variants->count() > 0)
+                                <div class="max-w-48 space-y-3">
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-1.5">Pack Size</p>
+                                    <select
+                                        id="detailPackSize"
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white/90 px-3 py-2.5 text-sm font-medium text-slate-700 shadow-[var(--ui-shadow-soft)] outline-none transition focus:border-primary-400 focus:ring-2 focus:ring-primary-600/15"
+                                    >
+                                        @foreach ($product->all_variants as $variant)
+                                            @php
+                                                $vPriceData = app(\App\Services\Pricing\PriceService::class)->resolveVariantPrice($variant->id, auth()->user());
+                                                $vPrice = $vPriceData['amount'] ?? $variant->mrp ?? 0;
+                                            @endphp
+                                            <option value="{{ $variant->id }}"
+                                                data-price="{{ $vPrice }}"
+                                                data-sku="{{ $variant->sku }}"
+                                                @if ($variant->id == ($product->visible_variant_id ?? null)) selected @endif>
+                                                {{ $variant->variant_name ?? $variant->pack_size }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
 
                                 
 
@@ -398,41 +428,7 @@
             {{-- ═══════════════════════════════════════════════════════ --}}
 
 
-            <section id="sectionBulkPricing" class="mt-5 scroll-mt-16">
-                <div class="{{ $sectionCardClass }}">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="{{ $sectionHeadingClass }}">Bulk Tier Pricing</h2>
-                        <x-ui.status-badge id="bulkTierHint" type="cart" value="best_value_tier" :label="$bestBulkTier ? 'Best value on ' . $bestBulkTier['label'] : 'Current price available'" />
-                    </div>
-                    <div class="mt-5 overflow-hidden rounded-3xl border border-slate-200">
-                        <div class="grid grid-cols-3 bg-slate-50 px-5 py-3 table-label">
-                            <span>Quantity</span>
-                            <span>Discount</span>
-                            <span class="text-right">Price/Unit</span>
-                        </div>
-                        @foreach ($bulkTierRows as $tier)
-                            <div
-                                class="{{ $loop->last ? 'bg-primary-50/70' : ($loop->odd ? 'bg-white' : 'bg-slate-50/60') }} grid cursor-pointer grid-cols-3 border-t border-slate-200 px-5 py-4 text-sm text-slate-700 transition"
-                                data-bulk-tier-row
-                                data-min="{{ (int) ($tier['min'] ?? 1) }}"
-                                @if ($tier['max'] !== null) data-max="{{ (int) $tier['max'] }}" @endif
-                                data-price="{{ $tier['price'] !== null ? (float) $tier['price'] : '' }}"
-                                data-label="{{ e((string) $tier['label']) }}"
-                                data-discount-value="{{ (float) ($tier['discount_value'] ?? 0) }}"
-                            >
-                                <span class="{{ $loop->last ? 'font-semibold text-slate-900' : '' }}">{{ $tier['label'] }}</span>
-                                <span class="{{ $loop->last ? 'font-semibold text-primary-600' : 'text-slate-600' }}">
-                                    @php
-                                        $discValue = (float) ($tier['discount_value'] ?? 0);
-                                        echo $discValue > 0 ? rtrim(rtrim(number_format($discValue, 2, '.', ''), '0'), '.') . '% Off' : 'Current Price';
-                                    @endphp
-                                </span>
-                                <span class="text-right font-semibold text-slate-900">{!! $formatInr($tier['price']) !!}</span>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </section>
+
 
             <section id="sectionOverview" class="mt-5 scroll-mt-16 grid gap-5 xl:items-start xl:grid-cols-[minmax(0,1fr)_340px]">
                 <div class="{{ $sectionCardClass }}">
@@ -834,6 +830,32 @@
                     lightbox.setAttribute('aria-hidden', 'false');
                     document.body.classList.add('overflow-hidden');
                 };
+
+                const detailPackSizeSelect = document.getElementById('detailPackSize');
+                if (detailPackSizeSelect) {
+                    detailPackSizeSelect.addEventListener('change', function () {
+                        const selectedOption = this.options[this.selectedIndex];
+                        const variantId = this.value;
+                        const price = selectedOption.dataset.price;
+                        
+                        document.querySelectorAll('.js-add-to-cart').forEach(function (button) {
+                            button.dataset.variantId = variantId;
+                            button.dataset.unitPrice = price;
+                        });
+                        
+                        const buyNowFormVariantId = document.querySelector('input[name="product_variant_id"]');
+                        if (buyNowFormVariantId) {
+                            buyNowFormVariantId.value = variantId;
+                        }
+                        
+                        const priceDisplays = document.querySelectorAll('.text-primary-700.text-xl.font-extrabold, #stickyAddToCartBar .text-primary-700.text-base');
+                        priceDisplays.forEach(function (el) {
+                            if (price) {
+                                el.innerHTML = formatInr(price);
+                            }
+                        });
+                    });
+                }
 
                 const closeLightbox = function () {
                     if (!lightbox) {

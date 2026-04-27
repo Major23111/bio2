@@ -24,7 +24,7 @@
         <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
             <div>
                 <h2 class="text-[19px] font-bold text-[var(--ui-text)] tracking-tight leading-none">Mapped Pricing</h2>
-                <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Products with base, B2C and B2B pricing configured</p>
+                <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Products with MRP, B2C and B2B pricing configured</p>
             </div>
             <div class="flex gap-2">
                 <button class="px-4 py-2 border border-slate-200 bg-white rounded-lg text-[13px] font-bold text-slate-700 flex items-center gap-2 hover:bg-slate-50 transition">
@@ -43,7 +43,8 @@
                 <thead>
                     <tr class="border-b border-slate-100">
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">SKU / PRODUCT NAME</th>
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">GUEST (BASE)</th>
+                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">PACK SIZE</th>
+                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">MRP</th>
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">B2C RATE</th>
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">B2B RATE</th>
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400 text-right">ACTIONS</th>
@@ -57,7 +58,10 @@
                                 <div class="text-[13px] text-slate-800 font-bold leading-none">{{ $product['product_name'] }}</div>
                             </td>
                             <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">
-                                {{ $product['base_price'] !== null ? '₹' . number_format($product['base_price'], 2) : '—' }}
+                                <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[11px] font-bold">{{ strtoupper($product['pack_size']) }}</span>
+                            </td>
+                            <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">
+                                {{ $product['mrp'] !== null ? '₹' . number_format($product['mrp'], 2) : '—' }}
                             </td>
                             <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">
                                 {{ $product['b2c_price'] !== null ? '₹' . number_format($product['b2c_price'], 2) : '—' }}
@@ -66,9 +70,9 @@
                                 {{ $product['b2b_price'] !== null ? '₹' . number_format($product['b2b_price'], 2) : '—' }}
                             </td>
                             <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-900 text-right">
-                                <button type="button" data-pricing-modal-open="editProductModal" data-variant-id="{{ $product['variant_id'] }}" class="text-slate-400 hover:text-primary-600 transition p-1">
+                                <a href="{{ route('admin.pricing.map-price.form', ['variant_id' => $product['variant_id']]) }}" class="ajax-link text-slate-400 hover:text-primary-600 transition p-1">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                                </button>
+                                </a>
                             </td>
                         </tr>
                     @empty
@@ -104,6 +108,7 @@
                     <tr class="border-b border-slate-100">
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">PRODUCT NAME</th>
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">CAT NO.</th>
+                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">PACK SIZE</th>
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">DATE ADDED</th>
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400 text-right">ACTION</th>
                     </tr>
@@ -113,6 +118,7 @@
                         <tr class="hover:bg-slate-50/50 transition">
                             <td class="py-4 text-[13px] font-semibold text-slate-800">{{ $product['product_name'] }}</td>
                             <td class="py-4 text-[12px] font-medium text-slate-500 tracking-wide uppercase font-mono">{{ $product['catalog_number'] }}</td>
+                            <td class="py-4 text-[12px] font-medium text-slate-500"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[11px] font-bold">{{ strtoupper($product['pack_size']) }}</span></td>
                             <td class="py-4 text-[12px] font-medium text-slate-500">{{ $product['date_added'] }}</td>
                             <td class="py-4 text-right">
                                 <a href="{{ route('admin.pricing.map-price.form', ['variant_id' => $product['variant_id']]) }}" class="ajax-link text-[11px] font-extrabold text-primary-800 hover:text-primary-600 transition uppercase tracking-widest">MAP PRICING &rsaquo;</a>
@@ -120,7 +126,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="py-8 text-center text-[13px] text-slate-400 font-medium">All products have pricing configured.</td>
+                            <td colspan="5" class="py-8 text-center text-[13px] text-slate-400 font-medium">All products have pricing configured.</td>
                         </tr>
                     @endforelse
                 </tbody>

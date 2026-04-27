@@ -13,6 +13,8 @@ class ProductVariant extends Model
         'product_id',
         'sku',
         'variant_name',
+        'pack_size',
+        'mrp',
         'technical_specification_json',
         'min_order_quantity',
         'max_order_quantity',
@@ -31,6 +33,7 @@ class ProductVariant extends Model
     {
         return [
             'product_id' => 'integer',
+            'mrp' => 'decimal:2',
             'technical_specification_json' => 'array',
             'min_order_quantity' => 'integer',
             'max_order_quantity' => 'integer',

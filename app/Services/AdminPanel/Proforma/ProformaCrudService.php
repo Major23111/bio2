@@ -62,10 +62,9 @@ class ProformaCrudService
             foreach ($product->variants as $variant) {
                 if (!$variant->is_active) continue;
 
-                // Find the first active price
-                $priceRow = $variant->prices->where('is_active', true)->first();
-                $rate = $priceRow?->amount ?? 0;
-                $gst  = $priceRow?->gst_rate ?? $product->gst_rate ?? 18;
+                // Priority: Use MRP. If not set, look for the 'public' price row.
+                $rate = (float)($variant->mrp > 0 ? $variant->mrp : ($variant->prices->where('price_type', 'public')->first()?->amount ?? 0));
+                $gst  = $product->gst_rate ?? 18;
 
                 $selectionList[] = [
                     'id'           => $product->id,
@@ -74,8 +73,8 @@ class ProformaCrudService
                     'category'     => $categoryName,
                     'sku'          => $variant->sku ?? $product->sku,
                     'catNo'        => $variant->catalog_number ?? '',
-                    'packSize'     => $variant->variant_name ?? 'Unit',
-                    'rate'         => (float) $rate,
+                    'packSize'     => $variant->pack_size ?? $variant->variant_name ?? 'Unit',
+                    'rate'         => $rate,
                     'gst'          => (float) $gst,
                     // Search string for easy filtering
                     'searchString' => strtolower($product->name . ' ' . ($variant->catalog_number ?? '') . ' ' . ($variant->sku ?? '') . ' ' . $categoryName)

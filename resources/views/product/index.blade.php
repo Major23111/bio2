@@ -538,6 +538,9 @@
                                             </div>
                                         </div>
                                         <div class="absolute left-6 top-6 flex flex-col gap-2">
+                                            @if ($bulkSummary)
+                                                <x-ui.status-badge type="product" value="Bulk Offer" label="Bulk Offer" class="shadow-sm border-emerald-200 bg-emerald-100 text-emerald-700" />
+                                            @endif
                                             @foreach ($badgeRow as $badgeIndex => $badgeLabel)
                                                 @if ($badgeLabel)
                                                     <x-ui.status-badge type="product" :value="$badgeLabel" :label="$badgeLabel" class="shadow-sm" />
@@ -562,30 +565,37 @@
                                             </div>
                                         </div>
 
-                                        @if ($bulkSummary)
-                                            <div class="rounded-3xl border border-primary-100/80 bg-primary-50/70 px-3 py-2.5">
-                                                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-primary-600">Bulk Offer</p>
-                                                <p class="mt-1 text-xs font-semibold text-emerald-900 truncate">
-                                                    {{ $bulkSummary['label'] ?? 'Bulk pricing available' }}
-                                                    @if (filled($bulkSummary['discount'] ?? null))
-                                                        | {{ $bulkSummary['discount'] }}
-                                                    @endif
-                                                </p>
-                                            </div>
-                                        @else
-                                            {{-- Invisible placeholder to keep card height identical to those with bulk offers --}}
-                                            <div class="invisible rounded-3xl border border-transparent bg-transparent px-3 py-2.5 pointer-events-none select-none">
-                                                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-transparent">Bulk Offer</p>
-                                                <p class="mt-1 text-xs font-semibold text-transparent">Placeholder</p>
+                                        {{-- Pack Size Dropdown --}}
+                                        @if ($product->all_variants && $product->all_variants->count() > 0)
+                                            <div class="rounded-3xl border border-slate-200/70 bg-slate-50/90 px-3 py-2.5">
+                                                <label for="packSize{{ $product->id }}" class="block text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Pack Size</label>
+                                                <select
+                                                    id="packSize{{ $product->id }}"
+                                                    data-catalog-pack-size-select
+                                                    data-product-id="{{ $product->id }}"
+                                                    data-variants="{{ json_encode($product->all_variants->map(function ($v) { 
+                                                        $pData = app(\App\Services\Pricing\PriceService::class)->resolveVariantPrice($v->id, auth()->user());
+                                                        return ['id' => $v->id, 'variant_name' => $v->variant_name, 'pack_size' => $v->pack_size, 'mrp' => $v->mrp, 'price_val' => $pData['amount'] ?? $v->mrp, 'sku' => $v->sku]; 
+                                                    })->values()) }}"
+                                                    class="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-sm font-medium text-slate-700 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+                                                >
+                                                    @foreach ($product->all_variants as $variant)
+                                                        <option value="{{ $variant->id }}" @if ($variant->id == ($product->visible_variant_id ?? null)) selected @endif>
+                                                            {{ $variant->variant_name ?? $variant->pack_size }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         @endif
+
+
 
                                         <div class="mt-auto flex flex-col gap-2.5">
                                             <div class="rounded-3xl border border-slate-200/70 bg-slate-50/90 px-3 py-2.5">
                                                 <div class="flex flex-row items-center justify-between gap-1 whitespace-nowrap overflow-hidden">
                                                     <span class="text-[10px] font-bold uppercase tracking-wide text-slate-400 shrink-0">Price</span>
                                                     <div class="flex items-baseline gap-1.5 overflow-hidden">
-                                                        <span class="text-[16px] font-extrabold tracking-tight text-primary-700">{!! $formatInr($price, 2) !!}</span>
+                                                        <span data-catalog-price-value class="text-[16px] font-extrabold tracking-tight text-primary-700">{!! $formatInr($price, 2) !!}</span>
                                                         @if ($showMrpPrice)
                                                             <span class="text-[11px] font-medium text-slate-400 line-through tracking-tighter">{!! $formatInr($mrpPrice, 2) !!}</span>
                                                         @endif
@@ -1337,9 +1347,72 @@
                 refreshCatalogFromBackend(window.location.href, false);
             });
 
+            // Initialize pack size selection handler for client-side variant switching.
+            const initializePackSizeSelection = function () {
+                const packSizeSelects = catalogPageContent.querySelectorAll('[data-catalog-pack-size-select]');
+
+                packSizeSelects.forEach(function (selectElement) {
+                    selectElement.addEventListener('change', function (event) {
+                        const productId = String(this.dataset.productId);
+                        const selectedVariantId = String(this.value);
+                        const variantsJson = this.dataset.variants;
+                        
+                        // Parse the variants data from the select element.
+                        let variants = [];
+                        try {
+                            variants = JSON.parse(variantsJson || '[]');
+                        } catch (e) {
+                            console.error('Error parsing variants JSON:', e);
+                            return;
+                        }
+
+                        // Find the selected variant from the variants list.
+                        const selectedVariant = variants.find(function (v) {
+                            return String(v.id) === selectedVariantId;
+                        });
+
+                        if (!selectedVariant) {
+                            return;
+                        }
+
+                        // Find the product card in the DOM.
+                        const productCard = catalogPageContent.querySelector('[data-catalog-product-card][data-product-id="' + productId + '"]');
+                        if (!productCard) {
+                            return;
+                        }
+
+                        // Update the hidden form fields for buy-now and add-to-cart buttons.
+                        const buyNowForm = document.getElementById('catalogBuyNowForm' + productId);
+                        const addToCartButton = productCard.querySelector('[data-catalog-action-group] .js-add-to-cart');
+
+                        // Update buy-now form.
+                        if (buyNowForm) {
+                            const variantInput = buyNowForm.querySelector('input[name="product_variant_id"]');
+                            if (variantInput) {
+                                variantInput.value = selectedVariantId;
+                            }
+                        }
+
+                        // Update add-to-cart button data attributes.
+                        if (addToCartButton) {
+                            addToCartButton.dataset.variantId = selectedVariantId;
+                            addToCartButton.dataset.unitPrice = selectedVariant.mrp || 0;
+                            addToCartButton.dataset.model = selectedVariant.sku || 'N/A';
+                        }
+
+                        // Update the price display with the selected variant's computed price or MRP.
+                        const priceDisplaySpan = productCard.querySelector('[data-catalog-price-value]');
+                        if (priceDisplaySpan && selectedVariant.price_val !== undefined) {
+                            priceDisplaySpan.innerHTML = formatInr(selectedVariant.price_val);
+                        }
+                    });
+                });
+            };
+
             updatePriceLabel();
             prepareCatalogQuantityControls();
             startCatalogHoverCards();
+            initializePackSizeSelection();
             setMobileFiltersOpen(false);
         });
     </script>

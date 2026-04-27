@@ -13,16 +13,18 @@ class PricingCrudService
 {
     public function getMappedProducts(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
+        // Business logic: Get variants with mapped public price
         $paginator = ProductVariant::query()
             ->with(['product:id,name,sku,category_id', 'prices'])
             ->whereHas('prices', function ($query) {
-                $query->where('price_type', 'base')->where('is_active', true);
+                $query->where('price_type', 'public')->where('is_active', true);
             })
             ->where('is_active', true)
             ->paginate(10, ['*'], 'mapped_page');
 
+        // Business logic: Map the data for the UI
         $paginator->getCollection()->transform(function ($variant) {
-            $basePrice  = $variant->prices->where('price_type', 'base')->first();
+            $publicPrice = $variant->prices->where('price_type', 'public')->first();
             $b2bPrice   = $variant->prices->where('price_type', 'b2b')->first();
             $b2cPrice   = $variant->prices->where('price_type', 'b2c')->first();
 
@@ -30,7 +32,8 @@ class PricingCrudService
                 'variant_id'   => (int) $variant->id,
                 'product_name' => $variant->product?->name ?? 'Unknown Product',
                 'sku'          => $variant->product?->sku ?? $variant->sku,
-                'base_price'   => $basePrice ? (float) $basePrice->amount : null,
+                'pack_size'    => $variant->pack_size ?? $variant->variant_name,
+                'mrp'          => $variant->mrp ?? ($publicPrice ? (float) $publicPrice->amount : null),
                 'b2c_price'    => $b2cPrice  ? (float) $b2cPrice->amount  : null,
                 'b2b_price'    => $b2bPrice  ? (float) $b2bPrice->amount  : null,
             ];
@@ -42,20 +45,23 @@ class PricingCrudService
     // Load all products that have NO base price row (these need pricing mapped).
     public function getUnmappedProducts(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
+        // Business logic: Load variants without a public price
         $paginator = ProductVariant::query()
             ->with(['product:id,name,sku'])
             ->whereDoesntHave('prices', function ($query) {
-                $query->where('price_type', 'base');
+                $query->where('price_type', 'public');
             })
             ->where('is_active', true)
             ->orderByDesc('id')
             ->paginate(10, ['*'], 'unmapped_page');
 
+        // Business logic: Transform data for UI
         $paginator->getCollection()->transform(function ($variant) {
             return [
                 'variant_id'     => (int) $variant->id,
                 'product_name'   => $variant->product?->name ?? 'Unknown Product',
                 'catalog_number' => $variant->catalog_number ?? $variant->sku,
+                'pack_size'      => $variant->pack_size ?? $variant->variant_name,
                 'date_added'     => $variant->created_at?->format('Y-m-d') ?? '—',
             ];
         });
@@ -164,8 +170,11 @@ class PricingCrudService
             ]);
         }
 
-        // Remove all existing bulk price rows for this variant before saving new ones.
-        ProductBulkPrice::query()->where('product_variant_id', $variantId)->delete();
+        // Remove all existing general bulk price rows (those not linked to a company) before saving new ones.
+        ProductBulkPrice::query()
+            ->where('product_variant_id', $variantId)
+            ->whereNull('applies_to_user_type')
+            ->delete();
 
         // Insert each slab row one at a time.
         foreach ($slabList as $slab) {
@@ -180,6 +189,7 @@ class PricingCrudService
             ProductBulkPrice::create([
                 'product_variant_id' => $variantId,
                 'min_quantity'       => $minQty,
+                'max_quantity'       => $slab['max_quantity'] ?? null,
                 'amount'             => $amount,
                 'currency'           => 'INR',
                 'is_active'          => true,
@@ -208,11 +218,7 @@ class PricingCrudService
 
             // Determine if there are private bulk slabs for this company
             $hasPrivateSlabs = ProductBulkPrice::query()
-                ->where('applies_to_user_type', 'company')
-                // Assuming we would map company_id to user_id or handle it via a polymorphic relation.
-                // Since schema has 'user_id', 'role_id', 'applies_to_user_type' but no 'company_id' on bulk prices,
-                // we'll just check if there's any override that applies to this company's users.
-                // For now, this is a placeholder check to simulate the "Private Slab Active" status.
+                ->where('applies_to_user_type', 'company_' . $companyId)
                 ->exists();
 
             // Find the most generous discount or specific base price override to summarize
@@ -242,43 +248,48 @@ class PricingCrudService
         return $companyList;
     }
 
-    public function saveMappedPricing(int $variantId, float $basePrice, float $b2cPercent, float $b2bPrice, float $discountPercent, string $applyDiscountTo): void
+    public function saveMappedPricing(int $variantId, float $mrp, float $b2cPercent, float $b2bPrice, float $discountPercent, string $applyDiscountTo): void
     {
-        // Check variant
-        if (!ProductVariant::where('id', $variantId)->exists()) {
+        // Business logic: Check if variant exists
+        $variant = ProductVariant::find($variantId);
+        if (!$variant) {
             throw ValidationException::withMessages(['variant_id' => 'Variant not found.']);
         }
 
-        // Calculate B2C price
-        $b2cPrice = $basePrice + ($basePrice * ($b2cPercent / 100));
+        // Business logic: Save MRP to variant
+        $variant->mrp = $mrp;
+        $variant->save();
 
-        // Assign discounts
+        // Business logic: Calculate B2C price based on B2B price and margin
+        $b2cPrice = $b2bPrice + ($b2bPrice * ($b2cPercent / 100));
+
+        // Business logic: Assign discounts
         $b2cDiscount = ($applyDiscountTo === 'B2C' || $applyDiscountTo === 'Both B2C and B2B') ? $discountPercent : 0;
         $b2bDiscount = ($applyDiscountTo === 'B2B' || $applyDiscountTo === 'Both B2C and B2B') ? $discountPercent : 0;
 
-        // Base Price
+        // Business logic: Save public price
         ProductPrice::updateOrCreate(
-            ['product_variant_id' => $variantId, 'price_type' => 'base', 'company_id' => null],
-            ['amount' => $basePrice, 'is_active' => true, 'currency' => 'INR']
+            ['product_variant_id' => $variantId, 'price_type' => 'public', 'company_id' => null],
+            ['amount' => $mrp, 'is_active' => true, 'currency' => 'INR']
         );
 
-        // B2C Price
+        // Business logic: Save B2C Price
         ProductPrice::updateOrCreate(
             ['product_variant_id' => $variantId, 'price_type' => 'b2c', 'company_id' => null],
             ['amount' => $b2cPrice, 'DiscountType' => 'percent', 'Discount' => $b2cDiscount, 'is_active' => true, 'currency' => 'INR']
         );
 
-        // B2B Price
+        // Business logic: Save B2B Price
         ProductPrice::updateOrCreate(
             ['product_variant_id' => $variantId, 'price_type' => 'b2b', 'company_id' => null],
             ['amount' => $b2bPrice, 'DiscountType' => 'percent', 'Discount' => $b2bDiscount, 'is_active' => true, 'currency' => 'INR']
         );
     }
 
-    public function updatePricing(int $variantId, float $basePrice, float $b2cPercent, float $b2bPrice, float $discountPercent, string $applyDiscountTo): void
+    public function updatePricing(int $variantId, float $mrp, float $b2cPercent, float $b2bPrice, float $discountPercent, string $applyDiscountTo): void
     {
-        // Editing operates the same as creating/mapping, so we can reuse the logic
-        $this->saveMappedPricing($variantId, $basePrice, $b2cPercent, $b2bPrice, $discountPercent, $applyDiscountTo);
+        // Business logic: Editing uses same logic as creating
+        $this->saveMappedPricing($variantId, $mrp, $b2cPercent, $b2bPrice, $discountPercent, $applyDiscountTo);
     }
 
     public function saveCompanyPricing(int $companyId, string $productSelection, ?int $variantId, float $specificB2bPrice, float $exclusiveDiscount, array $bulkSlabs): void
@@ -288,16 +299,19 @@ class PricingCrudService
         if ($productSelection === 'Single Product' && $variantId) {
             $variantsToApply->push(ProductVariant::find($variantId));
         } elseif ($productSelection === 'Apply to All') {
-            $mappedVariants = $this->getMappedProducts();
-            foreach ($mappedVariants as $mapped) {
-                $variantsToApply->push(ProductVariant::find($mapped['variant_id']));
-            }
+            // Business logic: Load ALL variants that have a B2B price mapped, not just the first page.
+            $mappedVariantIds = ProductPrice::query()
+                ->where('price_type', 'b2b')
+                ->where('is_active', true)
+                ->pluck('product_variant_id');
+            
+            $variantsToApply = ProductVariant::whereIn('id', $mappedVariantIds)->get();
         }
 
         foreach ($variantsToApply->filter() as $variant) {
-            // Set company specific B2B override
+            // Business logic: Set company specific price (defaults to company_price instead of b2b)
             ProductPrice::updateOrCreate(
-                ['product_variant_id' => $variant->id, 'price_type' => 'b2b', 'company_id' => $companyId],
+                ['product_variant_id' => $variant->id, 'price_type' => 'company_price', 'company_id' => $companyId],
                 ['amount' => $specificB2bPrice, 'DiscountType' => 'percent', 'Discount' => $exclusiveDiscount, 'is_active' => true, 'currency' => 'INR']
             );
 
@@ -305,14 +319,14 @@ class PricingCrudService
             if (!empty($bulkSlabs)) {
                 // Remove old bulk prices for this company/variant
                 ProductBulkPrice::where('product_variant_id', $variant->id)
-                    ->where('applies_to_user_type', 'company')
+                    ->where('applies_to_user_type', 'company_' . $companyId)
                     ->delete();
 
                 foreach ($bulkSlabs as $slab) {
                     if (empty($slab['min_quantity']) || empty($slab['amount'])) continue;
                     ProductBulkPrice::create([
                         'product_variant_id' => $variant->id,
-                        'applies_to_user_type' => 'company',
+                        'applies_to_user_type' => 'company_' . $companyId,
                         'min_quantity' => $slab['min_quantity'],
                         'max_quantity' => $slab['max_quantity'] ?? null,
                         'amount' => $slab['amount'],

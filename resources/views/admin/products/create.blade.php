@@ -75,26 +75,13 @@
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
 
-                        <!-- Brand (Hidden but preserving layout position logic) -->
-                        <input type="hidden" name="brand" value="Biogenix">
-
-                        <!-- SKU -->
+                        <!-- Main SKU -->
                         <div class="space-y-2">
-                             <label class="block text-[13px] font-bold text-slate-700">SKU <span
+                             <label class="block text-[13px] font-bold text-slate-700">Master SKU <span
                                      class="text-rose-500">*</span></label>
-                             <input id="productSku" name="sku" type="text" required placeholder="e.g. BGX-7700-01" value="{{ old('sku') }}"
+                             <input id="productSku" name="main_sku" type="text" required placeholder="e.g. BGX-7700" value="{{ old('main_sku') }}"
                                  class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                          </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <!-- Stock Qty -->
-                        <div class="space-y-2">
-                            <label class="block text-[13px] font-bold text-slate-700">Initial Stock <span
-                                    class="text-rose-500">*</span></label>
-                            <input id="productStock" name="stock_quantity" type="number" required placeholder="100" value="{{ old('stock_quantity') }}"
-                                class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                        </div>
                     </div>
 
                     <!-- Description -->
@@ -116,44 +103,58 @@
                 </div>
             </div>
 
-            <!-- 2. Pricing & Visibility -->
-            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-visible">
-                <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
-                    <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            <!-- 2. Product Variants -->
+            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+                        <h3 class="text-base font-bold text-slate-900">Product Variants (Pack Sizes)</h3>
+                    </div>
+                    <button type="button" onclick="addVariantRow()" class="text-[12px] font-bold text-primary-700 hover:text-primary-800 transition flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary-50">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                         </svg>
-                    </div>
-                    <h3 class="text-base font-bold text-slate-900">Pricing & Visibility</h3>
+                        Add Pack Size
+                    </button>
                 </div>
-                <div class="p-6">
+                <div class="p-0 overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50/50 border-b border-slate-100">
+                                <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[25%]">Pack Size *</th>
+                                <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[20%]">MRP (₹) *</th>
+                                <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[25%]">Variant SKU *</th>
+                                <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[20%]">Stock *</th>
+                                <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[10%] text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="variantTableBody" class="divide-y divide-slate-50">
+                            <!-- Rows injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-6 bg-slate-50/30 border-t border-slate-100">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div class="space-y-2">
-                            <label class="block text-[13px] font-bold text-slate-700">Base Price (₹) <span
-                                    class="text-rose-500">*</span></label>
-                            <input id="productPrice" name="base_price" type="number" step="0.01" required placeholder="0.00" value="{{ old('base_price') }}"
-                                class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="block text-[13px] font-bold text-slate-700">GST Rate (%) <span
-                                    class="text-slate-400 font-normal">(Optional)</span></label>
-                            <input name="gst_rate" type="number" placeholder="18" value="{{ old('gst_rate') }}"
-                                class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
                         <div class="space-y-2">
                             <label class="block text-[13px] font-bold text-slate-700">Visibility Scope <span class="text-rose-500">*</span></label>
                             <select name="visibility_scope" required
-                                class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium cursor-pointer">
+                                class="w-full bg-white border border-slate-200 text-sm rounded-xl px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium cursor-pointer">
                                 <option value="public" @if(old('visibility_scope') === 'public' || !old('visibility_scope')) selected @endif>All Users</option>
                                 <option value="b2b" @if(old('visibility_scope') === 'b2b') selected @endif>B2B</option>
                                 <option value="b2c" @if(old('visibility_scope') === 'b2c') selected @endif>B2C</option>
                             </select>
                         </div>
-                        <div class="flex items-center pt-8">
+                        <div class="space-y-2">
+                            <label class="block text-[13px] font-bold text-slate-700">GST Rate (%) <span class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input name="gst_rate" type="number" placeholder="18" value="{{ old('gst_rate') }}"
+                                class="w-full bg-white border border-slate-200 text-sm rounded-xl px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        </div>
+                        <div class="flex items-center pt-2">
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" name="is_active" value="1" class="sr-only peer" @if(old('is_active', true)) checked @endif>
                                 <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
@@ -284,13 +285,67 @@
 
 @push('scripts')
     <script>
+        // ─── Variant Table Logic ───
+        let variantIndex = 0;
+        const variantTableBody = document.getElementById('variantTableBody');
+
+        function addVariantRow(data = {}) {
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-slate-50/50 transition row-variant';
+            row.dataset.index = variantIndex;
+            
+            row.innerHTML = `
+                <td class="px-6 py-4">
+                    <input type="text" name="variants[${variantIndex}][pack_size]" value="${data.pack_size || ''}" required placeholder="100 Tests"
+                        class="w-full bg-white border border-slate-200 text-[13px] rounded-lg px-3 py-2 focus:border-primary-600 outline-none transition font-medium">
+                </td>
+                <td class="px-6 py-4">
+                    <div class="relative">
+                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[12px]">₹</span>
+                        <input type="number" step="0.01" name="variants[${variantIndex}][mrp]" value="${data.mrp || ''}" required placeholder="0.00"
+                            class="w-full bg-white border border-slate-200 text-[13px] rounded-lg pl-6 pr-3 py-2 focus:border-primary-600 outline-none transition font-medium">
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <input type="text" name="variants[${variantIndex}][sku]" value="${data.sku || ''}" required placeholder="SKU-1"
+                        class="w-full bg-white border border-slate-200 text-[13px] rounded-lg px-3 py-2 focus:border-primary-600 outline-none transition font-medium">
+                </td>
+                <td class="px-6 py-4">
+                    <input type="number" name="variants[${variantIndex}][stock_quantity]" value="${data.stock || ''}" required placeholder="0"
+                        class="w-full bg-white border border-slate-200 text-[13px] rounded-lg px-3 py-2 focus:border-primary-600 outline-none transition font-medium">
+                </td>
+                <td class="px-6 py-4 text-center">
+                    <button type="button" onclick="removeVariantRow(this)" class="h-8 w-8 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition flex items-center justify-center mx-auto">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                </td>
+            `;
+            
+            variantTableBody.appendChild(row);
+            variantIndex++;
+        }
+
+        function removeVariantRow(btn) {
+            const rows = variantTableBody.querySelectorAll('.row-variant');
+            if (rows.length <= 1) {
+                AdminToast.show('At least one variant is required', 'warning');
+                return;
+            }
+            btn.closest('tr').remove();
+        }
+
+        // Initialize with one row - Wait for DOM to be ready (supports AJAX page loading)
+        setTimeout(() => {
+            const tableBody = document.getElementById('variantTableBody');
+            if (!tableBody) return;
+            addVariantRow({pack_size: 'Default Pack', mrp: '', sku: '', stock: '100'});
+        }, 0);
+
         // ─── Form Validation ───
         const requiredFields = [
             { id: 'productName', label: 'Product Name' },
-            { id: 'productSku', label: 'SKU' },
+            { id: 'productSku', label: 'Master SKU' },
             { id: 'productDesc', label: 'Description' },
-            { id: 'productStock', label: 'Stock Qty' },
-            { id: 'productPrice', label: 'Base Price' },
             { id: 'productCategory', label: 'Category' }
         ];
 
@@ -299,6 +354,8 @@
             let firstInvalid = null;
             document.querySelectorAll('.field-error').forEach(e => e.remove());
             document.querySelectorAll('.border-rose-400').forEach(e => e.classList.remove('border-rose-400', 'ring-1', 'ring-rose-200'));
+            
+            // Validate static fields
             requiredFields.forEach(f => {
                 const el = document.getElementById(f.id);
                 if (!el) return;
@@ -313,6 +370,27 @@
                     if (!firstInvalid) firstInvalid = el;
                 }
             });
+
+            // Validate variants
+            const variantRows = variantTableBody.querySelectorAll('.row-variant');
+            if (variantRows.length === 0) {
+                valid = false;
+                AdminToast.show('Please add at least one product variant', 'error');
+            } else {
+                variantRows.forEach(row => {
+                    const inputs = row.querySelectorAll('input[required]');
+                    inputs.forEach(input => {
+                        if (!input.value.trim()) {
+                            valid = false;
+                            input.classList.add('border-rose-400');
+                            if (!firstInvalid) firstInvalid = input;
+                        } else {
+                            input.classList.remove('border-rose-400');
+                        }
+                    });
+                });
+            }
+
             if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return valid;
         }

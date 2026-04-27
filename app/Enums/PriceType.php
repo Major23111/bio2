@@ -8,28 +8,20 @@ enum PriceType: string
     // Company-specific pricing for authorized resellers and bulk buyers.
     case CompanyPrice = 'company_price';
 
-    // Price tier for logged-in B2C and B2B customers.
-    case LoggedIn = 'logged_in';
+    // Price tier for B2B customers.
+    case B2B = 'b2b';
 
-    // Discounted price level for dealer/reseller accounts.
-    case Dealer = 'dealer';
+    // Price tier for B2C customers.
+    case B2C = 'b2c';
 
-    // Price tier for institutional/corporate buyers.
-    case Institutional = 'institutional';
-
-    // Standard retail price for public catalog.
-    case Retail = 'retail';
-
-    // Public website price (same as retail).
+    // Public website price.
     case Public = 'public';
 
-    // Get all price types available for a specific user.
+    // Get all price types available for a guest user.
     public static function visibleForGuest(): array
     {
         return [
             self::Public->value,
-            self::Retail->value,
-            self::LoggedIn->value,
         ];
     }
 
@@ -37,46 +29,18 @@ enum PriceType: string
     public static function visibleForB2cUser(): array
     {
         return [
+            self::B2C->value,
             self::Public->value,
-            self::Retail->value,
-            self::LoggedIn->value,
         ];
     }
 
-    // Get all price types available for a dealer/reseller.
-    public static function visibleForDealer(): array
+    // Get all price types available for an institutional/B2B buyer.
+    public static function visibleForB2bUser(): array
     {
         return [
             self::CompanyPrice->value,
-            self::Dealer->value,
-            self::LoggedIn->value,
+            self::B2B->value,
             self::Public->value,
-            self::Retail->value,
-        ];
-    }
-
-    // Get all price types available for an institutional buyer.
-    public static function visibleForInstitutional(): array
-    {
-        return [
-            self::CompanyPrice->value,
-            self::Institutional->value,
-            self::LoggedIn->value,
-            self::Public->value,
-            self::Retail->value,
-        ];
-    }
-
-    // Get all price types available for an internal user.
-    public static function visibleForInternalUser(): array
-    {
-        return [
-            self::CompanyPrice->value,
-            self::Dealer->value,
-            self::Institutional->value,
-            self::LoggedIn->value,
-            self::Public->value,
-            self::Retail->value,
         ];
     }
 

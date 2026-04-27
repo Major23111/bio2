@@ -3,6 +3,7 @@ namespace App\Services\Product;
 
 use App\Models\Authorization\User;
 use App\Models\Product\Product;
+use App\Models\Product\ProductVariant;
 use App\Services\Authorization\DataVisibilityService;
 use App\Services\Pricing\PriceService;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -53,6 +54,19 @@ class ProductCatalogService
 
         // Paginate the sorted products (15 items per page).
         $paginatedProducts = $this->paginateProducts($sortedProducts, 15);
+
+        // Load all variants for products on current page (single query, no N+1).
+        $productsOnPage = $paginatedProducts->getCollection();
+        $productIdsOnPage = $productsOnPage->pluck('id')->all();
+        $allVariantsByProduct = $this->loadAllVariantsForProducts($productIdsOnPage);
+
+        // Attach variants to each product.
+        $productsOnPage = $productsOnPage
+            ->map(fn ($product) => $this->attachVariantsToProduct($product, $allVariantsByProduct))
+            ->values();
+
+        // Update paginator collection with products that now have variants.
+        $paginatedProducts->setCollection($productsOnPage);
 
         // Attach bulk pricing summary to each paginated product card.
         $paginatedProducts->setCollection(
@@ -415,6 +429,48 @@ class ProductCatalogService
             'price' => $firstBulkTier['price'] ?? null,
             'min' => $firstBulkTier['min'] ?? null,
         ];
+
+        return $product;
+    }
+
+    // Load all active variants for given products in a single efficient query.
+    private function loadAllVariantsForProducts(array $productIds): array
+    {
+        // Return empty if no product IDs provided.
+        if (empty($productIds)) {
+            return [];
+        }
+
+        // Fetch all active variants for the products (single query, no N+1).
+        $variants = ProductVariant::query()
+            ->whereIn('product_id', $productIds)
+            ->where('is_active', true)
+            ->orderBy('product_id')
+            ->orderBy('pack_size')
+            ->get();
+
+        // Group variants by product ID for easy lookup.
+        $variantsByProduct = [];
+        foreach ($variants as $variant) {
+            $productId = (int) $variant->product_id;
+            if (!isset($variantsByProduct[$productId])) {
+                $variantsByProduct[$productId] = [];
+            }
+            $variantsByProduct[$productId][] = $variant;
+        }
+
+        return $variantsByProduct;
+    }
+
+    // Attach all available variants to a product.
+    private function attachVariantsToProduct(object $product, array $allVariants): object
+    {
+        // Get variants for this product or empty collection.
+        $productId = (int) $product->id;
+        $productVariants = $allVariants[$productId] ?? [];
+
+        // Attach variants collection to product.
+        $product->all_variants = collect($productVariants);
 
         return $product;
     }

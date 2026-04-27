@@ -46,7 +46,7 @@ class ProductCrudService
         return $paginatedProducts;
     }
 
-    // Step-by-step product creation including master, variant, and media assets.
+    // Step-by-step product creation including master, multiple variants, and media assets.
     public function createProduct(array $productData): int
     {
         return DB::transaction(function () use ($productData) {
@@ -54,16 +54,16 @@ class ProductCrudService
             $baseSlug = Str::slug($productData['name']);
 
             // Step 2: make the slug unique by appending the SKU if the base slug already exists.
-            $slugExists = Product::where('slug', $baseSlug)->exists();
-            $finalSlug = $slugExists ? $baseSlug . '-' . Str::slug($productData['sku']) : $baseSlug;
+            $slugExists = DB::table('products')->where('slug', $baseSlug)->exists();
+            $finalSlug = $slugExists ? $baseSlug . '-' . Str::slug($productData['main_sku'] ?? time()) : $baseSlug;
 
             // Step 3: create basic product master record.
             $newProduct = Product::create([
                 'name'             => $productData['name'],
                 'slug'             => $finalSlug,
-                'sku'              => $productData['sku'],
+                'sku'              => $productData['main_sku'] ?? null,
                 'category_id'      => $productData['category_id'],
-                'brand'            => $productData['brand'] ?? null,
+                'brand'            => $productData['brand'] ?? 'Biogenix',
                 'description'      => $productData['description'] ?? null,
                 'product_overview' => $productData['product_overview'] ?? null,
                 'gst_rate'         => $productData['gst_rate'] ?? 0,
@@ -71,24 +71,40 @@ class ProductCrudService
                 'is_active'        => $productData['is_active'] ?? true,
             ]);
 
-            // Step 4: create the default variant record to track stock.
-            $newVariant = ProductVariant::create([
-                'product_id' => $newProduct->id,
-                'sku' => $newProduct->sku,
-                'variant_name' => 'Default',
-                'stock_quantity' => $productData['stock_quantity'] ?? 0,
-                'is_active' => true,
-            ]);
+            // Step 4: create multiple variant records if provided, otherwise create default.
+            $variantsInput = $productData['variants'] ?? [];
+            if (empty($variantsInput)) {
+                // Fallback to a single default variant if no variants were passed (unlikely with new UI)
+                $variantsInput[] = [
+                    'pack_size' => 'Default',
+                    'mrp' => 0,
+                    'sku' => $newProduct->sku,
+                    'stock_quantity' => 0
+                ];
+            }
 
-            // Step 5: create default pricing for the new variant.
-            ProductPrice::create([
-                'product_variant_id' => $newVariant->id,
-                'price_type' => 'base',
-                'amount' => $productData['base_price'] ?? 0,
-                'is_active' => true,
-            ]);
+            foreach ($variantsInput as $index => $vData) {
+                $variant = ProductVariant::create([
+                    'product_id' => $newProduct->id,
+                    'sku' => $vData['sku'] ?? ($newProduct->sku . '-' . ($index + 1)),
+                    'variant_name' => $vData['pack_size'] ?? 'Default',
+                    'pack_size' => $vData['pack_size'] ?? 'Default',
+                    'mrp' => $vData['mrp'] ?? 0,
+                    'stock_quantity' => $vData['stock_quantity'] ?? 0,
+                    'is_active' => true,
+                ]);
 
-            // Step 4: handle multiple product image uploads with compression.
+                // Automatically create a 'public' price row equal to MRP for each variant.
+                ProductPrice::create([
+                    'product_variant_id' => $variant->id,
+                    'price_type' => 'public',
+                    'amount' => $vData['mrp'] ?? 0,
+                    'currency' => 'INR',
+                    'is_active' => true,
+                ]);
+            }
+
+            // Step 6: handle multiple product image uploads.
             if (!empty($productData['images'])) {
                 foreach ($productData['images'] as $index => $imageFile) {
                     $savedPath = $this->compressAndStoreImage($imageFile);
@@ -101,7 +117,7 @@ class ProductCrudService
                 }
             }
 
-            // Step 5: handle technical document resource uploads.
+            // Step 7: handle technical document resource uploads.
             if (!empty($productData['documents'])) {
                 foreach ($productData['documents'] as $docFile) {
                     $originalFileName = $docFile->getClientOriginalName();
@@ -124,11 +140,11 @@ class ProductCrudService
         });
     }
 
-    // Step-by-step update logic for existing products and their linked records.
+    // Comprehensive update logic handles master, syncing multiple variants, and assets.
     public function updateProduct(int $productId, array $productData): bool
     {
         return DB::transaction(function () use ($productId, $productData) {
-            $product = Product::with(['defaultVariant.prices', 'images', 'technicalResources'])->find($productId);
+            $product = Product::with(['variants', 'images', 'technicalResources'])->find($productId);
             if (!$product) {
                 return false;
             }
@@ -136,7 +152,7 @@ class ProductCrudService
             // Step 1: update product master information.
             $product->update([
                 'name' => $productData['name'] ?? $product->name,
-                'sku' => $productData['sku'] ?? $product->sku,
+                'sku' => $productData['main_sku'] ?? $product->sku,
                 'category_id' => $productData['category_id'] ?? $product->category_id,
                 'brand' => $productData['brand'] ?? $product->brand,
                 'description' => $productData['description'] ?? $product->description,
@@ -146,66 +162,89 @@ class ProductCrudService
                 'is_active' => $productData['is_active'] ?? $product->is_active,
             ]);
 
-            // Step 2: update stock level in the default variant.
-            $defaultVariant = $product->defaultVariant;
-            if ($defaultVariant) {
-                $defaultVariant->update([
-                    'stock_quantity' => $productData['stock_quantity'] ?? $defaultVariant->stock_quantity,
-                ]);
+            // Step 2: Sync variants (Update existing, Create new, Delete missing).
+            $incomingVariants = $productData['variants'] ?? [];
+            $existingVariantIds = $product->variants->pluck('id')->toArray();
+            $processedVariantIds = [];
 
-                // Step 3: update base price record.
-                $basePrice = $defaultVariant->prices()->where('price_type', 'base')->first();
-                if ($basePrice) {
-                    $basePrice->update([
-                        'amount' => $productData['base_price'] ?? $basePrice->amount,
+            foreach ($incomingVariants as $vData) {
+                // Cast ID to integer or null, rejecting empty strings
+                $variantId = !empty($vData['id']) ? (int) $vData['id'] : null;
+                
+                if ($variantId && in_array($variantId, $existingVariantIds)) {
+                    // Update existing variant
+                    $variant = ProductVariant::find($variantId);
+                    $variant->update([
+                        'sku' => $vData['sku'] ?? $variant->sku,
+                        'variant_name' => $vData['pack_size'] ?? $variant->variant_name,
+                        'pack_size' => $vData['pack_size'] ?? $variant->pack_size,
+                        'mrp' => $vData['mrp'] ?? $variant->mrp,
+                        'stock_quantity' => $vData['stock_quantity'] ?? $variant->stock_quantity,
                     ]);
+                    $processedVariantIds[] = $variantId;
+                } else {
+                    // Create new variant
+                    $newVariant = ProductVariant::create([
+                        'product_id' => $product->id,
+                        'sku' => $vData['sku'] ?? ($product->sku . '-' . time()),
+                        'variant_name' => $vData['pack_size'] ?? 'Default',
+                        'pack_size' => $vData['pack_size'] ?? 'Default',
+                        'mrp' => $vData['mrp'] ?? 0,
+                        'stock_quantity' => $vData['stock_quantity'] ?? 0,
+                        'is_active' => true,
+                    ]);
+                    $processedVariantIds[] = $newVariant->id;
                 }
+                
+                // Update associated public price row (standard rule: public price always matches MRP on basic setup).
+                ProductPrice::updateOrCreate(
+                    ['product_variant_id' => end($processedVariantIds), 'price_type' => 'public'],
+                    ['amount' => $vData['mrp'] ?? 0, 'is_active' => true, 'currency' => 'INR']
+                );
             }
 
-            // Step 4: remove selected existing images and their physical files.
-            if (! empty($productData['deleted_images'])) {
+            // Delete variants that were removed from the UI.
+            $idsToDelete = array_diff($existingVariantIds, $processedVariantIds);
+            if (!empty($idsToDelete)) {
+                ProductVariant::whereIn('id', $idsToDelete)->delete();
+            }
+
+            // Step 4: remove selected existing images.
+            if (!empty($productData['deleted_images'])) {
                 $imagesToDelete = ProductImage::where('product_id', $product->id)
                     ->whereIn('id', $productData['deleted_images'])
                     ->get();
-
                 foreach ($imagesToDelete as $image) {
                     $this->cleanupPhysicalFile($image->file_path);
                     $image->delete();
                 }
             }
 
-            // Step 5: remove selected technical documents and their physical files.
-            if (! empty($productData['deleted_documents'])) {
+            // Step 5: remove selected technical documents.
+            if (!empty($productData['deleted_documents'])) {
                 $documentsToDelete = ProductTechnicalResource::where('product_id', $product->id)
                     ->whereIn('id', $productData['deleted_documents'])
                     ->get();
-
                 foreach ($documentsToDelete as $document) {
                     $this->cleanupPhysicalFile($document->stored_file_path);
                     $document->delete();
                 }
             }
 
-            // Step 6: handle new images if provided by user.
+            // Step 6: handle new assets.
             if (!empty($productData['images'])) {
                 foreach ($productData['images'] as $imageFile) {
                     $savedPath = $this->compressAndStoreImage($imageFile);
-                    ProductImage::create([
-                        'product_id' => $product->id,
-                        'file_path' => $savedPath,
-                        'is_primary' => false,
-                    ]);
+                    ProductImage::create(['product_id' => $product->id, 'file_path' => $savedPath, 'is_primary' => false]);
                 }
             }
 
-            // Step 7: handle new technical documents if provided by user.
-            if (! empty($productData['documents'])) {
+            if (!empty($productData['documents'])) {
                 foreach ($productData['documents'] as $docFile) {
                     $originalFileName = $docFile->getClientOriginalName();
                     $mimeType = $docFile->getClientMimeType();
                     $fileSize = (int) ($docFile->getSize() ?? 0);
                     $savedPath = $this->fileService->storeUploadedFile($docFile, FileHandlingService::DOCUMENT_DIRECTORY);
-
                     ProductTechnicalResource::create([
                         'product_id' => $product->id,
                         'title' => $originalFileName,
@@ -220,6 +259,13 @@ class ProductCrudService
 
             return true;
         });
+    }
+
+    // Gets a comprehensive view of product data for the edit form including all variants.
+    public function getProductForEdit(int $productId): ?Product
+    {
+        $product = Product::with(['variants', 'images', 'technicalResources'])->find($productId);
+        return $product;
     }
 
     // This performs a hard delete of the product and cleans up all related physical files.
@@ -248,22 +294,6 @@ class ProductCrudService
         });
     }
 
-    // Gets a comprehensive view of product data for the edit form.
-    public function getProductForEdit(int $productId): ?Product
-    {
-        $product = Product::with(['defaultVariant.prices', 'images', 'technicalResources'])->find($productId);
-        if (!$product) {
-            return null;
-        }
-
-        $defaultVariant = $product->defaultVariant;
-        $basePrice = $defaultVariant?->prices->where('price_type', 'base')->first();
-
-        $product->setAttribute('stock_quantity', (int) ($defaultVariant->stock_quantity ?? 0));
-        $product->setAttribute('base_price', (float) ($basePrice->amount ?? 0));
-
-        return $product;
-    }
 
     // Helper to store an uploaded image to the same public folder used by the storefront.
     private function compressAndStoreImage($file): string
@@ -315,8 +345,14 @@ class ProductCrudService
     // Get the price of the default variant.
     private function getProductDefaultPrice(Product $product): ?float
     {
-        $basePrice = $product->defaultVariant?->prices->where('price_type', 'base')->first();
-        return $basePrice ? (float)$basePrice->amount : null;
+        // Now using MRP as the base reference or the public price row
+        $mrp = $product->defaultVariant?->mrp;
+        if ($mrp > 0) {
+            return (float)$mrp;
+        }
+
+        $publicPrice = $product->defaultVariant?->prices->where('price_type', 'public')->first();
+        return $publicPrice ? (float)$publicPrice->amount : null;
     }
 
     // Determine stock status for display.

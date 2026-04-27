@@ -44,6 +44,13 @@ class ProductDetailService
         // Attach bulk pricing tiers.
         $product = $this->attachVisibleVariantBulkPriceTiers($product, $user);
 
+        // Attach all active variants to show pack size dropdown
+        $product->all_variants = ProductVariant::query()
+            ->where('product_id', $product->id)
+            ->where('is_active', true)
+            ->orderBy('pack_size')
+            ->get();
+
         return $product;
     }
 
@@ -102,6 +109,11 @@ class ProductDetailService
         $product->visible_variant_id = $price['product_variant_id'] ?? null;
         $product->visible_variant_sku = $price['variant_sku'] ?? null;
         $product->visible_variant_name = $price['variant_name'] ?? null;
+        $product->visible_pack_size = $product->visible_variant_id
+            ? (ProductVariant::query()
+                ->select(['id', 'pack_size'])
+                ->find((int) $product->visible_variant_id)?->pack_size)
+            : null;
 
         // Attach order quantity constraints.
         $product->visible_min_order_quantity = $price['min_order_quantity'] ?? 1;

@@ -34,7 +34,7 @@ class PricingCrudController extends Controller
             ->get(['id', 'variant_name', 'catalog_number']);
 
         // Extract current prices.
-        $basePrice = $variant->prices->where('price_type', 'base')->where('is_active', true)->first();
+        $mrp       = $variant->mrp;
         $b2cPrice  = $variant->prices->where('price_type', 'b2c')->where('is_active', true)->first();
         $b2bPrice  = $variant->prices->where('price_type', 'b2b')->where('is_active', true)->first();
 
@@ -44,17 +44,20 @@ class PricingCrudController extends Controller
             ->whereNotNull('company_id')
             ->where('is_active', true)
             ->get();
-
+            
+        $companies = \App\Models\Authorization\Company::where('is_active', true)->orderBy('name')->get(['id', 'name']);
+            
         // Load all products for dropdown (reuse existing service method).
         $allProductsForDropdown = $this->pricingCrudService->getAllProductsForDropdown();
 
         return view('admin.pricing.map-pricing', [
             'variant'              => $variant,
             'siblingVariants'      => $siblingVariants,
-            'basePrice'            => $basePrice,
+            'mrp'                  => $mrp,
             'b2cPrice'             => $b2cPrice,
             'b2bPrice'             => $b2bPrice,
             'companyPrices'        => $companyPrices,
+            'companies'            => $companies,
             'allProductsForDropdown' => $allProductsForDropdown,
         ]);
     }
@@ -90,7 +93,7 @@ class PricingCrudController extends Controller
         try {
             $validated = $request->validate([
                 'variant_id' => 'required|integer|exists:product_variants,id',
-                'base_price' => 'required|numeric|min:0',
+                'mrp' => 'required|numeric|min:0',
                 'b2c_percentage' => 'required|numeric|min:0',
                 'b2b_price' => 'required|numeric|min:0',
                 'discount_percentage' => 'nullable|numeric|min:0',
@@ -99,7 +102,7 @@ class PricingCrudController extends Controller
 
             $this->pricingCrudService->saveMappedPricing(
                 $validated['variant_id'],
-                $validated['base_price'],
+                $validated['mrp'],
                 $validated['b2c_percentage'],
                 $validated['b2b_price'],
                 $validated['discount_percentage'] ?? 0,
@@ -117,7 +120,7 @@ class PricingCrudController extends Controller
         try {
             $validated = $request->validate([
                 'variant_id' => 'required|integer|exists:product_variants,id',
-                'base_price' => 'required|numeric|min:0',
+                'mrp' => 'required|numeric|min:0',
                 'b2c_percentage' => 'required|numeric|min:0',
                 'b2b_price' => 'required|numeric|min:0',
                 'discount_percentage' => 'nullable|numeric|min:0',
@@ -126,7 +129,7 @@ class PricingCrudController extends Controller
 
             $this->pricingCrudService->updatePricing(
                 $validated['variant_id'],
-                $validated['base_price'],
+                $validated['mrp'],
                 $validated['b2c_percentage'],
                 $validated['b2b_price'],
                 $validated['discount_percentage'] ?? 0,
@@ -160,7 +163,10 @@ class PricingCrudController extends Controller
                 $validated['bulk_slabs'] ?? []
             );
 
-            return redirect()->route('admin.pricing.index')->with('success', 'Company pricing saved successfully.');
+            $variantIdForRedirect = $validated['variant_id'] ?? $request->input('variant_id');
+
+            return redirect()->route('admin.pricing.map-price.form', ['variant_id' => $variantIdForRedirect])
+                ->with('success', 'Company pricing saved successfully.');
         } catch (Throwable $e) {
             return redirect()->back()->withInput()->with('error', 'Unable to save company pricing: ' . $e->getMessage());
         }
@@ -184,12 +190,12 @@ class PricingCrudController extends Controller
                 $validatedData['slabs'],
             );
 
-            $response = redirect()->route('admin.pricing.index')
+            $response = redirect()->route('admin.pricing.map-price.form', ['variant_id' => $validatedData['variant_id']])
                 ->with('success', 'Bulk pricing slabs saved successfully.');
         } catch (Throwable $exception) {
             $response = redirect()->back()
                 ->withInput()
-                ->with('error', 'Unable to save bulk pricing slabs.');
+                ->with('error', 'Unable to save bulk pricing slabs: ' . $exception->getMessage());
         }
 
         return $response;

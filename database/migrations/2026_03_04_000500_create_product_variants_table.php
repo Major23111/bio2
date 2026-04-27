@@ -33,6 +33,8 @@ return new class extends Migration
             $table->unsignedInteger('lot_size')->default(1);
             $table->string('model_number')->nullable();
             $table->string('catalog_number')->nullable();
+            $table->string('pack_size')->nullable();
+            $table->decimal('mrp', 10, 2)->default(0);
             $table->unsignedInteger('stock_quantity')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

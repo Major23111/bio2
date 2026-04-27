@@ -60,28 +60,38 @@ class ProductCrudController extends Controller
     public function store(Request $request): RedirectResponse
     {
         try {
-            // Step 1: validate provided product info including file upload limits (max 3 images, 5MB each).
+            // Step 1: validate provided product info including variants.
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'sku' => 'required|string|max:100|unique:products,sku',
+                'main_sku' => 'required|string|max:100|unique:products,sku',
                 'category_id' => 'required|integer|exists:categories,id',
                 'brand' => 'nullable|string|max:255',
                 'description' => 'required|string',
                 'product_overview' => 'nullable|string',
                 'gst_rate' => 'nullable|numeric',
                 'visibility_scope' => 'required|string|in:public,b2b,b2c',
-                'stock_quantity' => 'required|integer|min:0',
-                'base_price' => 'required|numeric|min:0',
+                'variants' => 'required|array|min:1',
+                'variants.*.sku' => 'required|string|max:100',
+                'variants.*.pack_size' => 'required|string|max:50',
+                'variants.*.mrp' => 'required|numeric|min:0',
+                'variants.*.stock_quantity' => 'required|integer|min:0',
                 'images' => 'nullable|array|max:3',
                 'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
                 'documents' => 'nullable|array',
-                'documents.*' => 'file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
+                'documents.*' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
+            ], [
+                'documents.*' => 'The document must be a PDF, Word, or PowerPoint file (max 20MB).',
             ]);
 
             // Step 2: ensure logical boolean status for product visibility.
             $validated['is_active'] = $request->has('is_active');
 
-            // Step 3: delegate heavy creation logic to the service layer.
+            // Step 3: filter out null documents from the array (handles file validation edge cases)
+            if (!empty($validated['documents'])) {
+                $validated['documents'] = array_filter($validated['documents'], fn($doc) => $doc !== null);
+            }
+
+            // Step 4: delegate heavy creation logic to the service layer.
             $this->productCrudService->createProduct($validated);
 
             return redirect()->route('admin.products')
@@ -115,29 +125,40 @@ class ProductCrudController extends Controller
     public function update(Request $request, int $productId): RedirectResponse
     {
         try {
-            // Step 1: validate product updates ensuring SKU remains unique (except for current record).
+            // Step 1: validate product updates including syncing variants.
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'sku' => 'required|string|max:100|unique:products,sku,' . $productId,
+                'main_sku' => 'required|string|max:100|unique:products,sku,' . $productId,
                 'category_id' => 'required|integer|exists:categories,id',
                 'brand' => 'nullable|string|max:255',
                 'description' => 'required|string',
                 'product_overview' => 'nullable|string',
                 'gst_rate' => 'nullable|numeric',
                 'visibility_scope' => 'required|string|in:public,b2b,b2c',
-                'stock_quantity' => 'required|integer|min:0',
-                'base_price' => 'required|numeric|min:0',
+                'variants' => 'required|array|min:1',
+                'variants.*.id' => 'nullable|integer|exists:product_variants,id',
+                'variants.*.sku' => 'required|string|max:100',
+                'variants.*.pack_size' => 'required|string|max:50',
+                'variants.*.mrp' => 'required|numeric|min:0',
+                'variants.*.stock_quantity' => 'required|integer|min:0',
                 'images' => 'nullable|array|max:3',
                 'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
                 'documents' => 'nullable|array',
-                'documents.*' => 'file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
+                'documents.*' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
                 'deleted_images' => 'nullable|array',
                 'deleted_images.*' => 'integer|exists:product_image,id',
                 'deleted_documents' => 'nullable|array',
                 'deleted_documents.*' => 'integer|exists:product_technical_resources,id',
+            ], [
+                'documents.*' => 'The document must be a PDF, Word, or PowerPoint file (max 20MB).',
             ]);
 
             $validated['is_active'] = $request->has('is_active');
+
+            // Filter out null documents from the array (handles file validation edge cases)
+            if (!empty($validated['documents'])) {
+                $validated['documents'] = array_filter($validated['documents'], fn($doc) => $doc !== null);
+            }
 
             // Step 2: call the service to update records and sync files.
             $isUpdated = $this->productCrudService->updateProduct($productId, $validated);

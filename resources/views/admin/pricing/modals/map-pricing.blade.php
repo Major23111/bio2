@@ -17,10 +17,10 @@
             @csrf
             <input type="hidden" name="variant_id" id="mapPricingVariantId">
             <div>
-                <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">GUEST PRICE (BASE PRICE)</label>
+                <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">MRP (MARKET RETAIL PRICE)</label>
                 <div class="relative">
                     <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-medium">₹</span>
-                    <input type="number" step="0.01" name="base_price" required placeholder="0.00" class="w-full pl-8 pr-4 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
+                    <input type="number" step="0.01" name="mrp" required placeholder="0.00" class="w-full pl-8 pr-4 py-3.5 bg-[#f8fafc] border border-slate-100 rounded-xl text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300">
                 </div>
             </div>
             
