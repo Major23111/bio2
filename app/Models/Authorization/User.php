@@ -18,6 +18,11 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected static function newFactory()
+    {
+        return \Database\Factories\UserFactory::new();
+    }
+
     protected $fillable = [
         'name',
         'email',
