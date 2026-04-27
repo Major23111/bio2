@@ -37,30 +37,22 @@
                     <p class="mt-2 text-sm font-medium text-slate-600">Drafting clinical supply order</p>
                 </div>
                 <div class="rounded-xl bg-slate-50 p-5 md:w-[450px]">
-                    <div class="grid grid-cols-2 gap-y-4 gap-x-6">
+                    <div class="flex flex-col gap-y-4">
                         <div>
                             <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">PI
                                 Number</label>
-                            <input id="piNumber" type="text" value="PI/2023-24/0842"
-                                class="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
+                            <input id="piNumber" type="text" value="PI/2023-24/0842" readonly
+                                class="h-10 w-full rounded-md border border-slate-200 bg-slate-100 px-3 text-xs font-bold text-slate-800 outline-none cursor-not-allowed">
                         </div>
                         <div>
-                            <label
-                                class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Date</label>
-                            <input id="piDate" type="date" value="2023-10-24"
-                                class="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
-                        </div>
-                        <div>
-                            <label
-                                class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">State</label>
-                            <input id="piStateCode" type="text" value="27 (Maharashtra)"
-                                class="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
-                        </div>
-                        <div>
-                            <label
-                                class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">GSTIN</label>
-                            <input id="piGstin" type="text" value="27AAFCB1234A1Z5"
-                                class="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
+                            <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Biogenix Address</label>
+                            <div class="rounded-md border border-slate-200 bg-slate-100 px-3 py-3 text-[0.75rem] leading-relaxed text-slate-700 cursor-not-allowed">
+                                B19/A, S.I.L. Ancillary Estate,<br>
+                                Amausi Industrial Area, Nadarganj-226008,<br>
+                                Lucknow (U.P.)<br>
+                                <span class="font-bold text-slate-800 mt-1 block">Mob.: <span class="font-medium text-slate-700">9889485222, 9616105666</span></span>
+                                <span class="font-bold text-slate-800">E-mail: <span class="font-medium text-slate-700">biogenix2007@yahoo.com, info@biogenixinc.com</span></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -134,8 +126,8 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label
-                                class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-600">Contact
-                                Person</label>
+                                class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-600">Company Representative
+                                Name</label>
                             <input type="text"
                                 class="h-10 w-full rounded-md border-0 bg-slate-100 px-3 text-xs text-slate-700 outline-none focus:ring-1 focus:ring-primary-600">
                         </div>
@@ -146,13 +138,6 @@
                             <input id="deliveryPhone" type="text" value="{{ old('customer_phone', $loggedInUser?->phone) }}"
                                 class="h-10 w-full rounded-md border-0 bg-slate-100 px-3 text-xs text-slate-700 outline-none focus:ring-1 focus:ring-primary-600">
                         </div>
-                    </div>
-                    <div>
-                        <label
-                            class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-600">Enquiry
-                            Reference No.</label>
-                        <input type="text" placeholder="REF/2023/BIOG-01"
-                            class="h-10 w-full rounded-md border-0 bg-slate-100 px-3 text-xs text-slate-700 outline-none focus:ring-1 focus:ring-primary-600 placeholder:text-slate-400">
                     </div>
                 </div>
             </div>
@@ -311,8 +296,8 @@
                         <p class="text-[0.65rem] italic text-primary-100/70 leading-relaxed pr-4" id="sumAmountWords">Zero
                             Only</p>
                     </div>
-                    <div class="flex flex-col items-start gap-0 shrink-0">
-                        <span class="text-lg font-bold text-secondary-600 leading-none">₹</span>
+                    <div class="flex flex-row items-baseline gap-1.5 shrink-0">
+                        <span class="text-[1.8rem] font-black text-secondary-600 leading-none">₹</span>
                         <span class="text-[2.1rem] font-black tracking-tight text-secondary-600 leading-none"
                             id="sumGrandTotal">0.00</span>
                     </div>
@@ -542,7 +527,6 @@
             var fy = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
             var piNum = 'PI/' + fy + '-' + String(fy + 1).slice(2) + '/' + String(Math.floor(1000 + Math.random() * 9000));
             document.getElementById('piNumber').value = piNum;
-            document.getElementById('piDate').value = now.toISOString().split('T')[0];
 
             // Business step: keep a lightweight product catalog on the page so the popup can search visible products instantly.
             var productCatalog = @json($productSearchCatalog);
@@ -556,9 +540,6 @@
             var customerEmailInput = document.getElementById('customerEmail');
             var customerPhoneInput = document.getElementById('deliveryPhone');
             var customerGstinInput = document.getElementById('customerGstin');
-            var stateCodeInput = document.getElementById('piStateCode');
-            var piGstinInput = document.getElementById('piGstin');
-            var piDateInput = document.getElementById('piDate');
             var piNumberInput = document.getElementById('piNumber');
 
             // ─── Same as Billing toggle ───
@@ -732,9 +713,6 @@
                 var noteLines = [
                     'PI Header',
                     'PI Number: ' + String(piNumberInput.value || '').trim(),
-                    'PI Date: ' + String(piDateInput.value || '').trim(),
-                    'State: ' + String(stateCodeInput.value || '').trim(),
-                    'GSTIN: ' + String(piGstinInput.value || '').trim(),
                     'Customer GSTIN: ' + String(customerGstinInput.value || '').trim(),
                     'Billing Address: ' + String(billingAddr.value || '').trim(),
                     'Shipping Address: ' + String(shippingAddr.value || '').trim(),

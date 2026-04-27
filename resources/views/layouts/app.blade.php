@@ -261,8 +261,8 @@
                                         </svg>
                                     </button>
 
-                                    <input type="hidden" name="category_slug" id="supportCategoryInput"
-                                        value="{{ old('category_slug') }}" required>
+                                    <input type="hidden" name="category" id="supportCategoryInput"
+                                        value="{{ old('category') }}" required>
 
                                     <div id="supportCategoryList"
                                         class="absolute left-0 right-0 top-full z-[1000] mt-1 hidden max-h-48 overflow-y-auto rounded-xl border border-slate-200 bg-white py-1.5 shadow-xl">
@@ -297,8 +297,8 @@
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                     </svg>
-                                    <span class="text-[10px] font-medium text-slate-500">Click to upload supporting files</span>
-                                    <input type="file" class="hidden" name="attachments[]" multiple>
+                                    <span id="attachmentLabelText" class="text-[10px] font-medium text-slate-500">Click to upload supporting files</span>
+                                    <input type="file" class="hidden" name="attachments[]" multiple onchange="document.getElementById('attachmentLabelText').innerText = this.files.length > 0 ? this.files.length + ' file(s) selected' : 'Click to upload supporting files'">
                                 </label>
                             </div>
                         </div>

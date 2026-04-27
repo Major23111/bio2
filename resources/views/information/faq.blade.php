@@ -79,7 +79,7 @@
                         data-faq-search-text="{{ $searchText }}"
                     >
                         <x-accordion :title="$faq['question']" :open="$index === 0">
-                            <p class="text-slate-600">{{ $faq['answer'] }}</p>
+                            <p class="text-base text-slate-700 leading-relaxed font-medium">{{ $faq['answer'] }}</p>
                         </x-accordion>
                     </div>
                 @endforeach

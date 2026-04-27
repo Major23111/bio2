@@ -36,7 +36,7 @@
                     ['num' => 12, 'title' => 'Termination', 'content' => '<p class="leading-relaxed text-slate-600">We reserve the right to suspend or terminate your access to the website at any time and remove any content or data if you violate these Terms or engage in harmful activities.</p>'],
                     ['num' => 13, 'title' => 'Governing Law', 'content' => '<p class="leading-relaxed text-slate-600">These Terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts in Lucknow, Uttar Pradesh.</p>'],
                     ['num' => 14, 'title' => 'Changes to Terms', 'content' => '<p class="leading-relaxed text-slate-600">We may update these Terms at any time without prior notice. Updated Terms will be posted on this page. Continued use of the website implies acceptance of revised Terms.</p>'],
-                    ['num' => 15, 'title' => 'Contact Information', 'content' => '<p class="leading-relaxed text-slate-600">If you have any questions regarding these Terms, please contact us:</p><p class="mt-3 leading-relaxed text-slate-600">Company Name: Biogenix Inc Pvt Ltd<br>Email:<br>Phone:<br>Address:</p>'],
+                    ['num' => 15, 'title' => 'Contact Information', 'content' => '<p class="leading-relaxed text-slate-600">If you have any questions regarding these Terms, please contact us:</p><p class="mt-3 leading-relaxed text-slate-600">Company Name: Biogenix Inc Pvt Ltd<br>Email: support@biogenix.in, info@biogenix.in, biogenix2007@yahoo.com<br>Phone: +91-9140971443, +91-9889485222, +91-9616105666<br>Address: B19/A, S.I.L Ancillary Estate Amausi Industrial Area, Nadarganj, Lucknow-226008, Uttar Pradesh, India</p>'],
                 ];
             @endphp
 

@@ -33,7 +33,7 @@
                     ['num' => 9, 'title' => 'Third-Party Links', 'content' => '<p class="leading-relaxed text-slate-600">Our website may contain links to third-party websites. We are not responsible for their privacy practices or content. We recommend reviewing their policies before sharing any information.</p>'],
                     ['num' => 10, 'title' => 'Children\'s Privacy', 'content' => '<p class="leading-relaxed text-slate-600">Our services are not intended for individuals under the age of 18. We do not knowingly collect personal data from children.</p>'],
                     ['num' => 11, 'title' => 'Changes to This Privacy Policy', 'content' => '<p class="leading-relaxed text-slate-600">We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last Updated" date.</p>'],
-                    ['num' => 12, 'title' => 'Contact Us', 'content' => '<p class="leading-relaxed text-slate-600">If you have any questions or concerns about this Privacy Policy, you can contact us:</p><p class="mt-3 leading-relaxed text-slate-600">Company Name: Biogenix Inc Pvt Ltd<br>Email:<br>Phone:<br>Address:</p>'],
+                    ['num' => 12, 'title' => 'Contact Us', 'content' => '<p class="leading-relaxed text-slate-600">If you have any questions or concerns about this Privacy Policy, you can contact us:</p><p class="mt-3 leading-relaxed text-slate-600">Company Name: Biogenix Inc Pvt Ltd<br>Email: support@biogenix.in, info@biogenix.in, biogenix2007@yahoo.com<br>Phone: +91-9140971443, +91-9889485222, +91-9616105666<br>Address: B19/A, S.I.L Ancillary Estate Amausi Industrial Area, Nadarganj, Lucknow-226008, Uttar Pradesh, India</p>'],
                 ];
             @endphp
 

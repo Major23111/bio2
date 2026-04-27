@@ -230,24 +230,7 @@
                                 </div>
                             </div>
 
-                            {{-- Custom Dropdown: Talk To --}}
-                            @php $oldPreferredContact = old('preferred_contact', 'Assign Best Available Expert'); @endphp
-                            <div class="relative md:col-span-2" id="dropdown_preferred_contact">
-                                <label class="mb-1 flex items-center justify-between text-sm font-medium text-slate-700">
-                                    <span>Talk To</span>
-                                </label>
-                                <button type="button" class="{{ $inputClass }} flex items-center justify-between cursor-pointer pr-4 hover:border-primary-400 focus:border-primary-500" onclick="toggleCustomDropdown('preferred_contact')">
-                                    <span id="label_preferred_contact" class="block truncate text-slate-900">
-                                        {{ $oldPreferredContact }}
-                                    </span>
-                                    <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 shrink-0" id="icon_preferred_contact" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                                </button>
-                                <input type="hidden" name="preferred_contact" id="input_preferred_contact" value="{{ $oldPreferredContact }}">
-                                
-                                <div class="absolute z-50 left-0 right-0 mt-2 max-h-60 overflow-y-auto rounded-xl border border-slate-100 bg-white py-1 shadow-[var(--ui-shadow-card)] opacity-0 pointer-events-none transition-all duration-200 origin-top scale-95 custom-dropdown-menu" id="menu_preferred_contact">
-                                    <button type="button" class="w-full text-left px-4 py-2.5 text-sm text-slate-700 transition hover:bg-primary-50 hover:text-primary-700 focus:bg-primary-50" onclick="selectDropdownOption('preferred_contact', 'Assign Best Available Expert', 'Assign Best Available Expert')">Assign Best Available Expert</button>
-                                </div>
-                            </div>
+
 
                             <div class="md:col-span-2">
                                 <label for="requirement_description" class="mb-1 flex items-center justify-between text-sm font-medium text-slate-700">
@@ -276,7 +259,7 @@
                     ['title' => 'Technical Evaluation Session (30-40 min)', 'copy' => 'Detailed walkthrough of product specifications, compatibility, and performance—ideal for labs evaluating systems, assays, or integration.'],
                     ['title' => 'Procurement & Commercial Planning (25-30 min)', 'copy' => 'Discuss pricing structures, bulk procurement strategies, and supply planning tailored to your operational scale and demand.'],
                 ] as $format)
-                    <article class="h-full rounded-[var(--ui-radius-card)] border border-slate-200/80 bg-white/95 p-6 shadow-[var(--ui-shadow-card)] backdrop-blur transition hover:-translate-y-1.5 hover:border-primary-100 hover:shadow-[var(--ui-shadow-panel)] md:p-8">
+                    <article onclick="selectSession(this, '{{ $format['title'] }}')" class="session-card cursor-pointer h-full rounded-[var(--ui-radius-card)] border border-slate-200/80 bg-white/95 p-6 shadow-[var(--ui-shadow-card)] backdrop-blur transition hover:-translate-y-1.5 hover:border-primary-300 hover:shadow-[var(--ui-shadow-panel)] md:p-8">
                         <h3 class="font-display text-lg xl:text-[1.15rem] font-semibold tracking-tight leading-snug text-slate-950">{{ $format['title'] }}</h3>
                         <p class="mt-3 text-sm leading-6 text-slate-600">{{ $format['copy'] }}</p>
                     </article>
@@ -347,6 +330,29 @@
         const endTimeInput = document.getElementById('end_time');
         // Script for syncing time window still active
     });
+
+    function selectSession(el, title) {
+        document.querySelectorAll('.session-card').forEach(card => {
+            card.classList.remove('border-primary-600', 'ring-2', 'ring-primary-600/20', 'bg-primary-50/30');
+            card.classList.add('border-slate-200/80', 'bg-white/95');
+        });
+        
+        el.classList.remove('border-slate-200/80', 'bg-white/95');
+        el.classList.add('border-primary-600', 'ring-2', 'ring-primary-600/20', 'bg-primary-50/30');
+        
+        let input = document.getElementById('session_type_input');
+        if (!input) {
+            input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'session_type';
+            input.id = 'session_type_input';
+            document.getElementById('meetingForm').appendChild(input);
+        }
+        input.value = title;
+        
+        // Smooth scroll to the form so user knows what to do next
+        document.getElementById('meetingForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 </script>
 @endpush
 @endsection

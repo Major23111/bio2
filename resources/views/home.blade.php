@@ -19,7 +19,7 @@
                 background-image:
                     url('{{ asset('upload/backgrounds/homebg2.png') }}'),
                     url('{{ asset('upload/backgrounds/homebg4.jpg') }}'),
-                    url('{{ asset('upload/backgrounds/homebg3.jpg') }}');
+                    url('{{ asset('upload/corousel/worldwide-presence.jpg') }}');
 
                 background-repeat: no-repeat, no-repeat, no-repeat;
 
@@ -613,12 +613,14 @@
             aria-roledescription="carousel" aria-label="Hero slideshow">
             <div class="home-hero-track-overlay absolute inset-0 opacity-30"></div>
             <div class="absolute inset-0 overflow-hidden" id="heroCarousel">
-                <div id="heroTrack" class="flex h-full w-full translate-x-0 transition-transform duration-700 ease-out" aria-live="off">
+                <div id="heroTrack" class="flex h-full w-full translate-x-0 transition-transform duration-700 ease-out"
+                    aria-live="off">
                     @forelse ($heroSlides ?? [] as $slide)
                         <article class="relative h-full w-full shrink-0">
                             <img src="{{ asset($slide['image']) }}" alt="{{ $slide['title'] }}"
-                                class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" @if ($loop->first) fetchpriority="high"
-                                @else loading="lazy" @endif decoding="async">
+                                class="absolute inset-0 h-full w-full object-cover opacity-80"
+                                style="filter: blur(4px); transform: scale(1.03);" @if ($loop->first) fetchpriority="high" @else
+                                loading="lazy" @endif decoding="async">
                             <div class="hero-gradient-overlay absolute inset-0 z-0"></div>
 
                             <div
@@ -676,7 +678,8 @@
                     @empty
                         <article class="relative h-full w-full shrink-0">
                             <img src="{{ asset('upload/corousel/image1.jpg') }}" alt="Precision Diagnostics"
-                                class="absolute inset-0 h-full w-full object-cover opacity-80" style="filter: blur(4px); transform: scale(1.03);" fetchpriority="high" decoding="async">
+                                class="absolute inset-0 h-full w-full object-cover opacity-80"
+                                style="filter: blur(4px); transform: scale(1.03);" fetchpriority="high" decoding="async">
                             <div class="hero-gradient-overlay absolute inset-0 z-0"></div>
                             <div
                                 class="relative z-10 mx-auto flex min-h-[83vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
@@ -709,7 +712,8 @@
                         @foreach ($heroSlides ?? [] as $slide)
                             <button type="button" class="h-2.5 w-8 rounded-full bg-white/40 transition hover:bg-white/80"
                                 data-hero-dot data-slide-index="{{ $loop->index }}"
-                                aria-label="Go to slide {{ $loop->iteration }}" @if($loop->first) aria-current="true" @endif></button>
+                                aria-label="Go to slide {{ $loop->iteration }}" @if($loop->first) aria-current="true"
+                                @endif></button>
                         @endforeach
                     </div>
                     <div class="pointer-events-auto flex gap-2">
@@ -731,52 +735,73 @@
         </section>
 
         <!-- Highlighted Numbering Section -->
-        <section class="bg-white/80 py-6 md:py-8 shadow-[0_4px_30px_rgba(0,0,0,0.03)] border-b border-slate-100 relative z-20 backdrop-blur-md">
+        <section
+            class="bg-white/80 py-6 md:py-8 shadow-[0_4px_30px_rgba(0,0,0,0.03)] border-b border-slate-100 relative z-20 backdrop-blur-md">
             <div class="mx-auto max-w-[1400px] w-full px-4 sm:px-6 lg:px-8">
 
                 @php
-                $statsItems = [
-                    [
-                        'value' => '10,000', 'suffix' => '+', 'label' => 'Laboratories &amp; Hospitals Served',
-                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"/>',
-                    ],
-                    [
-                        'value' => '18', 'suffix' => '+', 'label' => 'Years in Diagnostics Industry',
-                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/>',
-                    ],
-                    [
-                        'value' => '500', 'suffix' => '+', 'label' => 'Diagnostic Products &amp; Instruments',
-                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.58 1.838-1.589-5.06-5.044 1.636 1.838-2.58-5.074-1.353 5.06-1.589-.016-.016c.4-.413.916-.704 1.488-.847L12.5 7.5m1.184 9.1l3.529-5.07 5.06 1.589-1.353-5.074 2.58-1.838-5.044 1.636-1.589-5.06-2.58 1.838-4.996-1.332m0 0a9.003 9.003 0 00-4.088 14.887M9.25 5L7 7"/>',
-                    ],
-                    [
-                        'value' => '650', 'suffix' => '+', 'label' => 'Channels and Distributor Partners',
-                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
-                    ],
-                    [
-                        'value' => '150', 'suffix' => '+', 'label' => 'Government &amp; Institutional Clients',
-                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 10.5l8-8.5 4.5 4.5 7.5-7.5"/>',
-                    ],
-                    [
-                        'value' => '50 Million', 'suffix' => '+', 'label' => 'Test Kits Produced Annually',
-                        'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>',
-                    ],
-                ];
+                    $statsItems = [
+                        [
+                            'value' => '10,000',
+                            'suffix' => '+',
+                            'label' => 'Laboratories &amp; Hospitals Served',
+                            'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"/>',
+                        ],
+                        [
+                            'value' => '18',
+                            'suffix' => '+',
+                            'label' => 'Years in Diagnostics Industry',
+                            'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/>',
+                        ],
+                        [
+                            'value' => '500',
+                            'suffix' => '+',
+                            'label' => 'Diagnostic Products &amp; Instruments',
+                            'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.58 1.838-1.589-5.06-5.044 1.636 1.838-2.58-5.074-1.353 5.06-1.589-.016-.016c.4-.413.916-.704 1.488-.847L12.5 7.5m1.184 9.1l3.529-5.07 5.06 1.589-1.353-5.074 2.58-1.838-5.044 1.636-1.589-5.06-2.58 1.838-4.996-1.332m0 0a9.003 9.003 0 00-4.088 14.887M9.25 5L7 7"/>',
+                        ],
+                        [
+                            'value' => '650',
+                            'suffix' => '+',
+                            'label' => 'Channels and Distributor Partners',
+                            'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                        ],
+                        [
+                            'value' => '150',
+                            'suffix' => '+',
+                            'label' => 'Government &amp; Institutional Clients',
+                            'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 10.5l8-8.5 4.5 4.5 7.5-7.5"/>',
+                        ],
+                        [
+                            'value' => '50 Million',
+                            'suffix' => '+',
+                            'label' => 'Test Kits Produced Annually',
+                            'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>',
+                        ],
+                    ];
                 @endphp
 
                 {{-- ── MOBILE: JS auto+manual marquee (hidden md+) ── --}}
                 <div class="relative overflow-hidden select-none md:hidden" id="statsMarqueeWrapper">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 w-10 z-10 bg-gradient-to-r from-white/90 to-transparent"></div>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 w-10 z-10 bg-gradient-to-l from-white/90 to-transparent"></div>
+                    <div
+                        class="pointer-events-none absolute inset-y-0 left-0 w-10 z-10 bg-gradient-to-r from-white/90 to-transparent">
+                    </div>
+                    <div
+                        class="pointer-events-none absolute inset-y-0 right-0 w-10 z-10 bg-gradient-to-l from-white/90 to-transparent">
+                    </div>
 
-                    <div class="flex gap-8 cursor-grab active:cursor-grabbing" id="statsMarqueeTrack" style="width:max-content">
+                    <div class="flex gap-8 cursor-grab active:cursor-grabbing" id="statsMarqueeTrack"
+                        style="width:max-content">
                         @foreach ([1, 2] as $_)
                             @foreach ($statsItems as $stat)
                                 <div class="flex flex-col items-center text-center w-[148px] shrink-0 py-2">
                                     <div class="mb-3 text-primary-600">
-                                        <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">{!! $stat['icon'] !!}</svg>
+                                        <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            stroke-width="1.5">{!! $stat['icon'] !!}</svg>
                                     </div>
-                                    <h4 class="text-[24px] font-bold text-slate-700 tracking-tight">{{ $stat['value'] }} <span class="text-lg">{{ $stat['suffix'] }}</span></h4>
-                                    <p class="mt-1 text-xs font-bold text-slate-500 leading-snug tracking-wide">{!! $stat['label'] !!}</p>
+                                    <h4 class="text-[24px] font-bold text-slate-700 tracking-tight">{{ $stat['value'] }} <span
+                                            class="text-lg">{{ $stat['suffix'] }}</span></h4>
+                                    <p class="mt-1 text-xs font-bold text-slate-500 leading-snug tracking-wide">
+                                        {!! $stat['label'] !!}</p>
                                 </div>
                             @endforeach
                         @endforeach
@@ -784,48 +809,48 @@
                 </div>
 
                 <script>
-                (function () {
-                    var wrapper = document.getElementById('statsMarqueeWrapper');
-                    var track   = document.getElementById('statsMarqueeTrack');
-                    if (!wrapper || !track) return;
+                    (function () {
+                        var wrapper = document.getElementById('statsMarqueeWrapper');
+                        var track = document.getElementById('statsMarqueeTrack');
+                        if (!wrapper || !track) return;
 
-                    var speed = 0.5, offset = 0, halfWidth = 0, isManual = false, resumeTimer = null;
+                        var speed = 0.5, offset = 0, halfWidth = 0, isManual = false, resumeTimer = null;
 
-                    function getHalf() { return track.scrollWidth / 2; }
+                        function getHalf() { return track.scrollWidth / 2; }
 
-                    function tick() {
-                        if (!isManual) {
-                            offset += speed;
-                            if (offset >= halfWidth) offset -= halfWidth;
-                            track.style.transform = 'translateX(-' + offset + 'px)';
+                        function tick() {
+                            if (!isManual) {
+                                offset += speed;
+                                if (offset >= halfWidth) offset -= halfWidth;
+                                track.style.transform = 'translateX(-' + offset + 'px)';
+                            }
+                            requestAnimationFrame(tick);
                         }
+
+                        function pause() { isManual = true; clearTimeout(resumeTimer); }
+                        function resume() { resumeTimer = setTimeout(function () { isManual = false; }, 1500); }
+
+                        var dragStart = 0, dragBase = 0;
+                        wrapper.addEventListener('mousedown', function (e) { pause(); dragStart = e.clientX; dragBase = offset; });
+                        window.addEventListener('mousemove', function (e) {
+                            if (!isManual) return;
+                            offset = ((dragBase + dragStart - e.clientX) % halfWidth + halfWidth) % halfWidth;
+                            track.style.transform = 'translateX(-' + offset + 'px)';
+                        });
+                        window.addEventListener('mouseup', function () { if (isManual) resume(); });
+
+                        var tStart = 0, tBase = 0;
+                        wrapper.addEventListener('touchstart', function (e) { pause(); tStart = e.touches[0].clientX; tBase = offset; }, { passive: true });
+                        wrapper.addEventListener('touchmove', function (e) {
+                            offset = ((tBase + tStart - e.touches[0].clientX) % halfWidth + halfWidth) % halfWidth;
+                            track.style.transform = 'translateX(-' + offset + 'px)';
+                        }, { passive: true });
+                        wrapper.addEventListener('touchend', resume);
+
+                        halfWidth = getHalf();
                         requestAnimationFrame(tick);
-                    }
-
-                    function pause() { isManual = true; clearTimeout(resumeTimer); }
-                    function resume() { resumeTimer = setTimeout(function(){ isManual = false; }, 1500); }
-
-                    var dragStart = 0, dragBase = 0;
-                    wrapper.addEventListener('mousedown', function(e){ pause(); dragStart = e.clientX; dragBase = offset; });
-                    window.addEventListener('mousemove', function(e){
-                        if (!isManual) return;
-                        offset = ((dragBase + dragStart - e.clientX) % halfWidth + halfWidth) % halfWidth;
-                        track.style.transform = 'translateX(-' + offset + 'px)';
-                    });
-                    window.addEventListener('mouseup', function(){ if (isManual) resume(); });
-
-                    var tStart = 0, tBase = 0;
-                    wrapper.addEventListener('touchstart', function(e){ pause(); tStart = e.touches[0].clientX; tBase = offset; }, { passive: true });
-                    wrapper.addEventListener('touchmove', function(e){
-                        offset = ((tBase + tStart - e.touches[0].clientX) % halfWidth + halfWidth) % halfWidth;
-                        track.style.transform = 'translateX(-' + offset + 'px)';
-                    }, { passive: true });
-                    wrapper.addEventListener('touchend', resume);
-
-                    halfWidth = getHalf();
-                    requestAnimationFrame(tick);
-                    window.addEventListener('resize', function(){ halfWidth = getHalf(); });
-                })();
+                        window.addEventListener('resize', function () { halfWidth = getHalf(); });
+                    })();
                 </script>
 
                 {{-- ── DESKTOP: centred wrap grid (hidden below md) ── --}}
@@ -833,10 +858,13 @@
                     @foreach ($statsItems as $stat)
                         <div class="flex flex-col items-center text-center max-w-[200px]">
                             <div class="mb-3 text-primary-600">
-                                <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">{!! $stat['icon'] !!}</svg>
+                                <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    stroke-width="1.5">{!! $stat['icon'] !!}</svg>
                             </div>
-                            <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">{{ $stat['value'] }} <span class="text-xl">{{ $stat['suffix'] }}</span></h4>
-                            <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">{!! $stat['label'] !!}</p>
+                            <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">{{ $stat['value'] }} <span
+                                    class="text-xl">{{ $stat['suffix'] }}</span></h4>
+                            <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">{!! $stat['label'] !!}
+                            </p>
                         </div>
                     @endforeach
                 </div>
@@ -854,11 +882,15 @@
                     <div class="flex flex-wrap items-end justify-between gap-4">
                         <div>
                             <span class="text-primary-600 font-medium text-[15px] tracking-wide mb-1 block">Showcase</span>
-                            <h2 class="text-4xl md:text-[44px] font-bold text-slate-800 tracking-tight font-display">Institutional Network</h2>
+                            <h2 class="text-4xl md:text-[44px] font-bold text-slate-800 tracking-tight font-display">
+                                Institutional Network</h2>
                         </div>
-                        <a href="{{ route('portfolio') }}" class="inline-flex items-center gap-3 text-primary-600 font-bold text-lg hover:text-primary-700 transition group">
-                            <span class="flex items-center justify-center w-[42px] h-[42px] rounded-full border-2 border-primary-600 group-hover:bg-primary-50 group-hover:scale-105 transition">
-                                <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <a href="{{ route('portfolio') }}"
+                            class="inline-flex items-center gap-3 text-primary-600 font-bold text-lg hover:text-primary-700 transition group">
+                            <span
+                                class="flex items-center justify-center w-[42px] h-[42px] rounded-full border-2 border-primary-600 group-hover:bg-primary-50 group-hover:scale-105 transition">
+                                <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                 </svg>
                             </span>
@@ -866,131 +898,141 @@
                         </a>
                     </div>
                     <p class="mt-5 text-[17px] text-slate-500 leading-relaxed max-w-3xl font-medium">
-                        With a strong and growing presence across India, Biogenix has established trusted partnerships with 150+ government institutions, healthcare organisations, and diagnostic networks.<br><br>
-                        Our collaborations span across state healthcare departments, government hospitals, medical colleges, and public health programs, reinforcing our commitment to strengthening diagnostic infrastructure at scale.
+                        With a strong and growing presence across India, Biogenix has established trusted partnerships with
+                        150+ government institutions, healthcare organisations, and diagnostic networks.<br><br>
+                        Our collaborations span across state healthcare departments, government hospitals, medical colleges,
+                        and public health programs, reinforcing our commitment to strengthening diagnostic infrastructure at
+                        scale.
                     </p>
 
                     @php
                         $portfolioLogoFiles = collect(\Illuminate\Support\Facades\File::files(public_path('upload/portfolio')))
-                            ->sortBy(fn ($file) => strtolower($file->getFilename()))
+                            ->sortBy(fn($file) => strtolower($file->getFilename()))
                             ->values();
                     @endphp
 
                     @if ($portfolioLogoFiles->isNotEmpty())
-                    <div class="mt-8 w-full overflow-hidden relative select-none" id="logoMarqueeWrapper">
-                        {{-- Edge fade masks --}}
-                        <div class="pointer-events-none absolute inset-y-0 left-0 w-20 z-10 bg-gradient-to-r from-white to-transparent"></div>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 w-20 z-10 bg-gradient-to-l from-white to-transparent"></div>
+                        <div class="mt-8 w-full overflow-hidden relative select-none" id="logoMarqueeWrapper">
+                            {{-- Edge fade masks --}}
+                            <div
+                                class="pointer-events-none absolute inset-y-0 left-0 w-20 z-10 bg-gradient-to-r from-white to-transparent">
+                            </div>
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 w-20 z-10 bg-gradient-to-l from-white to-transparent">
+                            </div>
 
-                        <div class="grid grid-rows-2 grid-flow-col gap-5 cursor-grab active:cursor-grabbing pb-2" id="logoMarqueeTrack" style="width:max-content">
-                            {{-- Duplicated 4 times to ensure even column distribution for seamless looping --}}
-                            @foreach ([1, 2, 3, 4] as $_)
-                                @foreach ($portfolioLogoFiles as $logoFile)
-                                    @php
-                                        $logoName  = $logoFile->getFilename();
-                                        $logoLabel = preg_replace('/\.[^.]+$/', '', $logoName);
-                                        $logoUrl   = asset('upload/portfolio/' . rawurlencode($logoName));
-                                    @endphp
-                                    <article class="flex h-20 w-[150px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-3 shadow-sm pointer-events-none">
-                                        <img src="{{ $logoUrl }}" alt="{{ $logoLabel }}" loading="lazy" decoding="async" class="max-h-full w-full object-contain draggable-false">
-                                    </article>
+                            <div class="grid grid-rows-2 grid-flow-col gap-5 cursor-grab active:cursor-grabbing pb-2"
+                                id="logoMarqueeTrack" style="width:max-content">
+                                {{-- Duplicated 4 times to ensure even column distribution for seamless looping --}}
+                                @foreach ([1, 2, 3, 4] as $_)
+                                    @foreach ($portfolioLogoFiles as $logoFile)
+                                        @php
+                                            $logoName = $logoFile->getFilename();
+                                            $logoLabel = preg_replace('/\.[^.]+$/', '', $logoName);
+                                            $logoUrl = asset('upload/portfolio/' . rawurlencode($logoName));
+                                        @endphp
+                                        <article
+                                            class="flex h-20 w-[150px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-3 shadow-sm pointer-events-none">
+                                            <img src="{{ $logoUrl }}" alt="{{ $logoLabel }}" loading="lazy" decoding="async"
+                                                class="max-h-full w-full object-contain draggable-false">
+                                        </article>
+                                    @endforeach
                                 @endforeach
-                            @endforeach
+                            </div>
                         </div>
-                    </div>
 
-                    <script>
-                    (function () {
-                        var wrapper = document.getElementById('logoMarqueeWrapper');
-                        var track   = document.getElementById('logoMarqueeTrack');
-                        if (!wrapper || !track) return;
+                        <script>
+                            (function () {
+                                var wrapper = document.getElementById('logoMarqueeWrapper');
+                                var track = document.getElementById('logoMarqueeTrack');
+                                if (!wrapper || !track) return;
 
-                        var speed       = 0.6;   // px per frame
-                        var offset      = 0;
-                        var halfWidth   = 0;
-                        var rafId       = null;
-                        var isManual    = false;
-                        var resumeTimer = null;
+                                var speed = 0.6;   // px per frame
+                                var offset = 0;
+                                var halfWidth = 0;
+                                var rafId = null;
+                                var isManual = false;
+                                var resumeTimer = null;
 
-                        function getHalfWidth() {
-                            return track.scrollWidth / 2;
-                        }
+                                function getHalfWidth() {
+                                    return track.scrollWidth / 2;
+                                }
 
-                        function tick() {
-                            if (!isManual) {
-                                offset += speed;
-                                if (offset >= halfWidth) offset -= halfWidth;
-                                track.style.transform = 'translateX(-' + offset + 'px)';
-                            }
-                            rafId = requestAnimationFrame(tick);
-                        }
+                                function tick() {
+                                    if (!isManual) {
+                                        offset += speed;
+                                        if (offset >= halfWidth) offset -= halfWidth;
+                                        track.style.transform = 'translateX(-' + offset + 'px)';
+                                    }
+                                    rafId = requestAnimationFrame(tick);
+                                }
 
-                        function pauseAuto() {
-                            isManual = true;
-                            clearTimeout(resumeTimer);
-                        }
+                                function pauseAuto() {
+                                    isManual = true;
+                                    clearTimeout(resumeTimer);
+                                }
 
-                        function scheduleResume() {
-                            isManual = false; // resume happens gradually via tick
-                            resumeTimer = setTimeout(function () {
-                                isManual = false;
-                            }, 1500);
-                        }
+                                function scheduleResume() {
+                                    isManual = false; // resume happens gradually via tick
+                                    resumeTimer = setTimeout(function () {
+                                        isManual = false;
+                                    }, 1500);
+                                }
 
-                        // ── Mouse drag ──
-                        var dragStart = 0;
-                        var dragOffset = 0;
+                                // ── Mouse drag ──
+                                var dragStart = 0;
+                                var dragOffset = 0;
 
-                        wrapper.addEventListener('mousedown', function (e) {
-                            pauseAuto();
-                            dragStart  = e.clientX;
-                            dragOffset = offset;
-                            wrapper.classList.add('cursor-grabbing');
-                        });
+                                wrapper.addEventListener('mousedown', function (e) {
+                                    pauseAuto();
+                                    dragStart = e.clientX;
+                                    dragOffset = offset;
+                                    wrapper.classList.add('cursor-grabbing');
+                                });
 
-                        window.addEventListener('mousemove', function (e) {
-                            if (!isManual) return;
-                            var delta = dragStart - e.clientX;
-                            offset = ((dragOffset + delta) % halfWidth + halfWidth) % halfWidth;
-                            track.style.transform = 'translateX(-' + offset + 'px)';
-                        });
+                                window.addEventListener('mousemove', function (e) {
+                                    if (!isManual) return;
+                                    var delta = dragStart - e.clientX;
+                                    offset = ((dragOffset + delta) % halfWidth + halfWidth) % halfWidth;
+                                    track.style.transform = 'translateX(-' + offset + 'px)';
+                                });
 
-                        window.addEventListener('mouseup', function () {
-                            if (!isManual) return;
-                            wrapper.classList.remove('cursor-grabbing');
-                            scheduleResume();
-                        });
+                                window.addEventListener('mouseup', function () {
+                                    if (!isManual) return;
+                                    wrapper.classList.remove('cursor-grabbing');
+                                    scheduleResume();
+                                });
 
-                        // ── Touch swipe ──
-                        var touchStartX = 0;
-                        var touchOffset = 0;
+                                // ── Touch swipe ──
+                                var touchStartX = 0;
+                                var touchOffset = 0;
 
-                        wrapper.addEventListener('touchstart', function (e) {
-                            pauseAuto();
-                            touchStartX = e.touches[0].clientX;
-                            touchOffset = offset;
-                        }, { passive: true });
+                                wrapper.addEventListener('touchstart', function (e) {
+                                    pauseAuto();
+                                    touchStartX = e.touches[0].clientX;
+                                    touchOffset = offset;
+                                }, { passive: true });
 
-                        wrapper.addEventListener('touchmove', function (e) {
-                            var delta = touchStartX - e.touches[0].clientX;
-                            offset = ((touchOffset + delta) % halfWidth + halfWidth) % halfWidth;
-                            track.style.transform = 'translateX(-' + offset + 'px)';
-                        }, { passive: true });
+                                wrapper.addEventListener('touchmove', function (e) {
+                                    var delta = touchStartX - e.touches[0].clientX;
+                                    offset = ((touchOffset + delta) % halfWidth + halfWidth) % halfWidth;
+                                    track.style.transform = 'translateX(-' + offset + 'px)';
+                                }, { passive: true });
 
-                        wrapper.addEventListener('touchend', function () {
-                            scheduleResume();
-                        });
+                                wrapper.addEventListener('touchend', function () {
+                                    scheduleResume();
+                                });
 
-                        // ── Init ──
-                        halfWidth = getHalfWidth();
-                        rafId = requestAnimationFrame(tick);
+                                // ── Init ──
+                                halfWidth = getHalfWidth();
+                                rafId = requestAnimationFrame(tick);
 
-                        // Recalc on resize
-                        window.addEventListener('resize', function () {
-                            halfWidth = getHalfWidth();
-                        });
-                    })();
-                    </script>
+                                // Recalc on resize
+                                window.addEventListener('resize', function () {
+                                    halfWidth = getHalfWidth();
+                                });
+                            })();
+                        </script>
                     @else
                         <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-500">
                             No portfolio images found in <span class="font-semibold">public/upload/portfolio</span>.
@@ -1001,8 +1043,10 @@
         </section>
 
         <section class="home-categories relative py-12 md:py-16 overflow-hidden">
-            <img src="{{ asset('upload/categories/core-categories-bg.jpg') }}" alt="" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">
-            <div class="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-[2px]"></div>
+            <img src="{{ asset('upload/categories/core-categories-bg.jpg') }}" alt=""
+                class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">
+            <div class="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-[2px]">
+            </div>
             <div class="relative z-10 mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
                 <div class="home-reveal home-categories-heading text-slate-900">
                     <x-ui.section-heading title="Core Product Categories"
@@ -1045,33 +1089,33 @@
                                 $imagePath = $catImagePath;
                                 $categoryCopy = \Illuminate\Support\Str::limit($category->description ?: $category->application ?: 'Explore products from this category.', 60);
                             @endphp
-                            
+
                             @if ($imagePath)
-                            <article
-                                class="home-category-tile glass-card hover-lift home-reveal group {{ $tileClass }} rounded-[var(--ui-radius-card)]">
-                                <div class="home-category-tile__media">
-                                    <img src="{{ asset($imagePath) }}" alt="{{ $category->name }}"
-                                        class="home-category-tile__image" loading="lazy" decoding="async">
-                                    <div class="relative z-[1] flex items-start justify-between gap-3 p-4">
-                                        <span
-                                            class="home-category-pill">{{ $loop->first ? 'Featured category' : 'Category' }}</span>
-                                        @if (isset($category->products_count) && $category->products_count > 0)
-                                            <span class="home-category-meta">{{ $category->products_count }} products</span>
-                                        @endif
+                                <article
+                                    class="home-category-tile glass-card hover-lift home-reveal group {{ $tileClass }} rounded-[var(--ui-radius-card)]">
+                                    <div class="home-category-tile__media">
+                                        <img src="{{ asset($imagePath) }}" alt="{{ $category->name }}"
+                                            class="home-category-tile__image" loading="lazy" decoding="async">
+                                        <div class="relative z-[1] flex items-start justify-between gap-3 p-4">
+                                            <span
+                                                class="home-category-pill">{{ $loop->first ? 'Featured category' : 'Category' }}</span>
+                                            @if (isset($category->products_count) && $category->products_count > 0)
+                                                <span class="home-category-meta">{{ $category->products_count }} products</span>
+                                            @endif
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="home-category-tile__content">
-                                    <div>
-                                        <h3 class="font-display text-lg font-semibold tracking-tight text-slate-950">
-                                            {{ $category->name }}
-                                        </h3>
+                                    <div class="home-category-tile__content">
+                                        <div>
+                                            <h3 class="font-display text-lg font-semibold tracking-tight text-slate-950">
+                                                {{ $category->name }}
+                                            </h3>
+                                        </div>
+                                        <div class="mt-auto">
+                                            <a href="{{ route('products.index', ['category' => $category->slug ?? $category->id]) }}"
+                                                class="home-category-action hover-lift glow-orange">Explore</a>
+                                        </div>
                                     </div>
-                                    <div class="mt-auto">
-                                        <a href="{{ route('products.index', ['category' => $category->slug ?? $category->id]) }}"
-                                            class="home-category-action hover-lift glow-orange">Explore</a>
-                                    </div>
-                                </div>
-                            </article>
+                                </article>
                             @endif
                         @empty
                             <article class="home-panel sm:col-span-2 xl:col-span-5">
@@ -1115,8 +1159,10 @@
                                 <div class="home-route-card__panel">
                                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For
                                         institutions and channel partners</p>
-                                    <h3 class="mt-3 text-2xl font-semibold text-white">Structured buying for distributors, labs and hospitals and channel partners.</h3>
-                                    <p class="mt-3 text-sm leading-7 text-primary-50/90">Login-based pricing, quotation flow, order confirmation and real-time tracking in one connected system.</p>
+                                    <h3 class="mt-3 text-2xl font-semibold text-white">Structured buying for distributors,
+                                        labs and hospitals and channel partners.</h3>
+                                    <p class="mt-3 text-sm leading-7 text-primary-50/90">Login-based pricing, quotation
+                                        flow, order confirmation and real-time tracking in one connected system.</p>
                                     <div class="mt-5 flex flex-wrap gap-3">
                                         <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])"
                                             variant="inverse">B2B Login</x-ui.action-link>
@@ -1136,8 +1182,10 @@
                                 <div class="home-route-card__panel">
                                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For direct and
                                         retail buyers</p>
-                                    <h3 class="mt-3 text-2xl font-semibold text-white">Faster product access for labs, clinics and hospitals.</h3>
-                                    <p class="mt-3 text-sm leading-7 text-primary-50/90">Browse, generate a quote, check out, pay securely and track your order with minimal friction.</p>
+                                    <h3 class="mt-3 text-2xl font-semibold text-white">Faster product access for labs,
+                                        clinics and hospitals.</h3>
+                                    <p class="mt-3 text-sm leading-7 text-primary-50/90">Browse, generate a quote, check
+                                        out, pay securely and track your order with minimal friction.</p>
                                     <div class="mt-5 flex flex-wrap gap-3">
                                         <x-ui.action-link :href="route('login', ['user_type' => 'b2c'])"
                                             variant="inverse">B2C Login</x-ui.action-link>
@@ -1155,7 +1203,8 @@
 
         <section class="home-newsletter bg-transparent py-12 md:py-16">
             <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-5 px-4 sm:px-6 xl:grid-cols-12 lg:px-8 xl:px-10">
-                <article class="home-quiz-card home-reveal overflow-hidden rounded-[var(--ui-radius-card)] bg-primary-600 px-6 py-8 shadow-[0_24px_55px_rgba(26,77,46,0.25)] xl:col-span-7 md:flex md:items-center md:justify-between md:p-10">
+                <article
+                    class="home-quiz-card home-reveal overflow-hidden rounded-[var(--ui-radius-card)] bg-primary-600 px-6 py-8 shadow-[0_24px_55px_rgba(26,77,46,0.25)] xl:col-span-7 md:flex md:items-center md:justify-between md:p-10">
                     <div class="max-w-xl">
                         <h2 class="font-display text-2xl font-semibold tracking-tight text-white lg:text-3xl">
                             Test Your Diagnostic<br>Precision</h2>
@@ -1164,10 +1213,12 @@
                         </p>
                     </div>
                     <div class="mt-6 md:mt-0 md:pl-6 md:shrink-0 flex items-center">
-                        <a href="{{ route('diagnostic-quiz') }}" class="inline-flex items-center gap-2.5 rounded-xl border border-secondary-700/20 bg-secondary-600 px-7 py-3.5 text-sm font-semibold text-primary-800 shadow-sm transition hover:scale-105 hover:bg-secondary-500 glow-orange">
+                        <a href="{{ route('diagnostic-quiz') }}"
+                            class="inline-flex items-center gap-2.5 rounded-xl border border-secondary-700/20 bg-secondary-600 px-7 py-3.5 text-sm font-semibold text-primary-800 shadow-sm transition hover:scale-105 hover:bg-secondary-500 glow-orange">
                             Start Quiz
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
                         </a>
                     </div>
@@ -1210,7 +1261,8 @@
 
                             <ul class="mt-5 space-y-2.5">
                                 <li class="flex items-center gap-3">
-                                    <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-600">
+                                    <span
+                                        class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-600">
                                         <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor" stroke-width="3">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -1220,7 +1272,8 @@
                                         Partners</span>
                                 </li>
                                 <li class="flex items-center gap-3">
-                                    <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-600">
+                                    <span
+                                        class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-600">
                                         <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor" stroke-width="3">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -1259,7 +1312,8 @@
 
                         <div
                             class="relative min-h-[240px] lg:min-h-[360px] overflow-hidden rounded-[var(--ui-radius-card)]">
-                            <img src="{{ asset('upload/corousel/nationwide-bg.jpg') }}" alt="Biogenix Distribution Network"
+                            <img src="{{ asset('upload/corousel/nationwide-bg.jpg') }}"
+                                alt="Biogenix Global Distribution Network"
                                 class="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async">
                             <div
                                 class="absolute bottom-4 right-4 z-10 rounded-2xl border border-secondary-700/20 bg-secondary-600 px-4 py-2.5 shadow-sm sm:bottom-5 sm:right-5 text-center">
@@ -1281,7 +1335,7 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                /* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Hero Carousel Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+                /* â€ â‚¬â€ â‚¬â€ â‚¬ Hero Carousel â€ â‚¬â€ â‚¬â€ â‚¬ */
                 const track = document.getElementById('heroTrack');
                 const dots = Array.from(document.querySelectorAll('[data-hero-dot]'));
                 const nextBtn = document.getElementById('heroNext');
@@ -1328,7 +1382,7 @@
                 if (nextBtn) nextBtn.addEventListener('click', function () { moveTo(index + 1); startAuto(); });
                 if (prevBtn) prevBtn.addEventListener('click', function () { moveTo(index - 1); startAuto(); });
 
-                /* Ã¢â€â‚¬Ã¢â€â‚¬ Touch / Swipe support Ã¢â€â‚¬Ã¢â€â‚¬ */
+                /* â€ â‚¬â€ â‚¬ Touch / Swipe support â€ â‚¬â€ â‚¬ */
                 if (carousel) {
                     let touchStartX = 0;
                     let touchEndX = 0;
@@ -1391,7 +1445,7 @@
                 window.addEventListener('resize', queueRevealRefresh);
                 window.addEventListener('scroll', queueRevealRefresh, { passive: true });
 
-                /* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Newsletter Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+                /* â€ â‚¬â€ â‚¬â€ â‚¬ Newsletter â€ â‚¬â€ â‚¬â€ â‚¬ */
                 const newsletterForm = document.getElementById('newsletterForm');
                 const newsletterBtn = document.getElementById('newsletterSubmitBtn');
                 const newsletterStatus = document.getElementById('newsletterStatus');
@@ -1422,7 +1476,7 @@
                     });
                 }
 
-                /* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Category Carousel Auto Scroll Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+                /* â€ â‚¬â€ â‚¬â€ â‚¬ Category Carousel Auto Scroll â€ â‚¬â€ â‚¬â€ â‚¬ */
                 const catCarousel = document.getElementById('categoryCarousel');
                 let catScrollInterval;
 
@@ -1478,7 +1532,7 @@
                     }
                 }
 
-                /* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Solutions Carousel Auto Scroll (Mobile Only) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+                /* â€ â‚¬â€ â‚¬â€ â‚¬ Solutions Carousel Auto Scroll (Mobile Only) â€ â‚¬â€ â‚¬â€ â‚¬ */
                 const solCarousel = document.getElementById('solutionsCarousel');
                 const solPrev = document.getElementById('solutionsPrev');
                 const solNext = document.getElementById('solutionsNext');
@@ -1717,27 +1771,27 @@
                     emptyState.classList.add('hidden');
                     emptyState.classList.remove('flex');
                     container.innerHTML = filtered.map(d => `
-                                                    <div class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-primary-200 hover:shadow-md">
-                                                        <div class="flex items-start justify-between">
-                                                            <div>
-                                                                <span class="mb-2 inline-flex rounded-full bg-primary-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-700">Authorized Distributor</span>
-                                                                <h3 class="font-display text-lg font-bold text-slate-900">${d.name}</h3>
-                                                                <p class="mt-1 text-sm text-slate-500">${d.address}, ${d.city}, ${d.state}</p>
+                                                            <div class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-primary-200 hover:shadow-md">
+                                                                <div class="flex items-start justify-between">
+                                                                    <div>
+                                                                        <span class="mb-2 inline-flex rounded-full bg-primary-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-700">Authorized Distributor</span>
+                                                                        <h3 class="font-display text-lg font-bold text-slate-900">${d.name}</h3>
+                                                                        <p class="mt-1 text-sm text-slate-500">${d.address}, ${d.city}, ${d.state}</p>
+                                                                    </div>
+                                                                    <div class="flex flex-col gap-2">
+                                                                        <a href="tel:${d.phone.replace(/\s+/g, '')}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition hover:bg-primary-600 hover:text-white" title="Call">
+                                                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                                                                        </a>
+                                                                        <a href="mailto:${d.email}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition hover:bg-primary-600 hover:text-white" title="Email">
+                                                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-4 flex flex-wrap gap-1.5">
+                                                                    ${d.focus.map(f => `<span class="rounded-lg bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-600">${f}</span>`).join('')}
+                                                                </div>
                                                             </div>
-                                                            <div class="flex flex-col gap-2">
-                                                                <a href="tel:${d.phone.replace(/\s+/g, '')}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition hover:bg-primary-600 hover:text-white" title="Call">
-                                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-                                                                </a>
-                                                                <a href="mailto:${d.email}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition hover:bg-primary-600 hover:text-white" title="Email">
-                                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-4 flex flex-wrap gap-1.5">
-                                                            ${d.focus.map(f => `<span class="rounded-lg bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-600">${f}</span>`).join('')}
-                                                        </div>
-                                                    </div>
-                                                `).join('');
+                                                        `).join('');
                 }
             }
         </script>
