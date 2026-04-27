@@ -143,15 +143,23 @@
                 background: var(--color-accent-orange);
             }
 
-            .home-categories-heading h2,
-            .home-solutions-heading h2 {
+            .home-categories-heading h2 {
                 color: #020617;
                 font-weight: 700;
             }
 
-            .home-categories-heading p,
-            .home-solutions-heading p {
+            .home-categories-heading p {
                 color: #334155;
+                font-weight: 600;
+            }
+
+            .home-solutions-heading h2 {
+                color: #ffffff;
+                font-weight: 700;
+            }
+
+            .home-solutions-heading p {
+                color: #e2e8f0;
                 font-weight: 600;
             }
 
@@ -529,8 +537,8 @@
             }
 
             .home-solutions {
-                background: rgba(255, 255, 255, 0.4);
-                backdrop-filter: blur(10px);
+                background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), url('{{ asset('upload/corousel/worldwide-presence.jpg') }}') no-repeat center center;
+                background-size: cover;
             }
 
             .home-trust {
