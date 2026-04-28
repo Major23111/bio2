@@ -143,10 +143,10 @@
             <p class="mt-5 max-w-2xl text-lg leading-8 text-white/90">At Biogenix, quality is embedded in every stage of our operations. We follow stringent quality control processes to ensure consistency, accuracy, and reliability across all products. Our systems are aligned with industry standards and regulatory requirements, ensuring safe and dependable solutions for modern diagnostic laboratories.</p>
             <div class="mt-9 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
                 @foreach ([
-                    ['name' => 'ISO 13485', 'link' => '#'],
-                    ['name' => 'GMP Aligned', 'link' => '#'],
-                    ['name' => 'QA Audited', 'link' => '#'],
-                    ['name' => 'CDSCO Ready', 'link' => '#']
+                    ['name' => 'ISO 13485', 'link' => asset('upload/documents/AboutUs/ISO-13485.pdf')],
+                    ['name' => 'GMP Aligned', 'link' => asset('upload/documents/AboutUs/GMP-Aligned.jpeg')],
+                    ['name' => 'QA Audited', 'link' => asset('upload/documents/AboutUs/QA-Audited.pdf')],
+                    ['name' => 'CDSCO Ready', 'link' => asset('upload/documents/AboutUs/CDSCO-Ready.pdf')]
                 ] as $cert)
                     <a href="{{ $cert['link'] }}" class="inline-flex items-center justify-center gap-2.5 rounded-2xl border border-secondary-700/20 bg-secondary-600 px-6 py-3 text-sm font-semibold text-primary-900 shadow-[var(--ui-shadow-card)] transition hover:bg-secondary-500 md:text-base" download>
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>

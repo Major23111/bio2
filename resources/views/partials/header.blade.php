@@ -380,7 +380,7 @@
                 <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Talk to our team about availability,
                     delivery windows, or commercial quotations.</p>
                 <div class="mt-4 flex flex-col gap-2">
-                    <a href="tel:+91180024643649"
+                    <a href="tel:180024643649"
                         class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-100 hover:text-slate-900">
                         Call Support
                     </a>
