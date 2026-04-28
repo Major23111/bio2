@@ -23,11 +23,7 @@
     $isAdmin = $authUser && (in_array($authUser->user_type, ['admin', 'delegated_admin'], true));
     $brandHref = $isAdmin ? route('admin.dashboard') : route('home');
 
-    // If admin, clear nav items or filter out storefront-heavy links if desired
-    // For now, following request to remove the entire menu bar
-    if ($isAdmin) {
-        $navItems = [];
-    }
+    // The admin will now see the regular storefront navigation items.
 
     $mobileQuickActions = [
         ['label' => 'My Profile', 'href' => $profileHref, 'icon' => 'profile'],

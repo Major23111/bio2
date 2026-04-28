@@ -29,6 +29,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             ImpersonationMiddleware::class,
         ]);
+
+        $middleware->redirectUsersTo(function (\Illuminate\Http\Request $request) {
+            $user = $request->user();
+            if ($user && in_array($user->user_type, ['admin', 'delegated_admin', 'super_admin'])) {
+                return route('admin.dashboard');
+            }
+            return route('home');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (PostTooLargeException $exception, $request) {
