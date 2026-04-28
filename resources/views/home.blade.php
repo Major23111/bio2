@@ -1792,27 +1792,27 @@
                     emptyState.classList.add('hidden');
                     emptyState.classList.remove('flex');
                     container.innerHTML = filtered.map(d => `
-                                                                    <div class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-primary-200 hover:shadow-md">
-                                                                        <div class="flex items-start justify-between">
-                                                                            <div>
-                                                                                <span class="mb-2 inline-flex rounded-full bg-primary-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-700">Authorized Distributor</span>
-                                                                                <h3 class="font-display text-lg font-bold text-slate-900">${d.name}</h3>
-                                                                                <p class="mt-1 text-sm text-slate-500">${d.address}, ${d.city}, ${d.state}</p>
-                                                                            </div>
-                                                                            <div class="flex flex-col gap-2">
-                                                                                <a href="tel:${d.phone.replace(/\s+/g, '')}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition hover:bg-primary-600 hover:text-white" title="Call">
-                                                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-                                                                                </a>
-                                                                                <a href="mailto:${d.email}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition hover:bg-primary-600 hover:text-white" title="Email">
-                                                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                                                                                </a>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="mt-4 flex flex-wrap gap-1.5">
-                                                                            ${d.focus.map(f => `<span class="rounded-lg bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-600">${f}</span>`).join('')}
-                                                                        </div>
-                                                                    </div>
-                                                                `).join('');
+                                                                                            <div class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-primary-200 hover:shadow-md">
+                                                                                                <div class="flex items-start justify-between">
+                                                                                                    <div>
+                                                                                                        <span class="mb-2 inline-flex rounded-full bg-primary-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-700">Authorized Distributor</span>
+                                                                                                        <h3 class="font-display text-lg font-bold text-slate-900">${d.name}</h3>
+                                                                                                        <p class="mt-1 text-sm text-slate-500">${d.address}, ${d.city}, ${d.state}</p>
+                                                                                                    </div>
+                                                                                                    <div class="flex flex-col gap-2">
+                                                                                                        <a href="tel:${d.phone.replace(/\s+/g, '')}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition hover:bg-primary-600 hover:text-white" title="Call">
+                                                                                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                                                                                                        </a>
+                                                                                                        <a href="mailto:${d.email}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition hover:bg-primary-600 hover:text-white" title="Email">
+                                                                                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                                                                                        </a>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="mt-4 flex flex-wrap gap-1.5">
+                                                                                                    ${d.focus.map(f => `<span class="rounded-lg bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-600">${f}</span>`).join('')}
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        `).join('');
                 }
             }
         </script>

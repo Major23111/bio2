@@ -12,31 +12,6 @@
             ->take(2)
             ->map(fn ($part) => strtoupper(substr($part, 0, 1)))
             ->implode('');
-
-        $rateCards = [
-            [
-                'badge' => 'Regional',
-                'badge_classes' => 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-100',
-                'title' => 'PAN India (Excluding Lucknow)',
-                'description' => 'Define the standard flat-rate delivery fee applicable across all operational Indian states and union territories, with the specific exclusion of the Lucknow city limits.',
-                'label' => 'Base Delivery Rate (INR)',
-                'field' => 'pan_india_rate',
-                'value' => '150.00',
-                'helper' => 'This rate will be applied automatically at checkout for all non-local zip codes.',
-                'icon' => 'regional',
-            ],
-            [
-                'badge' => 'Hyperlocal',
-                'badge_classes' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100',
-                'title' => 'Lucknow Local Delivery',
-                'description' => 'Specific logistical pricing for last-mile delivery within the Lucknow municipal boundaries. This rate overrides the standard PAN India configuration.',
-                'label' => 'Local Delivery Rate (INR)',
-                'field' => 'lucknow_rate',
-                'value' => '40.00',
-                'helper' => 'Zip code validation (226xxx) is required for this rate activation.',
-                'icon' => 'local',
-            ],
-        ];
     @endphp
 
     <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -70,6 +45,7 @@
             </div>
 
             <form id="delivery-config-form" class="p-6">
+                @csrf
                 <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
                     @foreach ($rateCards as $card)
                         <article
@@ -147,13 +123,12 @@
                                 <p class="text-sm font-bold text-[var(--ui-text)]">Delivery rate status</p>
                                 <p id="delivery-config-status" class="text-[13px] font-medium text-[var(--ui-text-muted)]"
                                     role="status">
-                                    Unsaved changes in delivery configuration.
+                                    All delivery rates are up to date.
                                 </p>
                             </div>
                         </div>
 
                         <div class="flex items-center justify-end gap-3">
-
                             <button id="delivery-save-btn" type="button"
                                 class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-primary-600 bg-primary-600 px-6 text-[11px] font-black uppercase tracking-widest text-white shadow-lg shadow-primary-600/20 transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none active:scale-95">
                                 <span>Save Changes</span>
@@ -207,16 +182,55 @@
                 });
             });
 
-            saveButton.addEventListener('click', function () {
+            saveButton.addEventListener('click', async function () {
+                // Collect the rates from input fields
+                const payload = {};
                 inputs.forEach(function (input) {
-                    input.dataset.defaultValue = normalizeValue(input.value) || input.dataset.defaultValue;
-                    input.value = input.dataset.defaultValue;
+                    payload[input.name] = normalizeValue(input.value) || input.dataset.defaultValue;
                 });
 
-                syncState();
+                // Put button into loading state
+                if (window.AdminBtnLoading) window.AdminBtnLoading.start(saveButton);
+                status.textContent = 'Saving delivery configuration...';
 
-                if (window.AdminToast && typeof window.AdminToast.show === 'function') {
-                    window.AdminToast.show('Delivery configuration saved successfully.', 'success');
+                try {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                                    || document.querySelector('input[name="_token"]')?.value;
+
+                    const response = await fetch("{{ route('admin.delivery-logistics.save') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        body: JSON.stringify(payload),
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        // Update default values to reflect saved state
+                        inputs.forEach(function (input) {
+                            input.dataset.defaultValue = normalizeValue(input.value) || input.dataset.defaultValue;
+                            input.value = input.dataset.defaultValue;
+                        });
+
+                        syncState();
+
+                        if (window.AdminToast && typeof window.AdminToast.show === 'function') {
+                            window.AdminToast.show(result.message || 'Delivery configuration saved successfully.', 'success');
+                        }
+                    } else {
+                        throw new Error(result.message || 'Save failed.');
+                    }
+                } catch (error) {
+                    status.textContent = 'Failed to save. Please try again.';
+                    if (window.AdminToast && typeof window.AdminToast.show === 'function') {
+                        window.AdminToast.show(error.message || 'Failed to save delivery configuration.', 'error');
+                    }
+                } finally {
+                    if (window.AdminBtnLoading) window.AdminBtnLoading.stop(saveButton);
                 }
             });
 
