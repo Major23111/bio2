@@ -8,12 +8,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class UserManagementCrudService
 {
     /**
-     * Get users with 'pending' status.
+     * Get users with 'pending_approval' status.
      */
     public function getPendingVerifications()
     {
         return User::query()
-            ->where('status', 'pending')
+            ->where('status', 'pending_approval')
             ->orderBy('created_at', 'asc')
             ->get();
     }
@@ -72,7 +72,7 @@ class UserManagementCrudService
      */
     public function getCustomerDetails(int $customerId): User
     {
-        return User::findOrFail($customerId);
+        return User::with(['addresses', 'orders'])->findOrFail($customerId);
     }
 
     /**

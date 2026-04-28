@@ -23,7 +23,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
-                    <input type="text" placeholder="Search analytics or orders..." class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] shadow-sm text-sm rounded-xl pl-9 pr-4 py-2.5 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-[var(--ui-text)] placeholder:text-[var(--ui-text-muted)]">
+                    <input id="dashboardSearch" type="text" placeholder="Search analytics or orders..." class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] shadow-sm text-sm rounded-xl pl-9 pr-4 py-2.5 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-[var(--ui-text)] placeholder:text-[var(--ui-text-muted)]" onkeypress="if(event.key==='Enter') window.location.href='{{ route('admin.orders') }}?search=' + encodeURIComponent(this.value)">
                 </div>
             </div>
 
@@ -194,7 +194,7 @@
                                     </span>
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
-                                    <button onclick="event.stopPropagation();AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order {{ $order['orderNumber'] }}.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer" title="Cancel Order"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                    <button onclick="event.stopPropagation();cancelOrder({{ $order['id'] }}, '{{ $order['orderNumber'] }}')" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer" title="Cancel Order"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
                                 </td>
                             </tr>
                             @empty
@@ -245,5 +245,32 @@ document.querySelectorAll('.chart-toggle-btn').forEach(btn => {
         });
     });
 });
+
+function cancelOrder(orderId, orderNumber) {
+    AdminConfirm.show({
+        title: 'Cancel Order?',
+        message: 'This will cancel order ' + orderNumber + '.',
+        confirmText: 'Cancel Order'
+    }).then(result => {
+        if (result) {
+            fetch('{{ route("admin.orders.cancel", ["orderId" => ""]) }}'.replace('', orderId), {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminToast.show('Order cancelled successfully', 'success');
+                    location.reload();
+                } else {
+                    AdminToast.show(data.message || 'Failed to cancel order', 'error');
+                }
+            })
+            .catch(() => AdminToast.show('Error cancelling order', 'error'));
+        }
+    });
+}
 </script>
 @endpush

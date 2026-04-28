@@ -15,11 +15,30 @@
         $creditLimit = (string) $customer->credit_limit;
         $creditDays = (string) $customer->credit_days;
         $unlimitedCredit = (bool) $customer->unlimited_credit;
-        // The below properties do not exist in schema yet, keeping safe defaults
-        $customerPhone = $customer->phone ?? ($isB2bCustomer ? '+91 98765 43210' : '+91 91234 56789');
-        $addressLines = $isB2bCustomer
-            ? ['Suite 401, Head Office,', 'Sector 12,', 'Lucknow, UP']
-            : ['22/18 Green Street,', 'Aliganj,', 'Lucknow, UP'];
+        
+        // Fetch real phone from user record
+        $customerPhone = $customer->phone ?? 'Not provided';
+        
+        // Fetch real address from user addresses
+        $userAddress = $customer->addresses->first();
+        $addressLines = [];
+        if ($userAddress) {
+            if ($userAddress->line1) $addressLines[] = $userAddress->line1;
+            if ($userAddress->line2) $addressLines[] = $userAddress->line2;
+            $cityState = [];
+            if ($userAddress->city) $cityState[] = $userAddress->city;
+            if ($userAddress->state) $cityState[] = $userAddress->state;
+            if ($cityState) $addressLines[] = implode(', ', $cityState);
+        } else {
+            $addressLines = ['Address not provided'];
+        }
+        
+        // Calculate order statistics from real orders
+        $totalOrders = $customer->orders->count();
+        $totalRevenue = $customer->orders->sum('total_amount');
+        $avgOrderValue = $totalOrders > 0 ? $totalRevenue / $totalOrders : 0;
+        $thisMonthOrders = $customer->orders->where('created_at', '>=', now()->startOfMonth())->count();
+        
         $customerNotes = $customer->internal_admin_notes ?? '';
         $customerIdDisplay = '#CUST-' . str_pad($customer->id, 5, '0', STR_PAD_LEFT);
     @endphp
@@ -55,18 +74,18 @@
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-[var(--ui-shadow-soft)]">
                     <p class="mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">Total Orders</p>
-                    <p class="text-2xl font-black text-slate-900">{{ $isB2bCustomer ? '248' : '34' }}</p>
-                    <p class="mt-1 text-[12px] font-bold text-emerald-600">{{ $isB2bCustomer ? '+12 this month' : '+3 this month' }}</p>
+                    <p class="text-2xl font-black text-slate-900">{{ $totalOrders }}</p>
+                    <p class="mt-1 text-[12px] font-bold text-emerald-600">+{{ $thisMonthOrders }} this month</p>
                 </div>
                 <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-[var(--ui-shadow-soft)]">
                     <p class="mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">Revenue Generated</p>
-                    <p class="text-2xl font-black text-slate-900">{{ $isB2bCustomer ? 'Rs. 45,280.00' : 'Rs. 8,420.00' }}</p>
-                    <p class="mt-1 text-[12px] font-bold text-emerald-600">{{ $isB2bCustomer ? 'LTV: Rs. 182.50/ord' : 'LTV: Rs. 247.65/ord' }}</p>
+                    <p class="text-2xl font-black text-slate-900">Rs. {{ number_format($totalRevenue, 2) }}</p>
+                    <p class="mt-1 text-[12px] font-bold text-emerald-600">LTV: Rs. {{ number_format($avgOrderValue, 2) }}/ord</p>
                 </div>
                 <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-[var(--ui-shadow-soft)]">
                     <p class="mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">Avg. Order Value</p>
-                    <p class="text-2xl font-black text-slate-900">{{ $isB2bCustomer ? 'Rs. 1,825.00' : 'Rs. 247.00' }}</p>
-                    <p class="mt-1 text-[12px] font-bold text-slate-400">Based on last 50</p>
+                    <p class="text-2xl font-black text-slate-900">Rs. {{ number_format($avgOrderValue, 2) }}</p>
+                    <p class="mt-1 text-[12px] font-bold text-slate-400">Based on {{ $totalOrders }} orders</p>
                 </div>
             </div>
 

@@ -30,17 +30,20 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <input id="orderSearch" type="text" placeholder="Search Order ID, Client, or SKU..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                <input type="text" id="orderSearch" placeholder="Search Order ID, Client, or SKU..." value="{{ request()->query('search') }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium" onkeypress="if(event.key==='Enter') navigateWithSearch()">
             </div>
 
             <!-- Status Pills -->
             <div id="statusPills" class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide">
-                <button data-status="all" class="status-pill active inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-600 text-white cursor-pointer">All Orders</button>
-                <button data-status="Pending" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/60 hover:bg-amber-100 transition cursor-pointer">Pending</button>
-                <button data-status="Processing" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-primary-100 transition cursor-pointer">Processing</button>
-                <button data-status="Dispatched" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-violet-100 transition cursor-pointer">Dispatched</button>
-                <button data-status="Delivered" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 hover:bg-emerald-100 transition cursor-pointer">Delivered</button>
-                <button data-status="Cancelled" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/60 hover:bg-rose-100 transition cursor-pointer">Cancelled</button>
+                @php
+                    $currentStatus = request()->query('status', 'all');
+                    $statuses = ['all' => 'All Orders', 'Pending' => 'Pending', 'Processing' => 'Processing', 'Dispatched' => 'Dispatched', 'Delivered' => 'Delivered', 'Cancelled' => 'Cancelled'];
+                @endphp
+                @foreach($statuses as $statusValue => $statusLabel)
+                    <a href="{{ route('admin.orders', array_merge(request()->query(), ['status' => $statusValue])) }}" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold {{ $currentStatus === $statusValue ? 'bg-primary-600 text-white' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100' }} transition cursor-pointer">
+                        {{ $statusLabel }}
+                    </a>
+                @endforeach
             </div>
         </div>
 
@@ -49,10 +52,18 @@
             <table id="ordersTable" class="w-full text-left border-collapse whitespace-nowrap">
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
-                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="id">Order ID <span class="sort-icon">&#8597;</span></th>
-                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="customer">Customer Name <span class="sort-icon">&#8597;</span></th>
-                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="date">Date <span class="sort-icon">&#8597;</span></th>
-                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="amount">Total Amount <span class="sort-icon">&#8597;</span></th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition">
+                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'id'])) }}">Order ID <span class="sort-icon">&#8597;</span></a>
+                        </th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition">
+                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'customer'])) }}">Customer Name <span class="sort-icon">&#8597;</span></a>
+                        </th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition">
+                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'date'])) }}">Date <span class="sort-icon">&#8597;</span></a>
+                        </th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition">
+                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'amount'])) }}">Total Amount <span class="sort-icon">&#8597;</span></a>
+                        </th>
                         <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Payment Status</th>
                         <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Fulfillment</th>
                         <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
@@ -193,172 +204,31 @@
 </div>
 
 <script>
-// Status pill filter
-document.querySelectorAll('.status-pill').forEach((pill) => {
-    pill.addEventListener('click', () => {
-        document.querySelectorAll('.status-pill').forEach((savedPill) => {
-            savedPill.classList.remove('bg-primary-600', 'text-white', 'active', 'border-transparent');
-
-            const savedStatus = savedPill.dataset.status;
-            let savedClassName = 'bg-slate-50 text-slate-600 border-slate-200';
-
-            if (savedStatus === 'Pending') {
-                savedClassName = 'bg-amber-50 text-amber-700 border-amber-200/60';
-            }
-
-            if (savedStatus === 'Processing') {
-                savedClassName = 'bg-primary-50 text-primary-700 border-primary-200/60';
-            }
-
-            if (savedStatus === 'Dispatched') {
-                savedClassName = 'bg-primary-50 text-primary-700 border-primary-200/60';
-            }
-
-            if (savedStatus === 'Delivered') {
-                savedClassName = 'bg-emerald-50 text-emerald-700 border-emerald-200/60';
-            }
-
-            if (savedStatus === 'Cancelled') {
-                savedClassName = 'bg-rose-50 text-rose-700 border-rose-200/60';
-            }
-
-            savedPill.className = `status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold border transition cursor-pointer ${savedClassName}`;
-        });
-
-        pill.classList.remove('bg-slate-50', 'bg-amber-50', 'bg-primary-50', 'bg-emerald-50', 'bg-rose-50', 'text-slate-600', 'text-amber-700', 'text-primary-700', 'text-emerald-700', 'text-rose-700', 'border-slate-200', 'border-amber-200/60', 'border-primary-200/60', 'border-emerald-200/60', 'border-rose-200/60');
-        pill.classList.add('bg-primary-600', 'text-white', 'active', 'border-transparent');
-        filterOrders();
-    });
-});
-
-// Search filter
-document.getElementById('orderSearch')?.addEventListener('input', filterOrders);
-
-function getOrderRows() {
-    return Array.from(document.querySelectorAll('#ordersTable tbody tr')).filter((row) => {
-        return !row.classList.contains('empty-order-row');
-    });
+// Navigate with search parameters
+function navigateWithSearch() {
+    const searchValue = document.getElementById('orderSearch').value;
+    const currentStatus = '{{ request()->query("status", "all") }}';
+    window.location.href = '{{ route("admin.orders") }}?status=' + currentStatus + '&search=' + encodeURIComponent(searchValue);
 }
 
-function filterOrders() {
-    const searchText = (document.getElementById('orderSearch')?.value || '').toLowerCase();
-    const activeStatus = document.querySelector('.status-pill.active')?.dataset.status || 'all';
-    const orderRows = getOrderRows();
-    let visibleOrderCount = 0;
-
-    orderRows.forEach((row) => {
-        const rowText = row.textContent.toLowerCase();
-        const fulfillmentText = row.querySelector('td:nth-child(6)')?.textContent.trim() || '';
-        const matchesSearch = searchText === '' || rowText.includes(searchText);
-        const matchesStatus = activeStatus === 'all' || fulfillmentText === activeStatus;
-
-        row.style.display = matchesSearch && matchesStatus ? '' : 'none';
-
-        if (matchesSearch && matchesStatus) {
-            visibleOrderCount++;
-        }
-    });
-
-    const orderCount = document.getElementById('orderCount');
-
-    if (orderCount) {
-        orderCount.textContent = `Showing ${visibleOrderCount} of ${orderRows.length} results`;
-    }
-}
-
-// Column sorting
-document.querySelectorAll('#ordersTable th[data-sort]').forEach((tableHeader) => {
-    tableHeader.addEventListener('click', () => {
-        const sortKey = tableHeader.dataset.sort;
-        const tableBody = document.querySelector('#ordersTable tbody');
-        const orderRows = getOrderRows();
-        const sortAscending = tableHeader.classList.toggle('sort-asc');
-
-        orderRows.sort((firstRow, secondRow) => {
-            let firstValue = '';
-            let secondValue = '';
-
-            if (sortKey === 'id') {
-                firstValue = firstRow.cells[0].textContent;
-                secondValue = secondRow.cells[0].textContent;
-            }
-
-            if (sortKey === 'customer') {
-                firstValue = firstRow.cells[1].textContent.trim();
-                secondValue = secondRow.cells[1].textContent.trim();
-            }
-
-            if (sortKey === 'date') {
-                firstValue = new Date(firstRow.cells[2].textContent.trim());
-                secondValue = new Date(secondRow.cells[2].textContent.trim());
-
-                if (sortAscending) {
-                    return firstValue - secondValue;
-                }
-
-                return secondValue - firstValue;
-            }
-
-            if (sortKey === 'amount') {
-                firstValue = parseFloat(firstRow.cells[3].textContent.replace(/[^0-9.]/g, ''));
-                secondValue = parseFloat(secondRow.cells[3].textContent.replace(/[^0-9.]/g, ''));
-
-                if (sortAscending) {
-                    return firstValue - secondValue;
-                }
-
-                return secondValue - firstValue;
-            }
-
-            if (sortAscending) {
-                return firstValue.localeCompare(secondValue);
-            }
-
-            return secondValue.localeCompare(firstValue);
-        });
-
-        orderRows.forEach((orderRow) => {
-            tableBody.appendChild(orderRow);
-        });
-
-        document.querySelectorAll('#ordersTable .sort-icon').forEach((sortIcon) => {
-            sortIcon.innerHTML = '&#8597;';
-        });
-
-        const currentSortIcon = tableHeader.querySelector('.sort-icon');
-
-        if (currentSortIcon) {
-            currentSortIcon.innerHTML = sortAscending ? '&#8593;' : '&#8595;';
-        }
-    });
-});
-
-// Export CSV
+// Export CSV with current filters
 function exportOrdersCSV() {
-    const orderRows = getOrderRows();
+    const orderRows = Array.from(document.querySelectorAll('#ordersTable tbody tr'));
     let csvText = 'Order ID,Customer,Date,Amount,Payment,Fulfillment\n';
 
     orderRows.forEach((row) => {
-        if (row.style.display === 'none') {
-            return;
-        }
-
         const cells = row.querySelectorAll('td');
-
         csvText += `${cells[0].textContent.trim()},"${cells[1].textContent.trim().replace(/\s+/g, ' ')}",${cells[2].textContent.trim()},${cells[3].textContent.trim()},${cells[4].textContent.trim()},${cells[5].textContent.trim()}\n`;
     });
 
     const csvFile = new Blob([csvText], { type: 'text/csv' });
     const downloadLink = document.createElement('a');
-
     downloadLink.href = URL.createObjectURL(csvFile);
-    downloadLink.download = 'orders_export.csv';
+    downloadLink.download = 'orders_export_' + new Date().toISOString().split('T')[0] + '.csv';
     downloadLink.click();
 
     AdminToast.show('Orders exported successfully!', 'success');
 }
-
-filterOrders();
 </script>
 
 @endsection

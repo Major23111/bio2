@@ -116,9 +116,10 @@ class CategoryCrudService
             'name' => $categoryName,
             'description' => $categoryData['description'] ?? null,
             'application' => null,
-            'hsm_code' => null,
+            'hsm_code' => $categoryData['hsm_code'] ?? null,
             'slug' => $finalCategorySlug,
             'default_image_path' => $categoryImagePath,
+            'IsDisplayedOnHomePage' => (bool) ($categoryData['IsDisplayedOnHomePage'] ?? false),
             'gst_rate' => 18.00,
             'sort_order' => $nextSortOrder,
         ]);

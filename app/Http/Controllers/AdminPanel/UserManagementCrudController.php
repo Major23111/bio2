@@ -20,14 +20,16 @@ class UserManagementCrudController extends Controller
     /**
      * Display the User Management Customers Index page.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             // Fetch Pending Approvals array.
             $pendingVerifications = $this->userManagementCrudService->getPendingVerifications();
-            
-            // Fetch verified Active lists
-            $verifiedCustomers = $this->userManagementCrudService->getCustomersDashboardList();
+
+            // Fetch paginated customer list with backend filters.
+            $categoryFilter = $request->query('category');
+            $searchKeyword = $request->query('search');
+            $verifiedCustomers = $this->userManagementCrudService->getPaginatedDirectory($categoryFilter, null, $searchKeyword);
             
             // Fetch specific B2B targeted
             $b2bSpecificList = $this->userManagementCrudService->getB2BCustomersList();
@@ -36,6 +38,8 @@ class UserManagementCrudController extends Controller
                 'pendingVerifications' => $pendingVerifications,
                 'verifiedCustomers' => $verifiedCustomers,
                 'b2bSpecificList' => $b2bSpecificList,
+                'categoryFilter' => $categoryFilter,
+                'searchKeyword' => $searchKeyword,
             ]);
         } catch (Exception $exception) {
             Log::error('Error loading Customer Index: ' . $exception->getMessage());

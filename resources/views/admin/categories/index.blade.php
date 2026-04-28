@@ -131,17 +131,29 @@
                             <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Category Description</label>
                             <textarea name="description" placeholder="Describe the utility and storage requirements..." rows="4" class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] rounded-lg text-sm py-2.5 px-3 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 font-medium text-[var(--ui-text)] placeholder:text-[var(--ui-text-muted)] transition resize-none h-[110px]">{{ old('description') }}</textarea>
                         </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">HSM Code</label>
+                            <input name="hsm_code" type="text" value="{{ old('hsm_code') }}" placeholder="e.g. 2801.10.00" class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] rounded-lg text-sm py-2.5 px-3 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 font-medium text-[var(--ui-text)] placeholder:text-[var(--ui-text-muted)] transition">
+                            <p class="text-[10px] text-[var(--ui-text-muted)] mt-1 italic">Harmonized System code</p>
+                        </div>
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="checkbox" name="IsDisplayedOnHomePage" value="1" {{ old('IsDisplayedOnHomePage') ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-primary-600 focus:ring-primary-600 cursor-pointer">
+                            <span class="text-sm font-medium text-[var(--ui-text)] group-hover:text-primary-600 transition">Display on Home Page</span>
+                        </label>
                     </div>
 
                     <!-- Right Column -->
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Upload Category Image</label>
                         <input id="categoryImageInput" name="category_image" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
-                        <div id="categoryImageDropZone" class="group border-[2px] border-dashed border-[var(--ui-border)] rounded-xl bg-[var(--ui-surface-subtle)] flex flex-col items-center justify-center p-6 h-[190px] hover:bg-primary-50/50 hover:border-primary-300 transition-colors cursor-pointer">
-                            <div class="w-12 h-12 rounded-xl bg-[var(--ui-surface)] text-primary-600 shadow-sm border border-[var(--ui-border)] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                        <div id="categoryImageDropZone" class="group border-[2px] border-dashed border-[var(--ui-border)] rounded-xl bg-[var(--ui-surface-subtle)] flex flex-col items-center justify-center p-6 h-[190px] hover:bg-primary-50/50 hover:border-primary-300 transition-colors cursor-pointer relative overflow-hidden">
+                            <div id="categoryImagePreview" class="hidden absolute inset-0 flex items-center justify-center bg-slate-900/5">
+                                <img id="previewImg" class="max-h-full max-w-full object-contain rounded" alt="preview">
+                            </div>
+                            <div id="categoryImagePlaceholder" class="w-12 h-12 rounded-xl bg-[var(--ui-surface)] text-primary-600 shadow-sm border border-[var(--ui-border)] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
                             </div>
-                            <p class="text-[13px] font-bold text-[var(--ui-text)]">Drop your image here</p>
+                            <p id="categoryImageText" class="text-[13px] font-bold text-[var(--ui-text)]">Drop your image here</p>
                             <p class="text-[11px] font-medium text-[var(--ui-text-muted)] mt-1">PNG, JPG or WebP up to 5MB</p>
                         </div>
                     </div>
@@ -299,6 +311,23 @@
     if (categoryImageDropZone && categoryImageInput) {
         categoryImageDropZone.addEventListener('click', function () {
             categoryImageInput.click();
+        });
+    }
+
+    // Show minimal image preview on image selection
+    if (categoryImageInput) {
+        categoryImageInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('categoryImagePreview').classList.remove('hidden');
+                    document.getElementById('categoryImagePlaceholder').classList.add('hidden');
+                    document.getElementById('categoryImageText').classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
         });
     }
 

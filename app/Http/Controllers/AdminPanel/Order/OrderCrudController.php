@@ -17,11 +17,23 @@ class OrderCrudController extends Controller
     }
 
     // Display orders list for admin panel.
-    public function index(): View
+    public function index(Request $request): View
     {
         try {
-            // Fetch all orders with basic information.
-            $orders = $this->orderCrudService->getAllOrdersForAdminList();
+            // Get filter parameters from request
+            $status = $request->query('status');
+            $search = $request->query('search');
+            $sort = $request->query('sort', 'date');
+            $direction = $request->query('direction', 'desc');
+
+            // Fetch all orders with filters applied.
+            $orders = $this->orderCrudService->getAllOrdersForAdminList(
+                perPage: 10,
+                status: $status,
+                search: $search,
+                sort: $sort,
+                direction: $direction
+            );
         } catch (Throwable $exception) {
             // Return view with empty orders if error occurs.
             $orders = new LengthAwarePaginator([], 0, 10);
@@ -91,5 +103,16 @@ class OrderCrudController extends Controller
         }
 
         return $response;
+    }
+
+    // AJAX endpoint to cancel an order.
+    public function cancel(Request $request, int $orderId)
+    {
+        try {
+            $this->orderCrudService->cancelOrder($orderId);
+            return response()->json(['success' => true, 'message' => 'Order cancelled successfully.']);
+        } catch (Throwable $exception) {
+            return response()->json(['success' => false, 'message' => 'Failed to cancel order.'], 500);
+        }
     }
 }

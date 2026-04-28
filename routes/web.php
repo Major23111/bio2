@@ -176,6 +176,7 @@ Route::put('/adminPanel/pi-quotation/{proformaId}', [App\Http\Controllers\AdminP
 Route::get('/adminPanel/orders', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'index'])->name('admin.orders');
 Route::get('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'show'])->name('admin.orders.view');
 Route::put('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'update'])->name('admin.orders.update');
+Route::post('/adminPanel/orders/{orderId}/cancel', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'cancel'])->name('admin.orders.cancel');
     Route::get('/adminPanel/customers', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'index'])->name('admin.customers');
     Route::get('/adminPanel/customers/details/{customerId}', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'details'])->name('admin.customers.details');
     Route::put('/adminPanel/customers/details/{customerId}', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'updateDetails'])->name('admin.customers.details.update');

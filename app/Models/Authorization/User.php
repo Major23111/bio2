@@ -5,6 +5,7 @@ namespace App\Models\Authorization;
 use App\Models\Proforma\ProformaInvoice;
 use App\Services\Notification\EmailNotificationService;
 use App\Models\SupportTicket\SupportTicket;
+use App\Models\Order\Order;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -123,6 +124,12 @@ class User extends Authenticatable
     public function supportTickets(): HasMany
     {
         return $this->hasMany(SupportTicket::class, 'owner_user_id');
+    }
+
+    // This loads orders placed by the user.
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'placed_by_user_id');
     }
 
     // This loads saved addresses linked to the user.

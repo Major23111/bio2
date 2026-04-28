@@ -10,19 +10,41 @@ use Illuminate\Support\Facades\DB;
 class OrderCrudService
 {
     // Get all orders with backend data for the admin list page.
-    public function getAllOrdersForAdminList(int $perPage = 10): LengthAwarePaginator
+    public function getAllOrdersForAdminList(int $perPage = 10, ?string $status = null, ?string $search = null, string $sort = 'date', string $direction = 'desc'): LengthAwarePaginator
     {
         // Load the main order rows with customer, item, and shipping details.
-        $savedOrderList = Order::query()
+        $query = Order::query()
             ->with([
                 'placedByUser:id,name',
                 'company:id,name',
                 'items:id,order_id,product_name,sort_order',
                 'shippingAddress:id,order_id,city,state',
-            ])
-            ->orderByDesc('created_at')
-            ->orderByDesc('id')
-            ->paginate($perPage);
+            ]);
+
+        // Apply status filter
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        // Apply search filter
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('id', 'like', "%{$search}%")
+                  ->orWhereHas('placedByUser', fn ($q) => $q->where('name', 'like', "%{$search}%"))
+                  ->orWhereHas('items', fn ($q) => $q->where('product_name', 'like', "%{$search}%"));
+            });
+        }
+
+        // Apply sorting
+        if ($sort === 'customer') {
+            $query->orderBy('placed_by_user_id', $direction);
+        } elseif ($sort === 'amount') {
+            $query->orderBy('total_amount', $direction);
+        } else { // date is default
+            $query->orderByDesc('created_at');
+        }
+
+        $savedOrderList = $query->paginate($perPage);
 
         // Collect the current order ids for related records.
         $orderIdList = [];
@@ -963,5 +985,14 @@ class OrderCrudService
             'remarks' => null,
             'created_at' => now(),
         ]);
+    }
+
+    // Cancel an order by setting status to cancelled.
+    public function cancelOrder(int $orderId): void
+    {
+        $order = Order::findOrFail($orderId);
+        $order->status = 'cancelled';
+        $order->cancelled_at = now();
+        $order->save();
     }
 }

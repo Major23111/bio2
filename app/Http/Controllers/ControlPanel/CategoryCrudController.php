@@ -92,6 +92,8 @@ class CategoryCrudController extends Controller
             $validatedCategoryData = $request->validate([
                 'name' => 'required|string|max:255|unique:categories,name',
                 'description' => 'nullable|string|max:255',
+                'hsm_code' => 'nullable|string|max:100',
+                'IsDisplayedOnHomePage' => 'nullable|boolean',
                 'category_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             ]);
 

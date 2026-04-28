@@ -140,157 +140,145 @@
     </div>
 
     <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[var(--ui-shadow-soft)]">
+        <form id="customer-filter-form" method="GET" action="{{ route('admin.customers') }}">
         <div class="flex flex-col justify-between gap-3 border-b border-slate-100 px-6 py-4 sm:flex-row sm:items-center">
             <div>
                 <h2 class="text-base font-extrabold text-slate-900">Customer Directory</h2>
                 <p class="text-[13px] text-slate-500">Manage and filter your global customer database</p>
             </div>
             <div class="flex items-center gap-2">
+                <div class="relative w-52">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    </div>
+                    <input id="customer-table-search" name="search" type="text" value="{{ $searchKeyword ?? '' }}" placeholder="Search customers..."
+                        class="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-9 pr-3 text-[13px] font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
+                </div>
                 <div class="relative">
-                    <select id="category-filter"
+                    <select id="category-filter" name="category"
+                        onchange="document.getElementById('customer-filter-form').submit()"
                         class="appearance-none rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 pr-4 text-[13px] font-semibold text-slate-700 outline-none transition hover:border-slate-300 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 cursor-pointer">
-                        <option value="">All Categories</option>
-                        <option value="B2B">B2B</option>
-                        <option value="B2C">B2C</option>
+                        <option value="" {{ empty($categoryFilter) ? 'selected' : '' }}>All Categories</option>
+                        <option value="b2b" {{ ($categoryFilter ?? '') === 'b2b' ? 'selected' : '' }}>B2B</option>
+                        <option value="b2c" {{ ($categoryFilter ?? '') === 'b2c' ? 'selected' : '' }}>B2C</option>
                     </select>
                 </div>
             </div>
         </div>
+        </form>
 
         <div class="overflow-x-auto">
             <table class="w-full border-collapse whitespace-nowrap text-left">
                 <thead>
                     <tr class="border-b border-slate-100 bg-white">
-                        <th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Customer Name
-                        </th>
-                        <th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Email Address
-                        </th>
+                        <th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Customer Name</th>
+                        <th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Email Address</th>
                         <th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Category</th>
                         <th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Status</th>
-                        <th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Date Joined
-                        </th>
-                        <th class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-widest text-slate-400">
-                            Actions</th>
+                        <th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Date Joined</th>
+                        <th class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-widest text-slate-400">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="customer-table-body" class="divide-y divide-slate-100">
-                    @if (count($verifiedCustomers))
-                        @foreach($verifiedCustomers as $customer)
-                            @php
-                                $statusClasses = match (strtolower($customer->status)) {
-                                    'active' => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60',
-                                    'suspended' => 'bg-rose-50 text-rose-700 border border-rose-200/60',
-                                    'inactive', 'rejected' => 'bg-slate-100 text-slate-600 border border-slate-200/60',
-                                    default => 'bg-slate-100 text-slate-600 border border-slate-200/60',
-                                };
-
-                                $catLabel = strtoupper($customer->user_type ?? 'B2C');
-                                $categoryClasses = match ($catLabel) {
-                                    'B2B' => 'bg-primary-50 text-primary-700 border border-primary-200/60',
-                                    'B2C' => 'bg-primary-50 text-primary-700 border border-primary-200/60',
-                                    default => 'bg-slate-100 text-slate-600 border border-slate-200/60',
-                                };
-
-                                $detailsUrl = route('admin.customers.details', ['customerId' => $customer->id]);
-                                $initials = strtoupper(substr($customer->name, 0, 2));
-                                $color = 'var(--color-primary-600)';
-                                $dateJoined = $customer->created_at ? $customer->created_at->format('M d, Y') : 'Unknown';
-                            @endphp
-                            <tr class="customer-row cursor-pointer transition-colors hover:bg-slate-50/50"
-                                data-name="{{ strtolower($customer->name) }}" data-email="{{ strtolower($customer->email) }}"
-                                data-category="{{ $catLabel }}">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-black text-white"
-                                            style="background-color: {{ $color }}">{{ $initials }}</div>
-                                        <span class="text-[13px] font-bold text-slate-900">{{ $customer->name }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-[13px] font-medium text-slate-600">{{ $customer->email }}</td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold {{ $categoryClasses }}">{{ $catLabel }}</span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold {{ $statusClasses }}">{{ ucfirst($customer->status) }}</span>
-                                </td>
-                                <td class="px-6 py-4 text-[13px] font-medium text-slate-500">{{ $dateJoined }}</td>
-                                <td class="flex justify-end px-6 py-4 text-right">
-                                    <a href="{{ $detailsUrl }}"
-                                        class="ajax-link inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-700 text-white shadow-sm transition-all hover:-translate-y-px hover:bg-primary-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 cursor-pointer"
-                                        title="View Customer Details">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                            stroke-width="2.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    @else
+                    @forelse($verifiedCustomers as $customer)
+                        @php
+                            $statusClasses = match (strtolower($customer->status)) {
+                                'active' => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60',
+                                'suspended' => 'bg-rose-50 text-rose-700 border border-rose-200/60',
+                                'inactive', 'rejected' => 'bg-slate-100 text-slate-600 border border-slate-200/60',
+                                default => 'bg-slate-100 text-slate-600 border border-slate-200/60',
+                            };
+                            $catLabel = strtoupper($customer->user_type ?? 'B2C');
+                            $categoryClasses = match ($catLabel) {
+                                'B2B' => 'bg-primary-50 text-primary-700 border border-primary-200/60',
+                                'B2C' => 'bg-primary-50 text-primary-700 border border-primary-200/60',
+                                default => 'bg-slate-100 text-slate-600 border border-slate-200/60',
+                            };
+                            $detailsUrl = route('admin.customers.details', ['customerId' => $customer->id]);
+                            $initials = strtoupper(substr($customer->name, 0, 2));
+                            $color = 'var(--color-primary-600)';
+                            $dateJoined = $customer->created_at ? $customer->created_at->format('M d, Y') : 'Unknown';
+                        @endphp
+                        <tr class="customer-row cursor-pointer transition-colors hover:bg-slate-50/50">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-black text-white" style="background-color: {{ $color }}">{{ $initials }}</div>
+                                    <span class="text-[13px] font-bold text-slate-900">{{ $customer->name }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-[13px] font-medium text-slate-600">{{ $customer->email }}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold {{ $categoryClasses }}">{{ $catLabel }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold {{ $statusClasses }}">{{ ucfirst($customer->status) }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-[13px] font-medium text-slate-500">{{ $dateJoined }}</td>
+                            <td class="flex justify-end px-6 py-4 text-right">
+                                <a href="{{ $detailsUrl }}" class="ajax-link inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-700 text-white shadow-sm transition-all hover:-translate-y-px hover:bg-primary-800 hover:shadow-md cursor-pointer" title="View Customer Details">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
                         <tr>
                             <td colspan="6" class="px-6 py-12">
                                 <div class="flex flex-col items-center justify-center">
                                     <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-50">
-                                        <svg class="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        <svg class="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                         </svg>
                                     </div>
-                                    <h3 class="text-sm font-extrabold uppercase tracking-widest text-slate-900">No Customers
-                                        Found</h3>
-                                    <p class="mt-1 text-xs text-slate-400">There are no customer records matching your current
-                                        filter.</p>
+                                    <h3 class="text-sm font-extrabold uppercase tracking-widest text-slate-900">No Customers Found</h3>
+                                    <p class="mt-1 text-xs text-slate-400">There are no customer records matching your current filter.</p>
                                 </div>
                             </td>
                         </tr>
-                    @endif
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
+        @if ($verifiedCustomers->hasPages())
         <div class="flex flex-col items-center justify-between gap-4 border-t border-slate-100 px-6 py-4 sm:flex-row">
-            <div>
-                <a href="{{ route('admin.customer-directory') }}"
-                    class="ajax-link flex items-center gap-1 text-[13px] font-bold text-primary-800 hover:underline cursor-pointer">
-                    View More Records
-                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-                <p class="mt-0.5 text-[12px] text-slate-400">Showing 1 to 25 of 248 customers</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <button type="button"
-                    class="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 cursor-pointer">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-                <div class="flex text-[13px] font-semibold">
-                    <button type="button"
-                        class="flex h-9 w-9 items-center justify-center rounded bg-primary-600 text-white cursor-pointer">1</button>
-                    <button type="button"
-                        class="flex h-9 w-9 items-center justify-center rounded border border-transparent bg-white text-slate-600 transition hover:border-slate-200 hover:bg-slate-50 cursor-pointer">2</button>
-                    <button type="button"
-                        class="flex h-9 w-9 items-center justify-center rounded border border-transparent bg-white text-slate-600 transition hover:border-slate-200 hover:bg-slate-50 cursor-pointer">3</button>
-                    <span class="flex h-9 w-9 items-center justify-center text-slate-400">...</span>
-                    <button type="button"
-                        class="flex h-9 w-9 items-center justify-center rounded border border-transparent bg-white text-slate-600 transition hover:border-slate-200 hover:bg-slate-50 cursor-pointer">31</button>
-                </div>
-                <button type="button"
-                    class="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 cursor-pointer">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
+            <p class="text-[12px] text-slate-400">Showing {{ $verifiedCustomers->firstItem() }} to {{ $verifiedCustomers->lastItem() }} of {{ $verifiedCustomers->total() }} customers</p>
+            <div class="flex items-center gap-1">
+                {{-- Previous --}}
+                @if ($verifiedCustomers->onFirstPage())
+                    <span class="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-300 cursor-not-allowed">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                    </span>
+                @else
+                    <a href="{{ $verifiedCustomers->appends(request()->query())->previousPageUrl() }}" class="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                    </a>
+                @endif
+
+                {{-- Page Numbers --}}
+                @foreach ($verifiedCustomers->appends(request()->query())->getUrlRange(max(1, $verifiedCustomers->currentPage() - 2), min($verifiedCustomers->lastPage(), $verifiedCustomers->currentPage() + 2)) as $page => $url)
+                    @if ($page == $verifiedCustomers->currentPage())
+                        <span class="flex h-9 w-9 items-center justify-center rounded bg-primary-600 text-[13px] font-semibold text-white">{{ $page }}</span>
+                    @else
+                        <a href="{{ $url }}" class="flex h-9 w-9 items-center justify-center rounded border border-transparent bg-white text-[13px] font-semibold text-slate-600 transition hover:border-slate-200 hover:bg-slate-50">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                {{-- Next --}}
+                @if ($verifiedCustomers->hasMorePages())
+                    <a href="{{ $verifiedCustomers->appends(request()->query())->nextPageUrl() }}" class="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    </a>
+                @else
+                    <span class="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-300 cursor-not-allowed">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    </span>
+                @endif
             </div>
         </div>
+        @endif
     </div>
 
     <div id="verification-modal" class="fixed inset-0 z-[1000] hidden overflow-y-auto" role="dialog"
@@ -608,22 +596,15 @@
 
             unlimitedCreditCheckbox?.addEventListener('change', updateUnlimitedCreditState);
 
-            function applyCustomerFilters() {
-                const categoryValue = categoryFilter ? categoryFilter.value : '';
-                const searchValue = globalSearchInput ? globalSearchInput.value.trim().toLowerCase() : '';
-
-                document.querySelectorAll('.customer-row').forEach(function (row) {
-                    const rowMatchesCategory = !categoryValue || row.dataset.category === categoryValue;
-                    const rowMatchesSearch = !searchValue
-                        || (row.dataset.name || '').includes(searchValue)
-                        || (row.dataset.email || '').includes(searchValue);
-
-                    row.style.display = rowMatchesCategory && rowMatchesSearch ? '' : 'none';
+            // Search submits on Enter key via the form.
+            const tableSearchInput = document.getElementById('customer-table-search');
+            if (tableSearchInput) {
+                tableSearchInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        document.getElementById('customer-filter-form').submit();
+                    }
                 });
             }
-
-            categoryFilter?.addEventListener('change', applyCustomerFilters);
-            globalSearchInput?.addEventListener('input', applyCustomerFilters);
 
             function syncSelectedB2bClient(url) {
                 if (b2bSelectedUrlInput) b2bSelectedUrlInput.value = url || '';
