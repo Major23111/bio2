@@ -253,7 +253,7 @@ function cancelOrder(orderId, orderNumber) {
         confirmText: 'Cancel Order'
     }).then(result => {
         if (result) {
-            fetch('{{ route("admin.orders.cancel", ["orderId" => "__ORDER_ID__"]) }}'.replace('__ORDER_ID__', orderId), {
+            fetch('{{ url("adminPanel/orders") }}/' + orderId + '/cancel', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'

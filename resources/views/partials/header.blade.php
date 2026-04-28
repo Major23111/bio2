@@ -97,7 +97,6 @@
                 decoding="async" class="h-12 w-auto xl:h-14 2xl:h-16">
         </a>
 
-        @unless ($isAdmin)
             {{-- Mobile hamburger --}}
             <button
                 class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-slate-600 shadow-sm transition hover:bg-[var(--ui-surface-subtle)] xl:hidden"
@@ -106,7 +105,6 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
-        @endunless
 
         {{-- Desktop nav --}}
         <nav id="headerMainNav" class="hidden h-full items-stretch justify-self-center xl:col-start-2 xl:flex xl:min-w-0"
@@ -210,7 +208,6 @@
     </div>
 </header>
 
-@unless ($isAdmin)
     <div id="mobileMenuOverlay" class="fixed inset-0 z-[70] hidden xl:hidden" aria-hidden="true">
         <button id="mobileMenuBackdrop" type="button"
             class="absolute inset-0 bg-primary-950/45 opacity-0 backdrop-blur-sm transition duration-300"
@@ -266,10 +263,17 @@
 
                 <div class="mt-4 grid gap-2 sm:grid-cols-2">
                     @auth
-                        <a href="{{ $profileHref }}"
-                            class="inline-flex h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
-                            Open Profile
-                        </a>
+                        @if ($isAdmin)
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="inline-flex h-11 items-center justify-center rounded-2xl bg-primary-600 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
+                                Dashboard
+                            </a>
+                        @else
+                            <a href="{{ $profileHref }}"
+                                class="inline-flex h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
+                                Open Profile
+                            </a>
+                        @endif
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"
@@ -290,6 +294,7 @@
                 </div>
             </section>
 
+            @if (count($navItems) > 0)
             <section class="rounded-[26px] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-sm">
                 <div class="mb-3 flex items-center justify-between px-1">
                     <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--ui-text-muted)]">Navigate
@@ -310,6 +315,7 @@
                     @endforeach
                 </div>
             </section>
+            @endif
 
             <section class="rounded-[26px] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-sm">
                 <div class="mb-3 flex items-center justify-between px-1">
@@ -393,7 +399,6 @@
         </div>
         </aside>
     </div>
-@endunless
 
 <script>
     window.CartStore = (function () {
