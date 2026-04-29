@@ -20,11 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'admin'            => EnsureAdmin::class,
             'decrypt.route'    => DecryptRouteParameters::class,
             'active'           => EnsureUserIsActive::class,
             'permission'       => EnsurePermission::class,
             'impersonation.log' => ImpersonationMiddleware::class,
+            'admin'            => EnsureAdmin::class,
         ]);
 
         // Run impersonation activity logging on every web request.

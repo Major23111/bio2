@@ -96,13 +96,15 @@
         </a>
 
             {{-- Mobile hamburger --}}
-            <button
-                class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-slate-600 shadow-sm transition hover:bg-[var(--ui-surface-subtle)] xl:hidden"
-                data-menu-toggle aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenuDrawer">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
+            @unless ($isAdmin)
+                <button
+                    class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-slate-600 shadow-sm transition hover:bg-[var(--ui-surface-subtle)] xl:hidden"
+                    data-menu-toggle aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenuDrawer">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            @endunless
 
         {{-- Desktop nav --}}
         <nav id="headerMainNav" class="hidden h-full items-stretch justify-self-center xl:col-start-2 xl:flex xl:min-w-0"
@@ -191,7 +193,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
                             @if($headerUnreadCount > 0)
-                                <span class="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white ring-2 ring-white shadow-sm">{{ $headerUnreadCount > 9 ? '9+' : $headerUnreadCount }}</span>
+                                <span class="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 max-w-[2rem] items-center justify-center truncate rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white ring-2 ring-white shadow-sm">{{ $headerUnreadCount > 99 ? '99+' : ($headerUnreadCount > 9 ? '9+' : $headerUnreadCount) }}</span>
                             @endif
                         </button>
 
@@ -273,7 +275,7 @@
     </div>
 </header>
 
-    <div id="mobileMenuOverlay" class="fixed inset-0 z-[70] hidden xl:hidden" aria-hidden="true">
+    <div id="mobileMenuOverlay" class="fixed inset-0 z-[105] hidden xl:hidden" aria-hidden="true">
         <button id="mobileMenuBackdrop" type="button"
             class="absolute inset-0 bg-primary-950/45 opacity-0 backdrop-blur-sm transition duration-300"
             aria-label="Close mobile menu"></button>

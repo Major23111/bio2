@@ -210,7 +210,10 @@
         <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
         <div id="catalogPageContent" data-catalog-base-url="{{ route('products.index') }}">
         <form id="catalogFiltersForm" method="GET" action="{{ route('products.index') }}" class="space-y-4 md:space-y-5">
-            <section class="relative z-10 w-full pt-2 md:pt-5">
+            <section class="relative z-10 w-full pt-2 md:pt-4">
+                <div class="mb-4">
+                    <x-ui.breadcrumb />
+                </div>
                 <div class="rounded-[var(--ui-radius-card)] border border-white/70 bg-gradient-to-br from-white via-primary-50/65 to-white p-5 shadow-[var(--ui-shadow-card)] backdrop-blur md:p-6 glass-card">
                     <div class="flex flex-col gap-4">
                         <div class="flex flex-col items-start gap-3 xl:flex-row xl:justify-between">
@@ -1319,14 +1322,13 @@
             });
 
             document.addEventListener('click', function (event) {
-                const sortDropdown = catalogPageContent.querySelector('#customSortDropdown');
+                const sortDropdown = document.getElementById('customSortDropdown');
+                const sortMenu = document.getElementById('customSortMenu');
 
-                if (!sortDropdown) {
-                    return;
-                }
-
-                if (!sortDropdown.contains(event.target)) {
-                    closeSortMenu();
+                if (sortDropdown && sortMenu && !sortMenu.classList.contains('hidden')) {
+                    if (!sortDropdown.contains(event.target)) {
+                        closeSortMenu();
+                    }
                 }
             });
 

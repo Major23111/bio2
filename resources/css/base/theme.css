@@ -75,6 +75,24 @@
 
     /* Animations & Interactions */
     --transition-premium: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Standardized Border Radius Hierarchy */
+    --ui-radius-card: 2.5rem;          /* 40px — large cards, hero sections */
+    --ui-radius-section: 1.75rem;      /* 28px — section cards, modals */
+    --ui-radius-panel: 1.5rem;         /* 24px — inner panels, sub-cards */
+    --ui-radius-field: 0.875rem;       /* 14px — inputs, selects, small buttons */
+    --ui-radius-button: 0.875rem;      /* 14px — standard buttons */
+    --ui-radius-pill: 9999px;          /* pills, badges, circular elements */
+    --ui-radius-full: 50%;             /* avatar, circular indicators */
+
+    /* Standardized Button Height Hierarchy */
+    --ui-btn-sm: 2.25rem;             /* 36px / h-9 — compact, inline actions */
+    --ui-btn-md: 2.75rem;             /* 44px / h-11 — standard buttons */
+    --ui-btn-lg: 3rem;                /* 48px / h-12 — prominent actions */
+    --ui-btn-xl: 3.5rem;              /* 56px / h-14 — CTAs, primary actions */
+
+    /* Layout Safeguards */
+    --ui-min-width: 320px;
 }
 
 @utility glass-card {

@@ -10,7 +10,9 @@
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('upload/backgrounds/order-success-bg.jpg') }}" 
                  alt="Background" 
-                 class="h-full w-full object-cover opacity-50 mix-blend-overlay">
+                 class="h-full w-full object-cover opacity-50 mix-blend-overlay"
+                 onerror="this.style.display='none'">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary-950 via-slate-900 to-primary-900"></div>
             <div class="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/50 to-slate-900/90 backdrop-blur-[3px]"></div>
         </div>
 
@@ -29,7 +31,7 @@
                 {{-- Content --}}
                 <h1 class="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">Order Successful!</h1>
                 <p class="mt-6 text-lg leading-8 text-slate-300">
-                    Thank you for your order <span class="font-semibold text-primary-400">#{{ session('last_order_number', 'BGX-123456') }}</span>.
+                    Thank you for your order @if(session('last_order_number'))<span class="font-semibold text-primary-400">#{{ session('last_order_number') }}</span>@endif.
                     <br class="hidden sm:block">
                     We've sent a confirmation email with all the details and tracking information.
                 </p>

@@ -61,7 +61,7 @@
 
 {{-- Loading skeleton overlay --}}
 <div id="admin-loading-skeleton" class="hidden absolute inset-0 z-10">
-    <div class="space-y-6 animate-pulse p-1">
+    <div class="min-h-[60vh] space-y-6 animate-pulse p-1">
         <div class="h-8 bg-[var(--ui-skeleton-bg)]/60 rounded-xl w-2/5"></div>
         <div class="h-5 bg-[var(--ui-skeleton-bg)]/40 rounded-lg w-3/5"></div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
@@ -70,7 +70,7 @@
             <div class="h-[130px] bg-[var(--ui-skeleton-bg)]/50 rounded-2xl hidden sm:block"></div>
             <div class="h-[130px] bg-[var(--ui-skeleton-bg)]/50 rounded-2xl hidden sm:block"></div>
         </div>
-        <div class="h-[300px] bg-[var(--ui-skeleton-bg)]/40 rounded-2xl mt-4"></div>
+        <div class="flex-1 min-h-[200px] bg-[var(--ui-skeleton-bg)]/40 rounded-2xl mt-4"></div>
     </div>
 </div>
 

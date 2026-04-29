@@ -180,10 +180,7 @@
                     </section>
                 </div>
 
-                {{-- -------------------------------------------------------- --}}
-                {{-- ORDER SUMMARY COLUMN --}}
-                {{-- -------------------------------------------------------- --}}
-                <div class="space-y-5">
+                <div class="space-y-5 xl:sticky xl:top-24">
                     <section class="{{ $summaryCardClass }}">
                         <div class="flex items-center justify-between gap-3">
                             <div>
@@ -604,7 +601,10 @@
                         if (subtotalEl) subtotalEl.innerHTML = '₹ 0.00';
                         if (taxEl)      taxEl.innerHTML      = '₹ 0.00';
                         if (totalEl)    totalEl.innerHTML    = '₹ 0.00';
-                        if (checkoutButton) checkoutButton.classList.add('opacity-70');
+                        if (checkoutButton) {
+                            checkoutButton.classList.add('opacity-40', 'pointer-events-none', 'cursor-not-allowed');
+                            checkoutButton.setAttribute('tabindex', '-1');
+                        }
                         updateShippingProgress(0);
                         renderSaved();
                         return;
@@ -612,7 +612,10 @@
 
                     emptyState.classList.add('hidden');
                     emptyState.classList.remove('flex');
-                    if (checkoutButton) checkoutButton.classList.remove('opacity-70');
+                    if (checkoutButton) {
+                        checkoutButton.classList.remove('opacity-40', 'pointer-events-none', 'cursor-not-allowed');
+                        checkoutButton.removeAttribute('tabindex');
+                    }
 
                     var subtotal = 0;
                     var tax = 0;

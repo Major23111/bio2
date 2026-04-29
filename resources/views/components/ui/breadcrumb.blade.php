@@ -2,9 +2,10 @@
     $segments = request()->segments();
     $paths = [];
     $count = count($segments);
+    $currentLabel = $currentLabel ?? null;
 @endphp
 
-<nav aria-label="Breadcrumb" class="mb-5 flex items-center text-sm text-slate-500">
+<nav aria-label="Breadcrumb" class="mb-2 flex items-center text-sm text-slate-500">
     <ol class="flex list-none flex-wrap items-center gap-y-2 p-0">
         <li class="flex items-center">
             <a href="{{ url('/') }}" class="flex items-center transition-colors hover:text-primary-600">
@@ -27,7 +28,7 @@
 
             <li class="flex items-center">
                 @if($isLast)
-                    <span class="text-slate-900 font-semibold" aria-current="page">{{ $label }}</span>
+                    <span class="text-slate-900 font-semibold" aria-current="page">{{ $currentLabel ?? $label }}</span>
                 @else
                     <a href="{{ $url }}" class="transition-colors hover:text-primary-600">{{ $label }}</a>
                     <svg class="mx-2 h-4 w-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">

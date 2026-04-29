@@ -58,6 +58,24 @@
             {{-- ════════════════════════════════════════════════════════ --}}
             {{-- STEP PROGRESS BAR --}}
             {{-- ════════════════════════════════════════════════════════ --}}
+            <div id="stepProgressLine" class="mb-8 overflow-hidden rounded-[28px] border border-white/70 bg-white/95 p-5 shadow-[var(--ui-shadow-card)] backdrop-blur glass-card md:p-6">
+                <div class="flex items-center justify-between gap-4 max-w-2xl mx-auto relative">
+                    <div id="stepIndicator1" class="flex flex-1 flex-col items-center gap-2">
+                        <div class="step-circle flex h-9 w-9 items-center justify-center rounded-full border-2 border-primary-600 bg-primary-600 text-sm font-bold text-white transition-all shadow-sm">1</div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-primary-700">Shipping</span>
+                    </div>
+                    <div class="h-0.5 flex-1 bg-slate-200 transition-colors duration-300" data-step-connector></div>
+                    <div id="stepIndicator2" class="flex flex-1 flex-col items-center gap-2">
+                        <div class="step-circle flex h-9 w-9 items-center justify-center rounded-full border-2 border-slate-300 bg-white text-sm font-bold text-slate-400 transition-all shadow-sm">2</div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Delivery</span>
+                    </div>
+                    <div class="h-0.5 flex-1 bg-slate-200 transition-colors duration-300" data-step-connector></div>
+                    <div id="stepIndicator3" class="flex flex-1 flex-col items-center gap-2">
+                        <div class="step-circle flex h-9 w-9 items-center justify-center rounded-full border-2 border-slate-300 bg-white text-sm font-bold text-slate-400 transition-all shadow-sm">3</div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Payment</span>
+                    </div>
+                </div>
+            </div>
             <div class="{{ $layoutGridClass }}">
                 <div class="{{ $mainColumnClass }}">
 
@@ -311,7 +329,7 @@
                     {{-- ════════════════════════════════════════════════════════ --}}
                     {{-- STEP 3: PAYMENT METHOD --}}
                     {{-- ════════════════════════════════════════════════════════ --}}
-                    <!-- <section class="{{ $sectionCardClass }}">
+                    <section class="{{ $sectionCardClass }}">
                         <div class="flex items-center gap-3">
                             <span class="{{ $stepClass }}">3</span>
                             <div>
@@ -379,7 +397,7 @@
                                 disabled
                             />
                         </div>
-                    </section> -->
+                    </section>
                 </div>
 
                 {{-- ════════════════════════════════════════════════════════ --}}
@@ -673,6 +691,24 @@
                     });
                 }
                 setStep(1);
+                
+                /* ── Reactive scroll progress ── */
+                if (window.IntersectionObserver) {
+                    const sections = document.querySelectorAll('section');
+                    const observerOptions = { root: null, threshold: 0.3 };
+                    const observer = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(entry) {
+                            if (entry.isIntersecting) {
+                                const stepSpan = entry.target.querySelector('.inline-flex.h-10.w-10');
+                                if (stepSpan) {
+                                    const stepNum = parseInt(stepSpan.textContent);
+                                    if (!isNaN(stepNum)) setStep(stepNum);
+                                }
+                            }
+                        });
+                    }, observerOptions);
+                    sections.forEach(function(section) { observer.observe(section); });
+                }
 
                 /* ── Coupon code ── */
                 const couponInput       = document.getElementById('couponInput');

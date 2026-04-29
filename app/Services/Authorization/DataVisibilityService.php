@@ -23,7 +23,7 @@ class DataVisibilityService
     public function productScopes(?User $user): array
     {
         if (! $user) {
-            return ['public', 'b2b'];
+            return ['public'];
         }
 
         if ($this->isFullAdmin($user) || $this->isDelegatedAdmin($user)) {
@@ -33,7 +33,7 @@ class DataVisibilityService
         return match ($user->user_type) {
             'b2b' => ['public', 'b2b'],
             'internal' => ['public'],
-            default => ['public', 'b2c', 'b2b'],
+            default => ['public', 'b2c'],
         };
     }
 

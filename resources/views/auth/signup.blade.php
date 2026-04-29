@@ -51,7 +51,7 @@
                         <p class="text-sm text-slate-600">
                             Get access to a smarter way of working—explore our full product portfolio, generate quotations, and manage your procurement with speed and control.
                             <a href="{{ route('b2b.signup') }}" class="font-semibold text-primary-700 no-underline transition hover:text-primary-600">
-                                </br>Register for a B2B Account
+                                <br>Register for a B2B Account
                             </a>
                         </p>
                     </div>

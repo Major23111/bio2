@@ -22,15 +22,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-.env.railway
-/temp/
-.tmp_*
-composer.phar
-composer-setup.php
-*.md
-!README.md
-rewrite_signup.*
-step_finder.js
 /.vs
 .vs/biogenix-website/CopilotIndices/17.14.734.62261/CodeChunks.db
 .vs/slnx.sqlite
@@ -82,3 +73,5 @@ step_finder.js
 .vs/biogenix-website/v17/Browse.VC.db
 .vs/slnx.sqlite
 .vs/biogenix-website/v17/Browse.VC.db
+
+.env.railway

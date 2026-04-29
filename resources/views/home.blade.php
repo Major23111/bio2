@@ -757,7 +757,7 @@
         <!-- Highlighted Numbering Section -->
         <section
             class="bg-white/80 py-6 md:py-8 shadow-[0_4px_30px_rgba(0,0,0,0.03)] border-b border-slate-100 relative z-20 backdrop-blur-md">
-            <div class="mx-auto max-w-[1400px] w-full px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
 
                 @php
                     $statsItems = [

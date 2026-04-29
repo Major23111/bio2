@@ -22,7 +22,7 @@
 </head>
 
 <body
-    class="min-h-screen bg-[var(--ui-page-bg-gradient)] font-sans text-slate-800 antialiased">
+    class="min-h-screen min-w-[var(--ui-min-width)] bg-[var(--ui-page-bg-gradient)] font-sans text-slate-800 antialiased">
     @php($suppressShellAlerts = request()->routeIs('login', 'forgot.password', 'signup', 'b2b.signup'))
     @php($isMinimalCustomerWorkspace = trim($__env->yieldContent('customer_minimal')) === 'minimal')
     @php($layoutAuthUser = auth()->user())
@@ -180,9 +180,10 @@
 
         @media (max-width: 640px) {
             #supportTicketForm {
-                right: 1.25rem !important;
-                bottom: 5rem !important;
-                width: calc(100vw - 2.5rem) !important;
+                right: 0.75rem !important;
+                bottom: 7rem !important;
+                width: calc(100vw - 1.5rem) !important;
+                max-height: min(75vh, 560px) !important;
             }
         }
     </style>
@@ -453,6 +454,11 @@
             // Business step: remove the startup loader as soon as the current page is fully ready.
             window.addEventListener('load', hideLoader, { once: true });
             window.addEventListener('pageshow', hideLoader);
+
+            // Safety fallback: if load event never fires (e.g. JS error blocking it), auto-dismiss after 6s.
+            window.setTimeout(function () {
+                hideLoader();
+            }, 6000);
 
             document.addEventListener('click', function (event) {
                 if (event.defaultPrevented) {

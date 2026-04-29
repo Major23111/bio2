@@ -23,6 +23,9 @@
         </div>
     </div>
 @else
+    <div class="mx-auto w-full max-w-none px-4 pt-1 pb-0 sm:px-6 md:pt-1.5 lg:px-8 xl:px-10">
+        <x-ui.breadcrumb :current-label="$product->name ?? 'Product Details'" />
+    </div>
     @php
         $formatInr = function (float|int|null $amount, int $decimals = 2): string {
             if ($amount === null) {
@@ -164,7 +167,7 @@
 
     <div class="w-screen bg-gradient-to-b from-white via-primary-50/20 to-white py-0 md:mt-0 md:py-0 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
         <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
-        <div class="mx-auto w-full px-4 pt-1 pb-8 md:px-6 md:pt-2 md:pb-10">
+        <div class="mx-auto w-full max-w-none px-4 pt-1 pb-8 sm:px-6 lg:px-8 xl:px-10 md:pt-2 md:pb-10">
             <a href="{{ $backUrl }}" class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200/80 bg-white/95 text-slate-700 no-underline shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-px hover:border-primary-100 hover:bg-primary-50 hover:text-primary-700">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="m15 18-6-6 6-6"></path>
@@ -182,8 +185,7 @@
                 <span>/</span>
                 <span class="text-slate-700">{{ $productTitle }}</span>
             </div> -->
-
-            <section class="mt-4 grid gap-5 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] xl:items-start">
+            <section class="mt-2 grid gap-5 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] xl:items-start">
                 <div class="space-y-3 self-start">
                     <div class="{{ $compactCardClass }}">
                         <div class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-primary-50/60 to-slate-50">
@@ -192,14 +194,14 @@
                             {{-- Gallery Navigation Arrows --}}
                             @if ($galleryImages->count() > 1)
                                 <button id="productPrevImage" type="button" aria-label="Previous image"
-                                    class="absolute left-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md shadow-xl transition hover:-translate-y-[calc(50%+2px)] hover:bg-white/20">
-                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                    class="absolute left-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/50 bg-white/90 text-slate-700 backdrop-blur shadow-xl transition duration-300 hover:border-primary-200 hover:bg-white hover:text-primary-700 active:scale-95">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
                                     </svg>
                                 </button>
                                 <button id="productNextImage" type="button" aria-label="Next image"
-                                    class="absolute right-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md shadow-xl transition hover:-translate-y-[calc(50%+2px)] hover:bg-white/20">
-                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                    class="absolute right-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/50 bg-white/90 text-slate-700 backdrop-blur shadow-xl transition duration-300 hover:border-primary-200 hover:bg-white hover:text-primary-700 active:scale-95">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
                                     </svg>
                                 </button>
@@ -1098,6 +1100,88 @@
                 });
 
                 /* ══════════════════════════════════════════════
+                   PRODUCT GALLERY AUTO-SLIDE & NAV
+                ══════════════════════════════════════════════ */
+                (function() {
+                    var mainImg = document.getElementById('catalogProductMainImage');
+                    if (!mainImg) return;
+
+                    var images = [];
+                    try {
+                        images = JSON.parse(mainImg.dataset.galleryImages || '[]');
+                    } catch(e) { images = []; }
+                    
+                    if (images.length <= 1) return;
+
+                    var currentIndex = 0;
+                    var autoSlideInterval;
+                    var SLIDE_DELAY = 5000; // 5 seconds
+
+                    function showImage(index) {
+                        if (index < 0) index = images.length - 1;
+                        if (index >= images.length) index = 0;
+                        currentIndex = index;
+                        
+                        mainImg.style.transition = 'opacity 0.2s ease';
+                        mainImg.style.opacity = '0.4';
+                        setTimeout(function() {
+                            mainImg.src = images[currentIndex];
+                            mainImg.style.opacity = '1';
+                        }, 150);
+                    }
+
+                    function nextImage() { showImage(currentIndex + 1); }
+                    function prevImage() { showImage(currentIndex - 1); }
+
+                    function startAutoSlide() {
+                        stopAutoSlide();
+                        autoSlideInterval = setInterval(nextImage, SLIDE_DELAY);
+                    }
+
+                    function stopAutoSlide() {
+                        if (autoSlideInterval) clearInterval(autoSlideInterval);
+                    }
+
+                    var btnPrev = document.getElementById('productPrevImage');
+                    var btnNext = document.getElementById('productNextImage');
+
+                    if (btnPrev) {
+                        btnPrev.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            prevImage();
+                            startAutoSlide(); // Reset timer
+                        });
+                    }
+                    if (btnNext) {
+                        btnNext.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            nextImage();
+                            startAutoSlide(); // Reset timer
+                        });
+                    }
+
+                    mainImg.addEventListener('mouseenter', stopAutoSlide);
+                    mainImg.addEventListener('mouseleave', startAutoSlide);
+
+                    /* Swipe support for gallery */
+                    let galleryStartX = 0;
+                    mainImg.addEventListener('touchstart', function(e) {
+                        galleryStartX = e.changedTouches[0].screenX;
+                        stopAutoSlide();
+                    }, { passive: true });
+
+                    mainImg.addEventListener('touchend', function(e) {
+                        const galleryEndX = e.changedTouches[0].screenX;
+                        const threshold = 40;
+                        if (galleryEndX < galleryStartX - threshold) nextImage();
+                        else if (galleryEndX > galleryStartX + threshold) prevImage();
+                        startAutoSlide();
+                    }, { passive: true });
+
+                    startAutoSlide();
+                })();
+
+                /* ══════════════════════════════════════════════
                    WISHLIST BUTTON
                 ══════════════════════════════════════════════ */
                 var WISH_KEY   = 'biogenix_wishlist';
@@ -1223,6 +1307,22 @@
                 if (relatedTrack && relatedPrev && relatedNext) {
                     relatedPrev.addEventListener('click', function () { relatedTrack.scrollBy({ left: -scrollAmt, behavior: 'smooth' }); });
                     relatedNext.addEventListener('click', function () { relatedTrack.scrollBy({ left: scrollAmt, behavior: 'smooth' }); });
+
+                    /* ── Touch Swipe support for mobile ── */
+                    let touchStartX = 0;
+                    relatedTrack.addEventListener('touchstart', function (e) {
+                        touchStartX = e.changedTouches[0].screenX;
+                    }, { passive: true });
+
+                    relatedTrack.addEventListener('touchend', function (e) {
+                        const touchEndX = e.changedTouches[0].screenX;
+                        const swipeThreshold = 50;
+                        if (touchEndX < touchStartX - swipeThreshold) {
+                            relatedTrack.scrollBy({ left: scrollAmt, behavior: 'smooth' });
+                        } else if (touchEndX > touchStartX + swipeThreshold) {
+                            relatedTrack.scrollBy({ left: -scrollAmt, behavior: 'smooth' });
+                        }
+                    }, { passive: true });
                 }
 
             });
