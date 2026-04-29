@@ -19,13 +19,26 @@ class ProductCrudService
     {
     }
 
-    // This fetches a paginated list of products with their category and price details.
-    public function getAllProductsForAdminList(int $perPage = 10): LengthAwarePaginator
+    public function getAllProductsForAdminList(int $perPage = 10, ?int $categoryId = null, ?string $search = null): LengthAwarePaginator
     {
-        // Step 1: fetch products with eager loading to avoid N+1 issues in the list view.
-        $paginatedProducts = Product::with(['category', 'variants', 'defaultVariant.prices'])
-            ->orderBy('name')
-            ->paginate($perPage);
+        // Step 1: initialize query with eager loading to avoid N+1 issues in the list view.
+        $query = Product::with(['category', 'variants', 'defaultVariant.prices']);
+
+        // Step 2: apply category filter if provided.
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        // Step 3: apply search filter if provided.
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%");
+            });
+        }
+
+        // Step 4: fetch paginated products ordered by name.
+        $paginatedProducts = $query->orderBy('name')->paginate($perPage);
 
         // Step 2: transform the collection items into a format the UI expects for display.
         $paginatedProducts->getCollection()->transform(function ($product) {

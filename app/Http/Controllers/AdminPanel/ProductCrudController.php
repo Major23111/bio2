@@ -16,15 +16,18 @@ class ProductCrudController extends Controller
     {
     }
 
-    // This displays the main list of products with pagination and category data for filtering.
     public function index(Request $request): View
     {
         try {
+            // Step 0: capture filter inputs from request
+            $categoryId = $request->integer('category_id');
+            $search     = $request->query('search');
+
             // Step 1: fetch all categories to populate the frontend filter pills.
             $categories = Category::orderBy('name')->get();
 
-            // Step 2: fetch paginated products from the service.
-            $products = $this->productCrudService->getAllProductsForAdminList();
+            // Step 2: fetch paginated products from the service with filters.
+            $products = $this->productCrudService->getAllProductsForAdminList(10, $categoryId, $search);
 
             return view('admin.products.index', [
                 'products' => $products,

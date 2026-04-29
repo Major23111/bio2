@@ -34,14 +34,17 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <input type="text" id="productSearchInput" placeholder="Search product name, SKU, or category..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input type="text" id="productSearchInput" placeholder="Search product name or SKU..." value="{{ request()->query('search') }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium" onkeypress="if(event.key==='Enter') window.location.href='{{ route('admin.products') }}?search=' + encodeURIComponent(this.value)">
                     </div>
 
                     <!-- Category Pills -->
                     <div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide" id="product-filter-pills">
-                        <button type="button" data-filter="all" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-600 text-white shadow-sm transition-all duration-200 active:scale-95">All Products</button>
+                        @php
+                            $currentCatId = request()->integer('category_id');
+                        @endphp
+                        <a href="{{ route('admin.products', ['search' => request()->query('search')]) }}" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold {{ !$currentCatId ? 'bg-primary-600 text-white shadow-sm' : 'bg-[var(--ui-surface-subtle)] text-slate-600 border border-slate-200/60' }} transition-all duration-200 active:scale-95">All Products</a>
                         @foreach($categories as $category)
-                            <button type="button" data-filter="{{ strtolower($category->name) }}" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-[var(--ui-surface-subtle)] text-slate-600 border border-slate-200/60 hover:bg-slate-100 transition shadow-sm active:scale-95">{{ $category->name }}</button>
+                            <a href="{{ route('admin.products', ['category_id' => $category->id, 'search' => request()->query('search')]) }}" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold {{ $currentCatId === (int)$category->id ? 'bg-primary-600 text-white shadow-sm' : 'bg-[var(--ui-surface-subtle)] text-slate-600 border border-slate-200/60' }} transition shadow-sm active:scale-95">{{ $category->name }}</a>
                         @endforeach
                     </div>
                 </div>
@@ -137,51 +140,7 @@
     }
 
 (function () {
-    function getRows() {
-        return document.querySelectorAll('tbody.divide-y > tr[data-product-category]');
-    }
-
-    var activeFilter = 'all';
-    var activeSearch = '';
-
-    function applyFilters() {
-        getRows().forEach(function (row) {
-            var category = (row.dataset.productCategory || '').toLowerCase();
-            var text     = row.textContent.toLowerCase();
-            var matchCat = activeFilter === 'all' || category === activeFilter;
-            var matchSrc = !activeSearch || text.includes(activeSearch);
-            row.style.display = (matchCat && matchSrc) ? '' : 'none';
-        });
-    }
-
-    // ─── Search ───────────────────────────────────────────────────────────────
-    var searchInput = document.getElementById('productSearchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', function () {
-            activeSearch = this.value.toLowerCase();
-            applyFilters();
-        });
-    }
-
-    // ─── Category pills ───────────────────────────────────────────────────────
-    var pillContainer = document.getElementById('product-filter-pills');
-    if (pillContainer) {
-        pillContainer.addEventListener('click', function (e) {
-            var btn = e.target.closest('[data-filter]');
-            if (!btn) return;
-            activeFilter = btn.dataset.filter;
-
-            // Update pill active styles
-            pillContainer.querySelectorAll('.product-pill').forEach(function (p) {
-                p.classList.remove('bg-primary-600', 'text-white', 'border-0', 'shadow-sm');
-                p.classList.add('bg-[var(--ui-surface-subtle)]', 'text-slate-600', 'border', 'border-slate-200/60');
-            });
-            btn.classList.remove('bg-[var(--ui-surface-subtle)]', 'text-slate-600', 'border', 'border-slate-200/60');
-            btn.classList.add('bg-primary-600', 'text-white', 'border-0', 'shadow-sm');
-
-            applyFilters();
-        });
-    }
+    // No longer needed for frontend filtering as we sync with backend.
 })();
 </script>
 @endsection

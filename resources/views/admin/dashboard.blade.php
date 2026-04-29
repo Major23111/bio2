@@ -18,12 +18,12 @@
                 
                 <!-- Quick Search -->
                 <div class="relative w-full md:w-80">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <div class="relative w-full shadow-sm border border-slate-200/60 rounded-lg overflow-hidden flex items-center bg-white group hover:border-slate-300 transition">
+                        <svg class="h-4 w-4 text-slate-400 absolute left-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
+                        <input type="text" id="dashboardSearchInput" placeholder="Search analytics or orders..." class="w-full bg-[#f8fafc] border-none text-[13px] font-medium text-slate-800 focus:bg-white pl-9 pr-4 py-2 outline-none placeholder:text-slate-400 transition" onkeypress="if(event.key==='Enter') window.location.href='{{ route('admin.orders') }}?search=' + encodeURIComponent(this.value)">
                     </div>
-                    <input id="dashboardSearch" type="text" placeholder="Search analytics or orders..." class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] shadow-sm text-sm rounded-xl pl-9 pr-4 py-2.5 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-[var(--ui-text)] placeholder:text-[var(--ui-text-muted)]" onkeypress="if(event.key==='Enter') window.location.href='{{ route('admin.orders') }}?search=' + encodeURIComponent(this.value)">
                 </div>
             </div>
 
@@ -253,7 +253,7 @@ function cancelOrder(orderId, orderNumber) {
         confirmText: 'Cancel Order'
     }).then(result => {
         if (result) {
-            fetch('{{ url("adminPanel/orders") }}/' + orderId + '/cancel', {
+            fetch('{{ route("admin.orders.cancel", ["orderId" => "ID_PLACEHOLDER"]) }}'.replace('ID_PLACEHOLDER', orderId), {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'

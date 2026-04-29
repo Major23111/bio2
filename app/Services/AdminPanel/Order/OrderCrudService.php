@@ -995,4 +995,35 @@ class OrderCrudService
         $order->cancelled_at = now();
         $order->save();
     }
+
+    // Prepare a query builder for orders export with current filters.
+    public function getAllOrdersForExport(?string $status = null, ?string $search = null, string $sort = 'date', string $direction = 'desc')
+    {
+        $query = Order::query()->with(['placedByUser']);
+
+        // Apply status filter
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        // Apply search filter
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                  ->orWhereHas('placedByUser', fn ($q) => $q->where('name', 'like', "%{$search}%"))
+                  ->orWhere('customer_email', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply sorting
+        if ($sort === 'customer') {
+            $query->orderBy('placed_by_user_id', $direction);
+        } elseif ($sort === 'amount') {
+            $query->orderBy('total_amount', $direction);
+        } else {
+            $query->orderBy('created_at', $direction);
+        }
+
+        return $query;
+    }
 }

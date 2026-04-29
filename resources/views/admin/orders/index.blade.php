@@ -148,7 +148,7 @@
         <!-- Pagination -->
         <div class="px-5 lg:px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p id="orderCount" class="text-[13px] text-slate-500 font-medium">
-                Showing {{ $orders->count() }} of {{ $orders->count() }} results
+                Showing {{ $orders->firstItem() ?? 0 }} to {{ $orders->lastItem() ?? 0 }} of {{ $orders->total() }} results
             </p>
 
             @php
@@ -213,21 +213,8 @@ function navigateWithSearch() {
 
 // Export CSV with current filters
 function exportOrdersCSV() {
-    const orderRows = Array.from(document.querySelectorAll('#ordersTable tbody tr'));
-    let csvText = 'Order ID,Customer,Date,Amount,Payment,Fulfillment\n';
-
-    orderRows.forEach((row) => {
-        const cells = row.querySelectorAll('td');
-        csvText += `${cells[0].textContent.trim()},"${cells[1].textContent.trim().replace(/\s+/g, ' ')}",${cells[2].textContent.trim()},${cells[3].textContent.trim()},${cells[4].textContent.trim()},${cells[5].textContent.trim()}\n`;
-    });
-
-    const csvFile = new Blob([csvText], { type: 'text/csv' });
-    const downloadLink = document.createElement('a');
-    downloadLink.href = URL.createObjectURL(csvFile);
-    downloadLink.download = 'orders_export_' + new Date().toISOString().split('T')[0] + '.csv';
-    downloadLink.click();
-
-    AdminToast.show('Orders exported successfully!', 'success');
+    const currentQuery = window.location.search;
+    window.location.href = '{{ route("admin.orders.export") }}' + currentQuery;
 }
 </script>
 

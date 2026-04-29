@@ -115,4 +115,51 @@ class OrderCrudController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to cancel order.'], 500);
         }
     }
+
+    // Export orders to CSV based on current filters.
+    public function exportCsv(Request $request)
+    {
+        try {
+            $status = $request->query('status');
+            $search = $request->query('search');
+            $sort = $request->query('sort', 'date');
+            $direction = $request->query('direction', 'desc');
+
+            $fileName = 'orders_export_' . now()->format('Y-m-d') . '.csv';
+            
+            $headers = [
+                "Content-type"        => "text/csv",
+                "Content-Disposition" => "attachment; filename=$fileName",
+                "Pragma"              => "no-cache",
+                "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+                "Expires"             => "0"
+            ];
+
+            $callback = function() use($status, $search, $sort, $direction) {
+                $file = fopen('php://output', 'w');
+                fputcsv($file, ['Order ID', 'Customer', 'Email', 'Date', 'Amount', 'Status']);
+
+                // Fetch data in chunks to handle large datasets
+                $this->orderCrudService->getAllOrdersForExport($status, $search, $sort, $direction)
+                    ->chunk(100, function($orders) use($file) {
+                        foreach ($orders as $order) {
+                            fputcsv($file, [
+                                '#' . $order->order_number,
+                                $order->placedByUser?->name ?? 'Guest',
+                                $order->placedByUser?->email ?? $order->customer_email,
+                                $order->created_at->format('Y-m-d H:i'),
+                                $order->total_amount,
+                                $order->status
+                            ]);
+                        }
+                    });
+
+                fclose($file);
+            };
+
+            return response()->stream($callback, 200, $headers);
+        } catch (Throwable $e) {
+            return redirect()->back()->with('error', 'CSV Export failed: ' . $e->getMessage());
+        }
+    }
 }
