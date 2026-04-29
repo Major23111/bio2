@@ -299,11 +299,11 @@
                 trigger.className = baseClasses + " flex items-center justify-between cursor-pointer focus-within:ring-1 focus-within:ring-primary-600 focus-within:border-primary-600";
                 
                 var textSpan = document.createElement('span');
-                textSpan.className = "block truncate pointer-events-none outline-none";
+                textSpan.className = "block truncate pointer-events-none outline-none px-4";
                 trigger.appendChild(textSpan);
 
                 var caret = document.createElement('div');
-                caret.className = "pointer-events-none flex items-center pl-2 shrink-0";
+                caret.className = "pointer-events-none flex items-center pr-4 shrink-0";
                 caret.innerHTML = `<svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>`;
                 trigger.appendChild(caret);
 
