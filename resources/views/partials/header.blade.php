@@ -168,6 +168,20 @@
 
                 @if($isAdmin)
                     {{-- Admin Notification Bell --}}
+                    @php
+                        $headerUnreadCount = 0;
+                        $headerUnreadNotifications = collect();
+                        try {
+                            if (auth()->user()) {
+                                $headerUnreadNotifications = auth()->user()->unreadNotifications;
+                                $headerUnreadCount = $headerUnreadNotifications->count();
+                            }
+                        } catch (\Throwable $e) {
+                            // notifications table may not exist yet — gracefully show 0
+                            $headerUnreadCount = 0;
+                            $headerUnreadNotifications = collect();
+                        }
+                    @endphp
                     <div class="relative inline-block" id="header-notifications-dropdown">
                         <button type="button"
                             class="header-auth-button hover-lift inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text-muted)] shadow-sm transition hover:bg-[var(--ui-surface-subtle)] hover:text-[var(--ui-text)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
@@ -176,9 +190,6 @@
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
-                            @php
-                                $headerUnreadCount = auth()->user() ? auth()->user()->unreadNotifications->count() : 0;
-                            @endphp
                             @if($headerUnreadCount > 0)
                                 <span class="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white ring-2 ring-white shadow-sm">{{ $headerUnreadCount > 9 ? '9+' : $headerUnreadCount }}</span>
                             @endif
@@ -194,7 +205,7 @@
                             </div>
                             <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
                                 @if($headerUnreadCount > 0)
-                                    @foreach(auth()->user()->unreadNotifications->take(5) as $notification)
+                                    @foreach($headerUnreadNotifications->take(5) as $notification)
                                         <a href="{{ $notification->data['url'] ?? '#' }}" class="block px-4 py-3 hover:bg-slate-50 transition">
                                             <p class="text-[13px] font-bold text-slate-900">{{ $notification->data['title'] ?? 'Notification' }}</p>
                                             <p class="text-[12px] text-slate-500 mt-0.5 line-clamp-2">{{ $notification->data['message'] ?? '' }}</p>
