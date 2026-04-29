@@ -23,7 +23,7 @@ class ExampleTest extends TestCase
         // 2. Act as the admin user and request the home page
         $response = $this->actingAs($user)->get('/');
 
-        // 3. Assert the response is now 200
-        $response->assertStatus(200);
+        // 3. Admin users are intentionally routed into the admin dashboard.
+        $response->assertRedirect(route('admin.dashboard'));
     }
 }
