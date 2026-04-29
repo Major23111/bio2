@@ -119,12 +119,36 @@ class InventoryCrudService
     }
 
     /**
-     * Update stock quantity for a specific variant.
+     * Update stock quantity and tracking details for a specific variant.
      */
-    public function updateStock(int $variantId, int $newQuantity): ProductVariant
+    public function updateStock(int $variantId, array $data): ProductVariant
     {
         $variant = ProductVariant::findOrFail($variantId);
-        $variant->stock_quantity = max(0, $newQuantity);
+        
+        if (isset($data['stock_quantity'])) {
+            $variant->stock_quantity = max(0, (int) $data['stock_quantity']);
+        }
+        
+        if (array_key_exists('pack_size', $data)) {
+            $variant->pack_size = $data['pack_size'];
+        }
+        
+        if (array_key_exists('coa_no', $data)) {
+            $variant->coa_no = $data['coa_no'];
+        }
+        
+        if (array_key_exists('batch_no', $data)) {
+            $variant->batch_no = $data['batch_no'];
+        }
+        
+        if (array_key_exists('mfg_date', $data)) {
+            $variant->mfg_date = $data['mfg_date'];
+        }
+        
+        if (array_key_exists('expiry_date', $data)) {
+            $variant->expiry_date = $data['expiry_date'];
+        }
+        
         $variant->save();
 
         return $variant;

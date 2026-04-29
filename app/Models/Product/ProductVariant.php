@@ -26,6 +26,10 @@ class ProductVariant extends Model
         'model_number',
         'catalog_number',
         'stock_quantity',
+        'coa_no',
+        'batch_no',
+        'mfg_date',
+        'expiry_date',
         'is_active',
     ];
 
@@ -43,6 +47,8 @@ class ProductVariant extends Model
             'b2b_max_order_quantity' => 'integer',
             'lot_size' => 'integer',
             'stock_quantity' => 'integer',
+            'mfg_date' => 'date',
+            'expiry_date' => 'date',
             'is_active' => 'boolean',
         ];
     }

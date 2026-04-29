@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\DecryptRouteParameters;
+use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsurePermission;
 use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\ImpersonationMiddleware;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+            'admin'            => EnsureAdmin::class,
             'decrypt.route'    => DecryptRouteParameters::class,
             'active'           => EnsureUserIsActive::class,
             'permission'       => EnsurePermission::class,

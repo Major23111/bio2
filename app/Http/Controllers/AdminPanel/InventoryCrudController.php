@@ -43,16 +43,21 @@ class InventoryCrudController extends Controller
     }
 
     /**
-     * Update stock quantity for a variant via AJAX.
+     * Update stock quantity and tracking info for a variant via AJAX.
      */
     public function updateStock(Request $request, int $variantId)
     {
         $validated = $request->validate([
             'stock_quantity' => 'required|integer|min:0|max:999999',
+            'pack_size' => 'nullable|string|max:255',
+            'coa_no' => 'nullable|string|max:255',
+            'batch_no' => 'nullable|string|max:255',
+            'mfg_date' => 'nullable|date',
+            'expiry_date' => 'nullable|date|after_or_equal:mfg_date',
         ]);
 
         try {
-            $variant = $this->inventoryService->updateStock($variantId, $validated['stock_quantity']);
+            $variant = $this->inventoryService->updateStock($variantId, $validated);
 
             return response()->json([
                 'success' => true,
@@ -60,6 +65,11 @@ class InventoryCrudController extends Controller
                 'variant' => [
                     'id' => $variant->id,
                     'stock_quantity' => $variant->stock_quantity,
+                    'pack_size' => $variant->pack_size,
+                    'coa_no' => $variant->coa_no,
+                    'batch_no' => $variant->batch_no,
+                    'mfg_date' => $variant->mfg_date ? $variant->mfg_date->format('Y-m-d') : null,
+                    'expiry_date' => $variant->expiry_date ? $variant->expiry_date->format('Y-m-d') : null,
                 ],
             ]);
         } catch (\Throwable $e) {

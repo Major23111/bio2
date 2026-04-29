@@ -59,19 +59,19 @@ class DataVisibilityService
                 'subcategories.slug as subcategory_slug',
                 'product_image.file_path as image_path',
             ])
-            ->where('is_active', true) // product must be active
-            ->whereIn('visibility_scope', $this->productScopes($user)) // it must match the user's visibility scopes
+            ->where('products.is_active', true) // product must be active
+            ->whereIn('products.visibility_scope', $this->productScopes($user)) // it must match the user's visibility scopes
             ->whereHas('variants', function (Builder $variantQuery) use ($genericPriceTypes, $user): void {
-                $variantQuery->where('is_active', true)  // variant must be active
+                $variantQuery->where('product_variants.is_active', true)  // variant must be active
                     ->whereHas('prices', function (Builder $priceQuery) use ($genericPriceTypes, $user): void {
-                        $priceQuery->where('is_active', true) // price must be active
+                        $priceQuery->where('product_prices.is_active', true) // price must be active
                             ->where(function (Builder $visiblePriceQuery) use ($genericPriceTypes, $user): void {
                                 // Business step: generic price rows 
                                 if ($genericPriceTypes !== []) {
                                     $visiblePriceQuery->where(function (Builder $genericPriceQuery) use ($genericPriceTypes): void {
                                         $genericPriceQuery
-                                            ->whereNull('company_id')
-                                            ->whereIn('price_type', $genericPriceTypes);
+                                            ->whereNull('product_prices.company_id')
+                                            ->whereIn('product_prices.price_type', $genericPriceTypes);
                                     });
                                 }
 
@@ -79,8 +79,8 @@ class DataVisibilityService
                                 if ($user && $user->isB2b() && $user->company_id) {
                                     $visiblePriceQuery->orWhere(function (Builder $companyPriceQuery) use ($user): void {
                                         $companyPriceQuery
-                                            ->where('price_type', 'company_price')
-                                            ->where('company_id', $user->company_id);
+                                            ->where('product_prices.price_type', 'company_price')
+                                            ->where('product_prices.company_id', $user->company_id);
                                     });
                                 }
                             });

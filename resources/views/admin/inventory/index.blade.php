@@ -25,10 +25,6 @@
                         @if(request('status')) <input type="hidden" name="status" value="{{ request('status') }}"> @endif
                     </form>
                 </div>
-                <a href="{{ route('admin.products.create') }}" class="ajax-link inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary-900 px-4 text-xs font-bold text-white transition hover:bg-primary-800">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                    Add New Item
-                </a>
             </div>
         </div>
 
@@ -121,7 +117,7 @@
                                     <div class="flex items-center gap-3">
                                         <div class="h-10 w-10 rounded-lg border border-[var(--ui-border)] overflow-hidden flex items-center justify-center bg-white flex-shrink-0">
                                             @if($item->product->primaryImage)
-                                                <img src="{{ Storage::url($item->product->primaryImage->image_path) }}" alt="{{ $item->product->name }}" class="h-full w-full object-contain p-1">
+                                                <img src="{{ Storage::url($item->product->primaryImage->image_path) }}" alt="{{ $item->product->name }}" class="h-full w-full object-contain p-1" onerror="this.onerror=null; this.parentElement.innerHTML='<svg class=\'h-5 w-5 text-slate-300\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z\' /></svg>';">
                                             @else
                                                 <svg class="h-5 w-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -155,7 +151,17 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <button type="button" onclick="openStockModal({{ $item->id }}, '{{ addslashes($item->product->name . ($item->variant_name ? ' - '.$item->variant_name : '')) }}', {{ $item->stock_quantity }})" class="p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition" title="Update Stock">
+                                    <button type="button" onclick="openStockModal(
+                                        {{ $item->id }}, 
+                                        '{{ addslashes($item->product->name . ($item->variant_name ? ' - '.$item->variant_name : '')) }}', 
+                                        {{ $item->stock_quantity }},
+                                        '{{ addslashes($item->product->category->name ?? '') }}',
+                                        '{{ addslashes($item->pack_size ?? '') }}',
+                                        '{{ addslashes($item->coa_no ?? '') }}',
+                                        '{{ addslashes($item->batch_no ?? '') }}',
+                                        '{{ $item->mfg_date ? $item->mfg_date->format('Y-m-d') : '' }}',
+                                        '{{ $item->expiry_date ? $item->expiry_date->format('Y-m-d') : '' }}'
+                                    )" class="p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition" title="Update Stock">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                         </svg>
@@ -199,9 +205,12 @@
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="stock-modal-backdrop" onclick="closeStockModal()"></div>
         
         <!-- Modal Content -->
-        <div class="relative w-full max-w-md bg-[var(--ui-surface)] rounded-2xl shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300 transform" id="stock-modal-content">
+        <div class="relative w-full max-w-2xl bg-[var(--ui-surface)] rounded-2xl shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300 transform" id="stock-modal-content">
             <div class="p-6 border-b border-[var(--ui-border)] flex justify-between items-center">
-                <h3 class="text-lg font-bold text-[var(--ui-text)] tracking-tight">Update Stock Quantity</h3>
+                <div>
+                    <h3 class="text-lg font-bold text-[var(--ui-text)] tracking-tight">Edit Stock</h3>
+                    <p class="text-xs text-[var(--ui-text-muted)] mt-1">Update existing inventory details in the centralized ledger.</p>
+                </div>
                 <button type="button" onclick="closeStockModal()" class="text-[var(--ui-text-muted)] hover:text-slate-700 transition">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
@@ -209,20 +218,69 @@
             <form id="stock-update-form" onsubmit="submitStockUpdate(event)">
                 @csrf
                 <input type="hidden" id="modal-variant-id" name="variant_id">
-                <div class="p-6 space-y-4">
-                    <div>
-                        <p class="text-xs font-bold text-[var(--ui-text-muted)] uppercase tracking-wider mb-1">PRODUCT</p>
-                        <p class="text-sm font-semibold text-[var(--ui-text)]" id="modal-product-name"></p>
+                <div class="p-6 space-y-5">
+                    
+                    <div class="grid grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold text-[var(--ui-text-muted)] uppercase tracking-wider mb-2">CATEGORY</label>
+                            <input type="text" id="modal-category-name" readonly class="w-full bg-[var(--ui-surface-subtle)] border border-[var(--ui-border)] rounded-xl px-4 py-2.5 text-sm font-semibold outline-none text-[var(--ui-text-muted)] cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-[var(--ui-text-muted)] uppercase tracking-wider mb-2">PRODUCT</label>
+                            <input type="text" id="modal-product-name" readonly class="w-full bg-[var(--ui-surface-subtle)] border border-[var(--ui-border)] rounded-xl px-4 py-2.5 text-sm font-semibold outline-none text-[var(--ui-text-muted)] cursor-not-allowed">
+                        </div>
                     </div>
-                    <div>
-                        <label for="modal-stock-quantity" class="block text-xs font-bold text-[var(--ui-text-muted)] uppercase tracking-wider mb-2">NEW QUANTITY</label>
-                        <input type="number" id="modal-stock-quantity" name="stock_quantity" min="0" required class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] rounded-xl px-4 py-3 text-lg font-bold outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition">
+
+                    <div class="grid grid-cols-2 gap-5">
+                        <div>
+                            <label for="modal-stock-quantity" class="block text-xs font-bold text-[var(--ui-text-muted)] uppercase tracking-wider mb-2">QUANTITY</label>
+                            <input type="number" id="modal-stock-quantity" name="stock_quantity" min="0" required class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] rounded-xl px-4 py-2.5 text-sm font-semibold outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition">
+                        </div>
+                        <div>
+                            <label for="modal-pack-size" class="block text-xs font-bold text-[var(--ui-text-muted)] uppercase tracking-wider mb-2">QUANTITY UNIT</label>
+                            <select id="modal-pack-size" name="pack_size" class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] rounded-xl px-4 py-2.5 text-sm font-semibold outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition">
+                                <option value="">Select unit...</option>
+                                <option value="Kits">Kits</option>
+                                <option value="Units">Units</option>
+                                <option value="Packs">Packs</option>
+                                <option value="Bottles">Bottles</option>
+                                <option value="Boxes">Boxes</option>
+                                <option value="Pieces">Pieces</option>
+                                <option value="Tests">Tests</option>
+                            </select>
+                        </div>
                     </div>
+
+                    <div class="grid grid-cols-2 gap-5">
+                        <div>
+                            <label for="modal-coa-no" class="block text-xs font-bold text-[var(--ui-text-muted)] uppercase tracking-wider mb-2">COA NO</label>
+                            <input type="text" id="modal-coa-no" name="coa_no" placeholder="e.g. CERT-9821-X" class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] rounded-xl px-4 py-2.5 text-sm font-semibold outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition placeholder-[var(--ui-text-muted)]">
+                        </div>
+                        <div>
+                            <label for="modal-batch-no" class="block text-xs font-bold text-[var(--ui-text-muted)] uppercase tracking-wider mb-2">LOT/BATCH NO</label>
+                            <input type="text" id="modal-batch-no" name="batch_no" placeholder="e.g. BTCH-5512" class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] rounded-xl px-4 py-2.5 text-sm font-semibold outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition placeholder-[var(--ui-text-muted)]">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-5">
+                        <div>
+                            <label for="modal-mfg-date" class="block text-xs font-bold text-[var(--ui-text-muted)] uppercase tracking-wider mb-2">MFG DATE</label>
+                            <input type="date" id="modal-mfg-date" name="mfg_date" class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] rounded-xl px-4 py-2.5 text-sm font-semibold outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition text-[var(--ui-text-muted)] uppercase">
+                        </div>
+                        <div>
+                            <label for="modal-expiry-date" class="block text-xs font-bold text-[var(--ui-text-muted)] uppercase tracking-wider mb-2">EXPIRY DATE</label>
+                            <input type="date" id="modal-expiry-date" name="expiry_date" class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] rounded-xl px-4 py-2.5 text-sm font-semibold outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition text-[var(--ui-text-muted)] uppercase">
+                        </div>
+                    </div>
+
                 </div>
                 <div class="p-4 border-t border-[var(--ui-border)] bg-[var(--ui-surface-subtle)] flex justify-end gap-3">
                     <button type="button" onclick="closeStockModal()" class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-800 transition">Cancel</button>
-                    <button type="submit" id="stock-save-btn" class="px-5 py-2 text-sm font-bold text-white bg-primary-600 rounded-lg hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition flex items-center gap-2">
-                        <span>Save Changes</span>
+                    <button type="submit" id="stock-save-btn" class="px-5 py-2 text-sm font-bold text-white bg-primary-900 rounded-lg hover:bg-primary-800 shadow-lg shadow-primary-900/20 transition flex items-center gap-2">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Update Stock</span>
                     </button>
                 </div>
             </form>
@@ -274,14 +332,36 @@
             triggerAjaxLoad(url.toString());
         }
 
-        function openStockModal(variantId, productName, currentStock) {
+        function openStockModal(variantId, productName, currentStock, categoryName, packSize, coaNo, batchNo, mfgDate, expiryDate) {
             const modal = document.getElementById('stock-modal');
             const backdrop = document.getElementById('stock-modal-backdrop');
             const content = document.getElementById('stock-modal-content');
             
             document.getElementById('modal-variant-id').value = variantId;
-            document.getElementById('modal-product-name').textContent = productName;
+            document.getElementById('modal-product-name').value = productName;
+            document.getElementById('modal-category-name').value = categoryName || 'Uncategorized';
             document.getElementById('modal-stock-quantity').value = currentStock;
+            
+            // Set pack_size if it exists in the options, otherwise append it
+            const packSizeSelect = document.getElementById('modal-pack-size');
+            let optionExists = false;
+            if (packSize) {
+                Array.from(packSizeSelect.options).forEach(opt => {
+                    if (opt.value === packSize) optionExists = true;
+                });
+                if (!optionExists) {
+                    const newOption = new Option(packSize, packSize);
+                    packSizeSelect.add(newOption);
+                }
+                packSizeSelect.value = packSize;
+            } else {
+                packSizeSelect.value = '';
+            }
+
+            document.getElementById('modal-coa-no').value = coaNo || '';
+            document.getElementById('modal-batch-no').value = batchNo || '';
+            document.getElementById('modal-mfg-date').value = mfgDate || '';
+            document.getElementById('modal-expiry-date').value = expiryDate || '';
             
             modal.classList.remove('hidden');
             
@@ -313,7 +393,15 @@
             e.preventDefault();
             const btn = document.getElementById('stock-save-btn');
             const variantId = document.getElementById('modal-variant-id').value;
-            const newQuantity = document.getElementById('modal-stock-quantity').value;
+            
+            const payload = {
+                stock_quantity: document.getElementById('modal-stock-quantity').value,
+                pack_size: document.getElementById('modal-pack-size').value,
+                coa_no: document.getElementById('modal-coa-no').value,
+                batch_no: document.getElementById('modal-batch-no').value,
+                mfg_date: document.getElementById('modal-mfg-date').value,
+                expiry_date: document.getElementById('modal-expiry-date').value
+            };
             
             if (window.AdminBtnLoading) window.AdminBtnLoading.start(btn);
             
@@ -325,24 +413,25 @@
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
                     },
-                    body: JSON.stringify({ stock_quantity: newQuantity })
+                    body: JSON.stringify(payload)
                 });
                 
                 const result = await response.json();
                 
                 if (response.ok && result.success) {
+                    const newQty = parseInt(payload.stock_quantity);
                     // Update UI directly without reload for better UX
-                    document.getElementById(`qty-val-${variantId}`).textContent = newQuantity;
+                    document.getElementById(`qty-val-${variantId}`).textContent = newQty;
                     
                     // Update status badge
                     const statusCol = document.getElementById(`status-col-${variantId}`);
                     let badgeClass, dotClass, label;
                     
-                    if (newQuantity <= 0) {
+                    if (newQty <= 0) {
                         badgeClass = 'bg-rose-50 text-rose-700 ring-1 ring-rose-200';
                         dotClass = 'bg-rose-500';
                         label = 'OUT OF STOCK';
-                    } else if (newQuantity <= 10) {
+                    } else if (newQty <= 10) {
                         badgeClass = 'bg-amber-50 text-amber-700 ring-1 ring-amber-200';
                         dotClass = 'bg-amber-500';
                         label = 'LOW STOCK';
