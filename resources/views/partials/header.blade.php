@@ -23,7 +23,9 @@
     $isAdmin = $authUser && (in_array($authUser->user_type, ['admin', 'delegated_admin'], true));
     $brandHref = $isAdmin ? route('admin.dashboard') : route('home');
 
-    // The admin will now see the regular storefront navigation items.
+    if ($isAdmin) {
+        $navItems = [];
+    }
 
     $mobileQuickActions = [
         ['label' => 'My Profile', 'href' => $profileHref, 'icon' => 'profile'],
@@ -163,6 +165,62 @@
                     <button type="submit" id="logoutBtn"
                         class="header-auth-button hover-lift inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-4 text-[13px] font-semibold text-[var(--ui-text)] shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/20 2xl:h-11 2xl:px-5 2xl:text-sm">Logout</button>
                 </form>
+
+                @if($isAdmin)
+                    {{-- Admin Notification Bell --}}
+                    <div class="relative inline-block" id="header-notifications-dropdown">
+                        <button type="button"
+                            class="header-auth-button hover-lift inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text-muted)] shadow-sm transition hover:bg-[var(--ui-surface-subtle)] hover:text-[var(--ui-text)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
+                            onclick="document.getElementById('header-notif-menu').classList.toggle('hidden')"
+                            aria-label="Notifications" title="Notifications">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            @php
+                                $headerUnreadCount = auth()->user() ? auth()->user()->unreadNotifications->count() : 0;
+                            @endphp
+                            @if($headerUnreadCount > 0)
+                                <span class="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white ring-2 ring-white shadow-sm">{{ $headerUnreadCount > 9 ? '9+' : $headerUnreadCount }}</span>
+                            @endif
+                        </button>
+
+                        {{-- Notification Dropdown --}}
+                        <div id="header-notif-menu" class="hidden absolute right-0 z-[200] mt-2 w-80 origin-top-right rounded-2xl bg-white shadow-xl ring-1 ring-slate-900/5 overflow-hidden">
+                            <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50/80">
+                                <h3 class="text-[13px] font-bold text-slate-900">Notifications</h3>
+                                @if($headerUnreadCount > 0)
+                                    <span class="inline-flex items-center rounded-md bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-700 ring-1 ring-inset ring-rose-600/10">{{ $headerUnreadCount }} new</span>
+                                @endif
+                            </div>
+                            <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                                @if($headerUnreadCount > 0)
+                                    @foreach(auth()->user()->unreadNotifications->take(5) as $notification)
+                                        <a href="{{ $notification->data['url'] ?? '#' }}" class="block px-4 py-3 hover:bg-slate-50 transition">
+                                            <p class="text-[13px] font-bold text-slate-900">{{ $notification->data['title'] ?? 'Notification' }}</p>
+                                            <p class="text-[12px] text-slate-500 mt-0.5 line-clamp-2">{{ $notification->data['message'] ?? '' }}</p>
+                                            <p class="text-[10px] font-medium text-slate-400 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <div class="px-4 py-6 text-center">
+                                        <svg class="h-8 w-8 text-slate-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                        </svg>
+                                        <p class="text-[13px] font-medium text-slate-500">You're all caught up!</p>
+                                    </div>
+                                @endif
+                            </div>
+                            @if($headerUnreadCount > 0)
+                                <div class="border-t border-slate-100 bg-slate-50/80 px-4 py-2.5 text-center">
+                                    <form action="{{ route('admin.notifications.mark-read') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="text-[12px] font-semibold text-primary-600 hover:text-primary-700 cursor-pointer">Mark all as read</button>
+                                    </form>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endif
             @else
                 <a href="{{ route('login') }}" id="loginBtn"
                     class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-primary-700 2xl:h-11 2xl:px-5 2xl:text-sm">Login</a>
@@ -214,8 +272,8 @@
             role="dialog" aria-modal="true" aria-labelledby="mobileMenuTitle">
             <div class="flex items-center justify-between border-b border-[var(--ui-border)] px-5 py-4">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('upload/icons/biogenixlogo6.PNG') }}" alt="Biogenix Logo" width="40" height="40"
-                        decoding="async" class="h-10 w-10 rounded-2xl object-cover">
+                    <img src="{{ asset('upload/icons/biogenixlogo6.PNG') }}" alt="Biogenix Logo" width="120" height="64"
+                        decoding="async" class="h-8 w-auto object-contain">
                     <div>
                         <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-[var(--ui-text)]">
                             Biogenix Menu</p>
@@ -382,13 +440,13 @@
                 <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Talk to our team about availability,
                     delivery windows, or commercial quotations.</p>
                 <div class="mt-4 flex flex-col gap-2">
-                    <a href="tel:180024643649"
+                    <a href="tel:+919140971443"
                         class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-100 hover:text-slate-900">
-                        Call Support
+                        Call +91-9140971443
                     </a>
-                    <a href="mailto:support@biogenix.local"
+                    <a href="mailto:support@biogenix.in"
                         class="inline-flex h-11 items-center justify-center rounded-2xl bg-primary-600 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
-                        Email Support
+                        support@biogenix.in
                     </a>
                 </div>
             </section>
@@ -664,69 +722,29 @@
             solutions: {
                 categories: [
                     {
-                        id: "sol-hospitalwide",
-                        label: "Hospitalwide Solution",
-                        href: "/solutions/hospitalwide-solution",
-                        subcategories: [
-                            { label: "For ER", href: "/solutions/hospitalwide-solution?segment=er" },
-                            { label: "For ICU", href: "/solutions/hospitalwide-solution?segment=icu" },
-                            { label: "For CCU", href: "/solutions/hospitalwide-solution?segment=ccu" }
-                        ]
+                        id: "sol-oem",
+                        label: "OEM / Third-Party Manufacturing",
+                        href: "/solutions/oem-third-party-manufacturing"
+                    },
+                    {
+                        id: "sol-integrated",
+                        label: "Integrated Laboratory Solutions",
+                        href: "/solutions/integrated-laboratory-solutions"
                     },
                     {
                         id: "sol-emergency",
-                        label: "Emergency Care",
-                        href: "/solutions/emergency-care",
-                        subcategories: [
-                            { label: "Response Systems", href: "/solutions/emergency-care?segment=response" },
-                            { label: "Care Workflows", href: "/solutions/emergency-care?segment=workflow" }
-                        ]
+                        label: "Emergency & Critical Care Diagnostics",
+                        href: "/solutions/emergency-critical-care-diagnostics"
                     },
                     {
-                        id: "sol-critical",
-                        label: "Critical Care",
-                        href: "/solutions/critical-care",
-                        subcategories: [
-                            { label: "ICU Programs", href: "/solutions/critical-care?segment=icu" },
-                            { label: "Monitoring Solutions", href: "/solutions/critical-care?segment=monitoring" }
-                        ]
+                        id: "sol-preventive",
+                        label: "Preventive & Screening Solutions",
+                        href: "/solutions/preventive-screening-solutions"
                     },
                     {
-                        id: "sol-perioperative",
-                        label: "Perioperative Care",
-                        href: "/solutions/perioperative-care",
-                        subcategories: [
-                            { label: "OT Readiness", href: "/solutions/perioperative-care?segment=ot-readiness" },
-                            { label: "Procedure Support", href: "/solutions/perioperative-care?segment=procedure-support" }
-                        ]
-                    },
-                    {
-                        id: "sol-mis",
-                        label: "Minimally Invasive Surgery",
-                        href: "/solutions/minimally-invasive-surgery",
-                        subcategories: [
-                            { label: "Procedure Suites", href: "/solutions/minimally-invasive-surgery?segment=suites" },
-                            { label: "Device Portfolio", href: "/solutions/minimally-invasive-surgery?segment=devices" }
-                        ]
-                    },
-                    {
-                        id: "sol-lab",
-                        label: "Laboratory Diagnostics",
-                        href: "/solutions/laboratory-diagnostics",
-                        subcategories: [
-                            { label: "Small-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=small" },
-                            { label: "Mid-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=mid" },
-                            { label: "High-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=high" }
-                        ]
-                    },
-                    {
-                        id: "sol-cyber",
-                        label: "Cybersecurity",
-                        href: "/solutions/cybersecurity",
-                        subcategories: [
-                            { label: "Endpoint Security", href: "/solutions/cybersecurity?segment=endpoint" },
-                            { label: "Network Protection", href: "/solutions/cybersecurity?segment=network" }
-                        ]
+                        id: "sol-gem",
+                        label: "GeM Portal Enablement",
+                        href: "/solutions/gem-portal-enablement"
                     }
                 ]
             },
@@ -970,5 +988,13 @@
             menuBackdrop.classList.add('opacity-0');
             menuDrawer.classList.add('translate-x-full');
         }
+        // ─── Close notification dropdown on outside click ───
+        document.addEventListener('click', function(e) {
+            var notifDropdown = document.getElementById('header-notifications-dropdown');
+            var notifMenu = document.getElementById('header-notif-menu');
+            if (notifDropdown && notifMenu && !notifDropdown.contains(e.target)) {
+                notifMenu.classList.add('hidden');
+            }
+        });
     });
 </script>

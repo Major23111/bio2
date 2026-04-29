@@ -277,4 +277,27 @@ class OrderController extends Controller
             return $this->redirectBackWithError($exception, 'Unable to place reorder right now.');
         }
     }
+
+    // This downloads the final order invoice PDF
+    public function downloadInvoice(int $orderId, Request $request, \App\Services\Invoice\InvoiceService $invoiceService)
+    {
+        try {
+            // Only allow admins or the owner to download
+            $user = $request->user();
+            $query = \App\Models\Order\Order::query()->where('id', $orderId);
+            
+            if ($user->user_type !== 'admin' && $user->user_type !== 'delegated_admin') {
+                $query->where('placed_by_user_id', $user->id);
+            }
+
+            $order = $query->firstOrFail();
+
+            return $invoiceService->downloadOrderInvoicePdf($order);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            abort(404, 'Order not found or access denied.');
+        } catch (Throwable $exception) {
+            Log::error('Failed to download Order Invoice PDF.', ['error' => $exception->getMessage()]);
+            return back()->with('error', 'Unable to download Order Invoice.');
+        }
+    }
 }

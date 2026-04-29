@@ -120,6 +120,11 @@ class OrderLifecycleService
 
         Log::info('Order created successfully.', ['order_id' => $order->id, 'user_id' => $user->id]);
 
+        $admins = \App\Models\Authorization\User::whereIn('user_type', ['admin', 'delegated_admin'])->get();
+        if ($admins->isNotEmpty()) {
+            \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\NewOrderNotification($order));
+        }
+
         return $this->getOrderById($order->id, $user);
     }
 
@@ -356,6 +361,11 @@ class OrderLifecycleService
         // Send confirmation email.
         if (filled($user->email)) {
             $this->emailNotificationService->sendOrderSubmittedConfirmation($user, $order);
+        }
+
+        $admins = \App\Models\Authorization\User::whereIn('user_type', ['admin', 'delegated_admin'])->get();
+        if ($admins->isNotEmpty()) {
+            \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\NewOrderNotification($order));
         }
 
         // Build confirmation summary.

@@ -156,8 +156,8 @@ class InvoiceService
         array $invoiceTotals,
         string $documentNumber,
         string $guestSessionId,
-    ): void {
-        DB::transaction(function () use ($formData, $user, $preparedItems, $invoiceTotals, $documentNumber, $guestSessionId): void {
+    ): ProformaInvoice {
+        return DB::transaction(function () use ($formData, $user, $preparedItems, $invoiceTotals, $documentNumber, $guestSessionId): ProformaInvoice {
             $proforma = ProformaInvoice::query()->create([
                 'pi_number' => $documentNumber,
                 'requester_type' => $user ? 'user' : 'guest',
@@ -183,6 +183,8 @@ class InvoiceService
             foreach ($preparedItems as $item) {
                 $proforma->items()->create($item);
             }
+
+            return $proforma;
         });
     }
 
@@ -213,6 +215,38 @@ class InvoiceService
         );
 
         return $pdf->download($quotation->quotation_number.'.pdf');
+    }
+
+    // Download PDF for Proforma Invoice.
+    public function downloadProformaInvoicePdf(ProformaInvoice $proforma): Response
+    {
+        $pdf = Pdf::loadView('invoice.proforma-pdf', [
+            'proforma' => $this->loadProformaWithRelations($proforma->id),
+        ])->setPaper(
+            config('invoice.pdf.paper', 'a4'),
+            config('invoice.pdf.orientation', 'portrait'),
+        );
+
+        return $pdf->download($proforma->pi_number.'.pdf');
+    }
+
+    // Download PDF for Order Invoice.
+    public function downloadOrderInvoicePdf(\App\Models\Order\Order $order): Response
+    {
+        $order->load(['placedByUser', 'company', 'items', 'shippingAddress', 'billingAddress']);
+        
+        // Generate an on-the-fly invoice number based on order ID since we don't have an invoices table
+        $invoiceNumber = 'INV-' . str_pad((string) $order->id, 6, '0', STR_PAD_LEFT);
+
+        $pdf = Pdf::loadView('invoice.order-invoice-pdf', [
+            'order' => $order,
+            'invoiceNumber' => $invoiceNumber,
+        ])->setPaper(
+            config('invoice.pdf.paper', 'a4'),
+            config('invoice.pdf.orientation', 'portrait'),
+        );
+
+        return $pdf->download($invoiceNumber.'.pdf');
     }
 
     // Load visible products for form page.
@@ -408,5 +442,21 @@ class InvoiceService
                 },
             ])
             ->findOrFail($quotationId);
+    }
+
+    // Load proforma with all relations for PDF generation.
+    protected function loadProformaWithRelations(int $proformaId): ProformaInvoice
+    {
+        return ProformaInvoice::query()
+            ->with([
+                'creator:id,name,email',
+                'ownerUser:id,name,email',
+                'ownerCompany:id,name,company_type',
+                'targetCompany:id,name,company_type',
+                'items' => function ($query): void {
+                    $query->orderBy('id');
+                },
+            ])
+            ->findOrFail($proformaId);
     }
 }

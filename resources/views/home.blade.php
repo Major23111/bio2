@@ -906,17 +906,7 @@
                             <h2 class="text-4xl md:text-[44px] font-bold text-slate-800 tracking-tight font-display">
                                 Institutional Network</h2>
                         </div>
-                        <a href="{{ route('portfolio') }}"
-                            class="inline-flex items-center gap-3 text-primary-600 font-bold text-lg hover:text-primary-700 transition group">
-                            <span
-                                class="flex items-center justify-center w-[42px] h-[42px] rounded-full border-2 border-primary-600 group-hover:bg-primary-50 group-hover:scale-105 transition">
-                                <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                    stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </span>
-                            See All
-                        </a>
+
                     </div>
                     <p class="mt-5 text-[17px] text-slate-500 leading-relaxed max-w-3xl font-medium">
                         With a strong and growing presence across India, Biogenix has established trusted partnerships with

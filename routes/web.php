@@ -71,13 +71,14 @@ Route::get('/orders/reorder/checkout', [OrderController::class, 'showReOrderChec
 Route::post('/orders/reorder/checkout', [OrderController::class, 'submitReOrderCheckout'])->middleware(['auth', 'permission:orders.reorder.checkout.submit'])->name('orders.reorder.checkout.submit');
 Route::post('/orders/{orderId}/reorder', [OrderController::class, 'ReOrder'])->middleware(['auth', 'decrypt.route', 'permission:orders.reorder'])->name('orders.reorder');
 Route::get('/orders/{orderId}', [OrderController::class, 'getOrderById'])->middleware(['auth', 'decrypt.route', 'permission:orders.show'])->name('orders.show');
+Route::get('/orders/{orderId}/invoice', [OrderController::class, 'downloadInvoice'])->middleware(['auth', 'decrypt.route', 'permission:orders.show'])->name('orders.invoice.download');
 Route::put('/orders/{orderId}', [OrderController::class, 'editOrderById'])->middleware(['auth', 'decrypt.route', 'permission:orders.update'])->name('orders.update');
 Route::delete('/orders/{orderId}', [OrderController::class, 'softDeleteOrderById'])->middleware(['auth', 'decrypt.route', 'permission:orders.destroy'])->name('orders.destroy');
 
 // profroma invoice routes
 Route::get('/pi-quotation', [ProformaInvoiceController::class, 'showRequestPage'])->middleware(['auth', 'permission:pi-quotation.generate'])->name('pi-quotation.generate');
 Route::post('/pi-quotation', [ProformaInvoiceController::class, 'submitRequest'])->middleware(['auth', 'permission:pi-quotation.store'])->name('pi-quotation.store');
-// TODO : download Proforma Invoices flow after approval of request.
+Route::get('/pi-quotation/{id}/download', [ProformaInvoiceController::class, 'downloadPdf'])->middleware(['auth', 'permission:pi-quotation.download'])->name('pi-quotation.download');
 
 // quotation routes.
 Route::get('/generate-quote', [QuotationController::class, 'showCreatePage'])->middleware('permission:quotation.create')->name('quotation.create');
@@ -156,6 +157,7 @@ Route::view('/order-confirmation', 'order-confirmation')->middleware(['auth', 'p
 Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/adminPanel/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::post('/adminPanel/notifications/mark-read', [AdminDashboardController::class, 'markNotificationsAsRead'])->name('admin.notifications.mark-read');
     Route::get('/adminPanel/categories', [CategoryCrudController::class, 'index'])->name('admin.categories');
     Route::post('/adminPanel/categories', [CategoryCrudController::class, 'store'])->name('admin.categories.store');
     Route::post('/adminPanel/categories/update', [CategoryCrudController::class, 'update'])->name('admin.categories.update');

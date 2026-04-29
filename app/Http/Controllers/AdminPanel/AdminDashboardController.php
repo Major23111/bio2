@@ -41,4 +41,12 @@ class AdminDashboardController extends Controller
             ]);
         }
     }
+
+    public function markNotificationsAsRead(\Illuminate\Http\Request $request)
+    {
+        if ($user = $request->user()) {
+            $user->unreadNotifications->markAsRead();
+        }
+        return back();
+    }
 }

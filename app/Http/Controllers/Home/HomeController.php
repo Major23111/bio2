@@ -12,8 +12,12 @@ use Throwable;
 
 class HomeController extends Controller
 {
-    public function index(Request $request, RolePermissionService $rolePermissionService, ProductUtilityService $utilityService): View
+    public function index(Request $request, RolePermissionService $rolePermissionService, ProductUtilityService $utilityService)
     {
+        if (auth()->check() && in_array(auth()->user()->user_type, ['admin', 'delegated_admin', 'super_admin'])) {
+            return redirect()->route('admin.dashboard');
+        }
+
         try {
             // Step 1: load the product categories used on the home page.
             $productCategories = $utilityService->GetConfiguredCategories();

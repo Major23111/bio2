@@ -48,7 +48,7 @@ class ProformaInvoiceController extends Controller
             $requestNumber = $this->createRequestNumber();
 
             // Step 3: save the PI request for later internal review.
-            $invoiceService->saveProformaInvoice(
+            $proforma = $invoiceService->saveProformaInvoice(
                 $requestData,
                 $signedInUser,
                 $requestedItems,
@@ -56,6 +56,12 @@ class ProformaInvoiceController extends Controller
                 $requestNumber,
                 $request->session()->getId(),
             );
+
+            // Dispatch notification to admins
+            $admins = \App\Models\Authorization\User::whereIn('user_type', ['admin', 'delegated_admin'])->get();
+            if ($admins->isNotEmpty()) {
+                \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\NewPiRequestNotification($proforma));
+            }
 
             // Step 4: store a simple activity log for the submitted request.
             $invoiceService->logProformaSubmission(
@@ -80,5 +86,30 @@ class ProformaInvoiceController extends Controller
         $randomPart = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
 
         return 'PI-REQ-'.$datePart.'-'.$randomPart;
+    }
+
+    public function downloadPdf(string $pi_number, InvoiceService $invoiceService, Request $request)
+    {
+        try {
+            $user = $request->user();
+            
+            // Allow admin to download any, otherwise ensure it belongs to the user
+            $query = \App\Models\Proforma\ProformaInvoice::query()
+                ->where('pi_number', $pi_number)
+                ->where('status', 'approved');
+
+            if ($user->user_type !== 'admin' && $user->user_type !== 'delegated_admin') {
+                $query->where('owner_user_id', $user->id);
+            }
+
+            $proforma = $query->firstOrFail();
+
+            return $invoiceService->downloadProformaInvoicePdf($proforma);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            abort(404, 'Approved Proforma Invoice not found or access denied.');
+        } catch (Throwable $exception) {
+            Log::error('Failed to download PI PDF.', ['error' => $exception->getMessage()]);
+            return back()->with('error', 'Unable to download Proforma Invoice.');
+        }
     }
 }
