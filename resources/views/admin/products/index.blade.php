@@ -34,7 +34,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <input type="text" id="productSearchInput" placeholder="Search product name or SKU..." value="{{ request()->query('search') }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium" onkeypress="if(event.key==='Enter') window.location.href='{{ route('admin.products') }}?search=' + encodeURIComponent(this.value)">
+                        <input type="text" id="productSearchInput" placeholder="Search product name or SKU..." value="{{ request()->query('search') }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium" onkeypress="if(event.key==='Enter') { const url = '{{ route('admin.products') }}?search=' + encodeURIComponent(this.value); if(window.loadPage) window.loadPage(url); else window.location.href = url; }">
                     </div>
 
                     <!-- Category Pills -->
@@ -42,9 +42,9 @@
                         @php
                             $currentCatId = request()->integer('category_id');
                         @endphp
-                        <a href="{{ route('admin.products', ['search' => request()->query('search')]) }}" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold {{ !$currentCatId ? 'bg-primary-600 text-white shadow-sm' : 'bg-[var(--ui-surface-subtle)] text-slate-600 border border-slate-200/60' }} transition-all duration-200 active:scale-95">All Products</a>
+                        <a href="{{ route('admin.products', ['search' => request()->query('search')]) }}" class="product-pill ajax-link inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold {{ !$currentCatId ? 'bg-primary-600 text-white shadow-sm' : 'bg-[var(--ui-surface-subtle)] text-slate-600 border border-slate-200/60' }} transition-all duration-200 active:scale-95">All Products</a>
                         @foreach($categories as $category)
-                            <a href="{{ route('admin.products', ['category_id' => $category->id, 'search' => request()->query('search')]) }}" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold {{ $currentCatId === (int)$category->id ? 'bg-primary-600 text-white shadow-sm' : 'bg-[var(--ui-surface-subtle)] text-slate-600 border border-slate-200/60' }} transition shadow-sm active:scale-95">{{ $category->name }}</a>
+                            <a href="{{ route('admin.products', ['category_id' => $category->id, 'search' => request()->query('search')]) }}" class="product-pill ajax-link inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold {{ $currentCatId === (int)$category->id ? 'bg-primary-600 text-white shadow-sm' : 'bg-[var(--ui-surface-subtle)] text-slate-600 border border-slate-200/60' }} transition shadow-sm active:scale-95">{{ $category->name }}</a>
                         @endforeach
                     </div>
                 </div>
