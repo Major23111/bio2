@@ -24,7 +24,7 @@
     <input type="hidden" id="hidden_terms" name="terms" value="">
     <input type="hidden" id="hidden_submit_action" name="submit_action" value="{{ old('submit_action', 'save') }}">
 
-<div class="w-full py-8">
+<div class="w-full pt-1 pb-8">
 
     <!-- Back Arrow + Breadcrumb -->
     <div class="flex items-center gap-3 mb-4">

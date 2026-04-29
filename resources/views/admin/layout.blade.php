@@ -33,7 +33,7 @@
 @endpush
 
 @section('content')
-<div class="min-h-screen bg-[var(--ui-page-bg)] py-4 lg:py-8">
+<div class="min-h-screen bg-[var(--ui-page-bg)] py-4 lg:pt-4 lg:pb-8">
     <div class="mx-auto flex w-full max-w-[102rem] gap-0 lg:gap-8 px-4 sm:px-6 lg:px-8 xl:px-6 2xl:px-8">
         
         {{-- Mobile sidebar toggle --}}

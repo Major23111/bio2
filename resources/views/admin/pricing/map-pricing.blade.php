@@ -2,7 +2,7 @@
 @section('title', 'Map Pricing — ' . ($variant->product?->name ?? 'Product'))
 @section('admin_content')
 
-<div class="space-y-6 max-w-none pb-10 mt-2">
+<div class="space-y-6 max-w-none pb-10">
 
     {{-- Page Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
