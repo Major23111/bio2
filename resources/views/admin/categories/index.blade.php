@@ -4,7 +4,7 @@
 
 @section('admin_content')
 
-<div class="max-w-5xl">
+<div class="max-w-none">
 
     <!-- Header Area matching Admin Dashboard -->
     <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--ui-border)] pb-4">
