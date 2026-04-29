@@ -156,7 +156,7 @@
                     <a href="{{ route('admin.orders') }}" class="ajax-link text-[12px] lg:text-[13px] font-bold text-primary-800 hover:underline underline-offset-2 cursor-pointer">View All Orders</a>
                 </div>
                 
-                <div class="overflow-x-auto">
+                <div class="admin-table-wrapper">
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
                             <tr class="bg-white border-b border-slate-100">

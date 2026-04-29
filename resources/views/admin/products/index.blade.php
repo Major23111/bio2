@@ -3,6 +3,34 @@
 @section('title', 'Product Management - Biogenix')
 
 @section('admin_content')
+
+@push('styles')
+<style>
+    /* Custom scrollbar for product filters */
+    .admin-filter-scroll::-webkit-scrollbar {
+        height: 4px;
+    }
+    .admin-filter-scroll::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+    .admin-filter-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+    .admin-filter-scroll::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    /* Ensure drag-scroll still works */
+    .admin-filter-scroll {
+        cursor: grab;
+        user-select: none;
+    }
+    .admin-filter-scroll.cursor-grabbing {
+        cursor: grabbing !important;
+    }
+</style>
+@endpush
             
 
 
@@ -25,20 +53,20 @@
             <div class="bg-[var(--ui-surface)] rounded-2xl shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] overflow-hidden flex flex-col relative">
 
                 <!-- Filter Bar -->
-                <div class="px-5 lg:px-6 py-4 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div class="px-5 lg:px-6 py-4 border-b border-slate-100 flex flex-row items-center justify-between gap-4">
                     
                     <!-- Search -->
-                    <div class="relative w-full lg:w-80">
+                    <div class="relative w-72 lg:w-96 shrink-0">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <input type="text" id="productSearchInput" placeholder="Search product name or SKU..." value="{{ request()->query('search') }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium" onkeypress="if(event.key==='Enter') { const url = '{{ route('admin.products') }}?search=' + encodeURIComponent(this.value); if(window.loadPage) window.loadPage(url); else window.location.href = url; }">
+                        <input type="text" id="productSearchInput" placeholder="Search product name or SKU..." value="{{ request()->query('search') }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium" onkeypress="if(event.key==='Enter') { const url = '{{ route('admin.products') }}?search=' + encodeURIComponent(this.value); if(window.loadPage) window.loadPage(url); else window.location.href = url; }">
                     </div>
 
                     <!-- Category Pills -->
-                    <div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide" id="product-filter-pills">
+                    <div class="flex items-center gap-2 overflow-x-auto admin-filter-scroll pb-2" id="product-filter-pills">
                         @php
                             $currentCatId = request()->integer('category_id');
                         @endphp
@@ -49,7 +77,7 @@
                     </div>
                 </div>
                 
-                <div>
+                <div class="admin-table-wrapper">
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
                             <tr class="bg-white border-b border-slate-100">

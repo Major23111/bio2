@@ -147,7 +147,7 @@
                 <p class="text-[13px] text-slate-500">Manage and filter your global customer database</p>
             </div>
             <div class="flex items-center gap-2">
-                <div class="relative w-52">
+                <div class="relative w-72 lg:w-96 shrink-0">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                         <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                     </div>
@@ -167,7 +167,7 @@
         </div>
         </form>
 
-        <div class="overflow-x-auto">
+        <div class="admin-table-wrapper">
             <table class="w-full border-collapse whitespace-nowrap text-left">
                 <thead>
                     <tr class="border-b border-slate-100 bg-white">

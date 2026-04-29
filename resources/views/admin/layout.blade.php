@@ -93,7 +93,7 @@
     .btn-loading-dark::after { border-color: rgba(15,23,42,0.2); border-top-color: #0f172a; }
     @keyframes btnSpin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-    /* Sidebar mobile transitions */
+    /* Sidebar mobile transitions and Laptop optimizations */
     @media (max-width: 1023px) {
         aside#admin-sidebar {
             position: fixed !important; top: 0; left: 0; bottom: 0; z-index: 998;
@@ -107,6 +107,29 @@
         }
         aside#admin-sidebar.sidebar-open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.12); }
     }
+
+    /* Laptop Screen Optimizations (1024px to 1440px) */
+    @media (min-width: 1024px) and (max-width: 1440px) {
+        aside#admin-sidebar { width: 220px !important; }
+        .lg\:gap-8 { gap: 1rem !important; }
+        .lg\:px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
+        .xl\:px-6 { padding-left: 1rem !important; padding-right: 1rem !important; }
+        .2xl\:px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
+        
+        /* Table text and padding optimization for laptop screens */
+        table thead th { padding-left: 1rem !important; padding-right: 1rem !important; font-size: 10px !important; }
+        table tbody td { padding-left: 1rem !important; padding-right: 1rem !important; font-size: 12px !important; }
+    }
+
+    /* Standard Table Container with hidden scrollbar but scrollable if needed */
+    .admin-table-wrapper, .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .admin-table-wrapper::-webkit-scrollbar, .scrollbar-hide::-webkit-scrollbar { display: none; }
+    
+    .scrollbar-hide { cursor: grab; user-select: none; }
+    .cursor-grabbing { cursor: grabbing !important; }
 
     /* Skeleton shimmer */
     @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
@@ -362,6 +385,56 @@
         });
 
         window.initCustomSelects();
+
+        // ─── Drag-to-Scroll Utility ───
+        const initDragScroll = () => {
+            const sliders = document.querySelectorAll('.scrollbar-hide, .admin-filter-scroll');
+            sliders.forEach(slider => {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+                let hasMoved = false;
+
+                slider.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    hasMoved = false;
+                    slider.classList.add('cursor-grabbing');
+                    startX = e.pageX - slider.offsetLeft;
+                    scrollLeft = slider.scrollLeft;
+                });
+
+                slider.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    slider.classList.remove('cursor-grabbing');
+                });
+
+                slider.addEventListener('mouseup', () => {
+                    isDown = false;
+                    slider.classList.remove('cursor-grabbing');
+                });
+
+                slider.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    hasMoved = true;
+                    const x = e.pageX - slider.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    slider.scrollLeft = scrollLeft - walk;
+                });
+
+                // Prevent links from firing if we dragged
+                slider.querySelectorAll('a, button').forEach(el => {
+                    el.addEventListener('click', (e) => {
+                        if (hasMoved) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    }, true);
+                });
+            });
+        };
+
+        initDragScroll();
 
     });
 </script>

@@ -5,19 +5,19 @@
 <div class="space-y-6 max-w-none pb-10">
 
     <!-- Header & Search -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-        <div class="flex items-center gap-4">
-            <h1 class="text-[22px] font-extrabold text-[var(--ui-text)] tracking-tight">Pricing Management</h1>
-        </div>
-        <div class="flex items-center">
-            <div class="relative w-80 shadow-sm border border-slate-200/60 rounded-lg overflow-hidden flex items-center bg-white group hover:border-slate-300 transition">
-                <svg class="h-4 w-4 text-slate-400 absolute left-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-                <input type="text" placeholder="Search pricing matrices..." class="w-full bg-[#f8fafc] border-none text-[13px] font-medium text-slate-800 focus:bg-white pl-9 pr-4 py-2 outline-none placeholder:text-slate-400 transition">
+        <div class="flex flex-row items-center justify-between gap-4 border-b border-slate-100 pb-5">
+            <div class="flex items-center gap-4">
+                <h1 class="text-[22px] font-extrabold text-[var(--ui-text)] tracking-tight">Pricing Management</h1>
+            </div>
+            <div class="flex items-center">
+                <div class="relative w-72 lg:w-96 shrink-0 shadow-sm border border-slate-200/60 rounded-lg overflow-hidden flex items-center bg-white group hover:border-slate-300 transition">
+                    <svg class="h-4 w-4 text-slate-400 absolute left-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" placeholder="Search pricing matrices..." class="w-full bg-[#f8fafc] border-none text-[13px] font-medium text-slate-800 focus:bg-white pl-9 pr-4 py-2 outline-none placeholder:text-slate-400 transition">
+                </div>
             </div>
         </div>
-    </div>
 
     <!-- Mapped Pricing Box -->
     <div class="bg-[var(--ui-surface)] rounded-[16px] shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] p-6 lg:p-8">
@@ -38,7 +38,7 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="admin-table-wrapper">
             <table class="w-full text-left min-w-[700px]">
                 <thead>
                     <tr class="border-b border-slate-100">
@@ -102,7 +102,7 @@
             @endif
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="admin-table-wrapper">
             <table class="w-full text-left min-w-[600px]">
                 <thead>
                     <tr class="border-b border-slate-100">

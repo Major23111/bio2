@@ -5,8 +5,8 @@
 @section('admin_content')
     <div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- Top Toolbar List -->
+        <div class="px-5 lg:px-6 py-5 border-b border-slate-100 flex flex-row items-center justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-extrabold text-[var(--ui-text)] tracking-tight">Inventory Management</h2>
                 <p class="text-sm text-[var(--ui-text-muted)] mt-1 font-medium">Real-time biogenic stock and reagent tracking system.</p>
@@ -92,7 +92,7 @@
             </div>
 
             <!-- Table -->
-            <div class="overflow-x-auto">
+            <div class="admin-table-wrapper">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-[var(--ui-border)]">

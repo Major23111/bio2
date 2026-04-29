@@ -75,7 +75,7 @@
                     </div>
                 </div>
                 
-                <div class="overflow-x-auto">
+                <div class="admin-table-wrapper">
                     <table class="w-full text-left border-collapse whitespace-nowrap min-w-[800px]">
                         <thead>
                             <tr class="bg-white">
