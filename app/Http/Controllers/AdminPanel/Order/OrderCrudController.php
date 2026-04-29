@@ -144,9 +144,9 @@ class OrderCrudController extends Controller
                     ->chunk(100, function($orders) use($file) {
                         foreach ($orders as $order) {
                             fputcsv($file, [
-                                '#' . $order->order_number,
+                                '#ORD-' . str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
                                 $order->placedByUser?->name ?? 'Guest',
-                                $order->placedByUser?->email ?? $order->customer_email,
+                                $order->placedByUser?->email ?? 'Not Available',
                                 $order->created_at->format('Y-m-d H:i'),
                                 $order->total_amount,
                                 $order->status

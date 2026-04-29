@@ -1009,9 +1009,11 @@ class OrderCrudService
         // Apply search filter
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhereHas('placedByUser', fn ($q) => $q->where('name', 'like', "%{$search}%"))
-                  ->orWhere('customer_email', 'like', "%{$search}%");
+                $q->where('id', 'like', "%{$search}%")
+                  ->orWhereHas('placedByUser', function ($query) use ($search) {
+                      $query->where('name', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%");
+                  });
             });
         }
 
