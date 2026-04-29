@@ -183,6 +183,85 @@
     const addCategoryForm = document.getElementById('addCategoryForm');
     const categoryImageInput = document.getElementById('categoryImageInput');
     const categoryImageDropZone = document.getElementById('categoryImageDropZone');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    function getErrorMessage(data, fallbackMessage) {
+        if (data && data.errors) {
+            const firstError = Object.values(data.errors).flat()[0];
+
+            if (firstError) {
+                return firstError;
+            }
+        }
+
+        return (data && data.message) ? data.message : fallbackMessage;
+    }
+
+    function refreshCustomSelect(selectElement) {
+        if (!selectElement || selectElement.dataset.customized !== 'true') {
+            return;
+        }
+
+        const wrapper = selectElement.parentElement;
+
+        if (!wrapper || !wrapper.querySelector('.custom-select-menu')) {
+            return;
+        }
+
+        wrapper.parentNode.insertBefore(selectElement, wrapper);
+        wrapper.remove();
+        delete selectElement.dataset.customized;
+
+        if (window.initCustomSelects) {
+            window.initCustomSelects();
+        }
+    }
+
+    function addOrSelectCategoryOption(category) {
+        if (!categoryNavigation || !category) {
+            return;
+        }
+
+        let option = categoryNavigation.querySelector(`option[value="${category.id}"]`);
+
+        if (!option) {
+            option = document.createElement('option');
+            option.value = category.id;
+            categoryNavigation.appendChild(option);
+        }
+
+        option.textContent = category.name;
+        option.dataset.categoryHsmCode = category.hsm_code || '';
+        option.dataset.categoryApplication = category.application || '';
+        option.dataset.categoryGstRate = category.gst_rate || '18.00';
+        categoryNavigation.value = String(category.id);
+        categoryNavigation.dispatchEvent(new Event('change', { bubbles: true }));
+        refreshCustomSelect(categoryNavigation);
+        showSelectedCategoryDetails();
+    }
+
+    function resetImagePreview() {
+        const previewImage = document.getElementById('previewImg');
+        const previewWrapper = document.getElementById('categoryImagePreview');
+        const placeholder = document.getElementById('categoryImagePlaceholder');
+        const imageText = document.getElementById('categoryImageText');
+
+        if (previewImage) {
+            previewImage.removeAttribute('src');
+        }
+
+        if (previewWrapper) {
+            previewWrapper.classList.add('hidden');
+        }
+
+        if (placeholder) {
+            placeholder.classList.remove('hidden');
+        }
+
+        if (imageText) {
+            imageText.classList.remove('hidden');
+        }
+    }
 
     // Show the selected category details in the current fields.
     function showSelectedCategoryDetails() {
@@ -333,22 +412,103 @@
 
     // Submit only when one category is selected.
     if (categoryDetailsForm) {
-        categoryDetailsForm.addEventListener('submit', function (event) {
+        categoryDetailsForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
             if (!categoryNavigation || categoryNavigation.value === '') {
-                event.preventDefault();
                 AdminToast.show('Please select a category first.', 'error');
+
+                return;
+            }
+
+            const submitButton = categoryDetailsForm.querySelector('button[type="submit"]');
+
+            if (submitButton && window.AdminBtnLoading) {
+                window.AdminBtnLoading.start(submitButton);
+            }
+
+            try {
+                const response = await fetch(categoryDetailsForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: new FormData(categoryDetailsForm),
+                });
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(getErrorMessage(data, 'Unable to save category changes.'));
+                }
+
+                const selectedOption = categoryNavigation.options[categoryNavigation.selectedIndex];
+
+                if (selectedOption && data.category) {
+                    selectedOption.dataset.categoryHsmCode = data.category.hsm_code || '';
+                    selectedOption.dataset.categoryApplication = data.category.application || '';
+                    selectedOption.dataset.categoryGstRate = data.category.gst_rate || '';
+                    showSelectedCategoryDetails();
+                }
+
+                AdminToast.show(data.message || 'Category changes have been saved successfully.', 'success');
+            } catch (error) {
+                AdminToast.show(error.message || 'Unable to save category changes.', 'error', 6000);
+            } finally {
+                if (submitButton && window.AdminBtnLoading) {
+                    window.AdminBtnLoading.stop(submitButton);
+                }
             }
         });
     }
 
     // Submit only when the new category has a name.
     if (addCategoryForm) {
-        addCategoryForm.addEventListener('submit', function (event) {
+        addCategoryForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
             const categoryNameInput = addCategoryForm.querySelector('input[name="name"]');
 
             if (!categoryNameInput || categoryNameInput.value.trim() === '') {
-                event.preventDefault();
                 AdminToast.show('Please enter the category name.', 'error');
+
+                return;
+            }
+
+            const submitButton = addCategoryForm.querySelector('button[type="submit"]');
+
+            if (submitButton && window.AdminBtnLoading) {
+                window.AdminBtnLoading.start(submitButton);
+            }
+
+            try {
+                const response = await fetch(addCategoryForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: new FormData(addCategoryForm),
+                });
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(getErrorMessage(data, 'Unable to create category.'));
+                }
+
+                addOrSelectCategoryOption(data.category);
+                addCategoryForm.reset();
+                resetImagePreview();
+                window.toggleModal('addCategoryModal', false);
+                AdminToast.show(data.message || 'Category has been created successfully.', 'success');
+            } catch (error) {
+                AdminToast.show(error.message || 'Unable to create category.', 'error', 6000);
+            } finally {
+                if (submitButton && window.AdminBtnLoading) {
+                    window.AdminBtnLoading.stop(submitButton);
+                }
             }
         });
     }
