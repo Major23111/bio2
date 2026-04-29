@@ -44,6 +44,10 @@ abstract class Controller
     // This converts known exceptions into a simple message for the UI.
     protected function resolveErrorMessage(Throwable $exception, string $defaultMessage): string
     {
+        if (config('app.debug') && $exception instanceof QueryException) {
+            return $defaultMessage.' '.$exception->getMessage();
+        }
+
         if ($exception instanceof ValidationException) {
             $messages = collect($exception->errors())->flatten()->filter()->values();
 
