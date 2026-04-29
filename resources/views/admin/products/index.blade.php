@@ -49,23 +49,23 @@
                     </div>
                 </div>
                 
-                <div class="overflow-x-auto">
+                <div>
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
                             <tr class="bg-white border-b border-slate-100">
-                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Product</th>
-                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">SKU</th>
-                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Category</th>
-                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Price</th>
-                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Stock</th>
-                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
-                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                                <th class="px-6 lg:px-8 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Product</th>
+                                <th class="px-6 lg:px-8 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">SKU</th>
+                                <th class="px-6 lg:px-8 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Category</th>
+                                <th class="px-6 lg:px-8 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Price</th>
+                                <th class="px-6 lg:px-8 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Stock</th>
+                                <th class="px-6 lg:px-8 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                <th class="px-6 lg:px-8 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse ($products as $product)
                                 <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" data-product-category="{{ strtolower($product['categoryName']) }}">
-                                    <td class="px-5 lg:px-6 py-4">
+                                    <td class="px-6 lg:px-8 py-4">
                                         <div class="flex items-center gap-3">
                                             <div class="h-9 w-9 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center shrink-0">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
@@ -75,19 +75,19 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-5 lg:px-6 py-4">
+                                    <td class="px-6 lg:px-8 py-4">
                                         <span class="text-[13px] font-semibold text-slate-600">{{ $product['sku'] }}</span>
                                     </td>
-                                    <td class="px-5 lg:px-6 py-4">
+                                    <td class="px-6 lg:px-8 py-4">
                                         <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[11px] font-bold rounded-full">{{ $product['categoryName'] }}</span>
                                     </td>
-                                    <td class="px-5 lg:px-6 py-4">
+                                    <td class="px-6 lg:px-8 py-4">
                                         <span class="text-[13px] font-bold text-slate-900">{{ $product['price'] ? '₹' . number_format((float)$product['price'], 2) : 'N/A' }}</span>
                                     </td>
-                                    <td class="px-5 lg:px-6 py-4">
+                                    <td class="px-6 lg:px-8 py-4">
                                         <span class="text-[13px] font-semibold text-slate-600">{{ $product['stock'] }}</span>
                                     </td>
-                                    <td class="px-5 lg:px-6 py-4">
+                                    <td class="px-6 lg:px-8 py-4">
                                         @php
                                             $status = $product['status'];
                                             $statusClass = match($status) {
@@ -98,7 +98,7 @@
                                         @endphp
                                         <span class="inline-flex items-center px-2.5 py-1 {{ $statusClass }} border text-[11px] font-bold rounded-full">{{ $status }}</span>
                                     </td>
-                                    <td class="px-5 lg:px-6 py-4 text-right">
+                                    <td class="px-6 lg:px-8 py-4 text-right">
                                         <div class="flex items-center justify-end gap-2">
                                             <a href="{{ route('admin.products.edit', ['productId' => $product['id']]) }}" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
                                                 <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
