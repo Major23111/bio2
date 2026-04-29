@@ -88,15 +88,103 @@ class ProductCatalogService
             return [];
         }
 
-        $allPrices = [];
+        $visiblePriceTypes = $this->priceService->visiblePriceTypes($user);
+        $genericPriceTypes = array_values(array_filter($visiblePriceTypes, fn (string $type): bool => $type !== 'company_price'));
+        $priceTypePriority = array_flip($visiblePriceTypes);
 
-        // Get price for each product.
-        foreach ($productIds as $productId) {
-            $price = $this->priceService->resolveProductPrice($productId, $user);
-            $allPrices[$productId] = $price;
+        $variantRows = ProductVariant::query()
+            ->with(['prices' => function ($builder) use ($genericPriceTypes, $user): void {
+                $builder->where('product_prices.is_active', true)
+                    ->where(function ($priceQuery) use ($genericPriceTypes, $user): void {
+                        if ($genericPriceTypes !== []) {
+                            $priceQuery->where(function ($genericQuery) use ($genericPriceTypes): void {
+                                $genericQuery
+                                    ->whereNull('product_prices.company_id')
+                                    ->whereIn('product_prices.price_type', $genericPriceTypes);
+                            });
+                        }
+
+                        if ($user && $user->isB2b() && $user->company_id) {
+                            $priceQuery->orWhere(function ($companyQuery) use ($user): void {
+                                $companyQuery
+                                    ->where('product_prices.price_type', 'company_price')
+                                    ->where('product_prices.company_id', $user->company_id);
+                            });
+                        }
+                    });
+            }])
+            ->whereIn('product_id', $productIds)
+            ->where('is_active', true)
+            ->orderBy('product_id')
+            ->orderBy('id')
+            ->get();
+
+        $resolvedPricesByProductId = [];
+
+        foreach ($variantRows as $variant) {
+            $productId = (int) $variant->product_id;
+
+            if (isset($resolvedPricesByProductId[$productId])) {
+                continue;
+            }
+
+            $selectedPrice = $variant->prices
+                ->sortBy(fn ($price): int => $priceTypePriority[$price->price_type] ?? 999)
+                ->first();
+
+            if (! $selectedPrice) {
+                continue;
+            }
+
+            $resolvedPricesByProductId[$productId] = $this->buildCatalogResolvedPrice($variant, $selectedPrice, $user);
         }
 
-        return $allPrices;
+        return $resolvedPricesByProductId;
+    }
+
+    // Build the same lightweight price payload the catalog cards need, without issuing one query per product.
+    private function buildCatalogResolvedPrice(ProductVariant $variant, object $selectedPrice, ?User $user): array
+    {
+        $baseAmount = round((float) $selectedPrice->amount, 2);
+        $discountType = strtolower(trim((string) ($selectedPrice->DiscountType ?? 'cash')));
+        $discountValue = round(max(0, (float) ($selectedPrice->Discount ?? 0)), 2);
+
+        if (! in_array($discountType, ['cash', 'percent'], true)) {
+            $discountType = 'cash';
+        }
+
+        $discountAmount = $discountType === 'percent'
+            ? round(($baseAmount * min($discountValue, 100)) / 100, 2)
+            : min($discountValue, $baseAmount);
+
+        $amount = round($baseAmount - $discountAmount, 2);
+        $gstRate = round((float) ($selectedPrice->gst_rate ?? 0), 2);
+        $taxAmount = round(($amount * $gstRate) / 100, 2);
+
+        $minimumQuantity = $user && $user->isB2b()
+            ? ($variant->b2b_min_order_quantity ?? $variant->min_order_quantity ?? 1)
+            : ($variant->b2c_min_order_quantity ?? $variant->min_order_quantity ?? 1);
+
+        $maximumQuantity = $user && $user->isB2b()
+            ? ($variant->b2b_max_order_quantity ?? $variant->max_order_quantity)
+            : ($variant->b2c_max_order_quantity ?? $variant->max_order_quantity);
+
+        return [
+            'base_amount' => $baseAmount,
+            'amount' => $amount,
+            'gst_rate' => $gstRate,
+            'tax_amount' => $taxAmount,
+            'price_after_gst' => round($amount + $taxAmount, 2),
+            'currency' => (string) ($selectedPrice->currency ?? 'INR'),
+            'discount_amount' => $discountAmount,
+            'price_type' => (string) $selectedPrice->price_type,
+            'product_variant_id' => (int) $variant->id,
+            'variant_sku' => (string) $variant->sku,
+            'variant_name' => (string) $variant->variant_name,
+            'min_order_quantity' => max(1, (int) $minimumQuantity),
+            'max_order_quantity' => $maximumQuantity === null ? null : (int) $maximumQuantity,
+            'lot_size' => max(1, (int) ($variant->lot_size ?? 1)),
+        ];
     }
 
     // Attach price details from pre-loaded cache to product.
@@ -399,36 +487,8 @@ class ProductCatalogService
     // Attach bulk pricing summary for catalog product card.
     private function attachCatalogCardCommercialData(object $product, ?User $user): object
     {
-        // Default to no bulk summary for clean card display.
+        // Keep listing fast and resilient; detailed tier pricing is loaded on the product detail page.
         $product->catalog_bulk_summary = null;
-
-        // Skip if product has no visible sellable variant.
-        if (!filled($product->visible_variant_id ?? null)) {
-            return $product;
-        }
-
-        // Get bulk pricing tiers for the visible variant.
-        $bulkPriceTiers = $this->priceService->listBulkPriceTiers((int) $product->visible_variant_id, $user);
-
-        // Skip if only standard price exists (no real bulk benefits).
-        if ($bulkPriceTiers->count() <= 1) {
-            return $product;
-        }
-
-        // Get first bulk tier (best discount offer).
-        $firstBulkTier = $bulkPriceTiers->slice(1)->first();
-
-        if (!$firstBulkTier) {
-            return $product;
-        }
-
-        // Attach bulk summary to product.
-        $product->catalog_bulk_summary = [
-            'label' => $firstBulkTier['label'] ?? null,
-            'discount' => $firstBulkTier['discount'] ?? null,
-            'price' => $firstBulkTier['price'] ?? null,
-            'min' => $firstBulkTier['min'] ?? null,
-        ];
 
         return $product;
     }

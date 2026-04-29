@@ -26,25 +26,35 @@ class PriceService
     {
         // Business rule: guests can only see public pricing.
         if (! $user) {
-            return ['public'];
+            return ['public', 'retail', 'base'];
         }
 
         // Business rule: admin-capable users can inspect every standard price ladder.
         if ($this->isAdminCapable($user)) {
-            return ['company_price', 'b2b', 'b2c', 'public'];
+            return ['company_price', 'b2b', 'b2c', 'logged_in', 'dealer', 'institutional', 'retail', 'public', 'base'];
         }
 
         // Business rule: B2C users first see B2C consumer pricing.
         if ($user->isB2c()) {
-            return ['b2c', 'public'];
+            return ['b2c', 'retail', 'logged_in', 'public', 'base'];
         }
 
         // Business rule: B2B users see company, then B2B, then public.
         if ($user->isB2b()) {
-            return ['company_price', 'b2b', 'public'];
+            $businessPriceTypes = ['company_price', 'b2b'];
+
+            if ($user->b2b_type === 'dealer') {
+                $businessPriceTypes[] = 'dealer';
+            }
+
+            if ($user->b2b_type === 'institutional') {
+                $businessPriceTypes[] = 'institutional';
+            }
+
+            return array_values(array_unique([...$businessPriceTypes, 'logged_in', 'public', 'base']));
         }
 
-        return ['public'];
+        return ['public', 'retail', 'base'];
     }
 
     // This resolves the first purchasable visible price for a full product.
