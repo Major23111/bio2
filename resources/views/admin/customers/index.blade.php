@@ -583,6 +583,23 @@
                         }, 1200);
 
                         showToast(data.message || (isApproval ? 'Customer application approved.' : 'Customer application rejected.'), isApproval ? 'success' : 'info');
+
+                        // ─── Trigger partial table refresh to show the new verified customer ───
+                        if (isApproval) {
+                            setTimeout(() => {
+                                fetch(window.location.href)
+                                    .then(r => r.text())
+                                    .then(html => {
+                                        const parser = new DOMParser();
+                                        const doc = parser.parseFromString(html, 'text/html');
+                                        const newTableBody = doc.getElementById('customer-table-body');
+                                        const oldTableBody = document.getElementById('customer-table-body');
+                                        if (newTableBody && oldTableBody) {
+                                            oldTableBody.innerHTML = newTableBody.innerHTML;
+                                        }
+                                    });
+                            }, 500);
+                        }
                     } else {
                         showToast(data.message || 'Error occurred updating verification.', 'error');
                         closeVerificationModal();
