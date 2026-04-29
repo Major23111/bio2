@@ -8,6 +8,8 @@ use App\Models\Product\Product;
 use App\Models\Product\UserActivityLog;
 use App\Services\Pricing\PriceService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ProductUtilityService
 {
@@ -212,17 +214,25 @@ class ProductUtilityService
     // Log user activity (view, search, etc) for both guests and logged-in users.
     public function logUserActivity(?User $user, string $sessionId, string $path, string $activityType, array $payload = []): void
     {
-        // Create activity log record.
-        UserActivityLog::query()->create([
-            'session_id' => $sessionId,
-            'user_id' => $user?->id,
-            'user_type' => $user?->user_type ?: 'guest',
-            'user_name' => $user?->name,
-            'user_email' => $user?->email,
-            'activity_type' => $activityType,
-            'path' => $path,
-            'payload' => $payload,
-            'created_at' => now(),
-        ]);
+        try {
+            // Create activity log record.
+            UserActivityLog::query()->create([
+                'session_id' => $sessionId,
+                'user_id' => $user?->id,
+                'user_type' => $user?->user_type ?: 'guest',
+                'user_name' => $user?->name,
+                'user_email' => $user?->email,
+                'activity_type' => $activityType,
+                'path' => $path,
+                'payload' => $payload,
+                'created_at' => now(),
+            ]);
+        } catch (Throwable $exception) {
+            Log::warning('User activity logging failed without blocking the storefront.', [
+                'path' => $path,
+                'activity_type' => $activityType,
+                'error' => $exception->getMessage(),
+            ]);
+        }
     }
 }
