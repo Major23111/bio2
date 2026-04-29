@@ -4,6 +4,6 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "releaseCommand": "php artisan migrate --force"
+    "preDeployCommand": "php artisan migrate --force"
   }
 }
