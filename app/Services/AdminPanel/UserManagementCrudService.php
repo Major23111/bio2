@@ -86,12 +86,9 @@ class UserManagementCrudService
         $user->approved_at = now();
         $user->approved_by_user_id = auth()->id();
 
-        // B2B processing logic limits
-        if ($user->user_type === 'b2b' || $user->user_type === 'B2B') {
-            $user->credit_limit = $creditLimit;
-            $user->credit_days = $creditDays;
-            $user->unlimited_credit = $unlimitedCredit;
-        }
+        $user->credit_limit = $creditLimit;
+        $user->credit_days = $creditDays;
+        $user->unlimited_credit = $unlimitedCredit;
 
         $user->save();
 
@@ -130,16 +127,14 @@ class UserManagementCrudService
             $user->user_type = strtolower($data['user_type']);
         }
         
-        if ($user->user_type === 'b2b' || $user->user_type === 'B2B') {
-            if (array_key_exists('credit_limit', $data)) {
-                $user->credit_limit = $data['credit_limit'] === '' ? null : $data['credit_limit'];
-            }
-            if (array_key_exists('credit_days', $data)) {
-                $user->credit_days = $data['credit_days'] === '' ? null : $data['credit_days'];
-            }
-            if (array_key_exists('unlimited_credit', $data)) {
-                $user->unlimited_credit = $data['unlimited_credit'];
-            }
+        if (array_key_exists('credit_limit', $data)) {
+            $user->credit_limit = $data['credit_limit'] === '' ? null : $data['credit_limit'];
+        }
+        if (array_key_exists('credit_days', $data)) {
+            $user->credit_days = $data['credit_days'] === '' ? null : $data['credit_days'];
+        }
+        if (array_key_exists('unlimited_credit', $data)) {
+            $user->unlimited_credit = $data['unlimited_credit'];
         }
 
         $user->save();

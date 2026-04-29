@@ -34,7 +34,7 @@
 
 @section('content')
 <div class="min-h-screen bg-[var(--ui-page-bg)] py-4 lg:pt-4 lg:pb-8">
-    <div class="mx-auto flex w-full max-w-[102rem] gap-0 lg:gap-8 px-4 sm:px-6 lg:px-8 xl:px-6 2xl:px-8">
+    <div class="ml-0 flex w-full max-w-[102rem] gap-0 lg:gap-8 px-4 sm:px-6 lg:px-8 xl:px-6 2xl:px-8">
         
         {{-- Mobile sidebar toggle --}}
         <button id="mobile-sidebar-toggle" class="fixed bottom-6 left-6 z-[999] lg:hidden h-12 w-12 rounded-full bg-primary-600 text-white shadow-lg flex items-center justify-center hover:bg-primary-700 transition cursor-pointer">

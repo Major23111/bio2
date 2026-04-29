@@ -142,11 +142,9 @@ class UserManagementCrudController extends Controller
                 'user_type' => $request->input('user_type'),
             ];
 
-            if ($request->input('user_type') === 'B2B' || $request->input('user_type') === 'b2b') {
-                $updateDataPayload['credit_limit'] = $request->input('credit_limit');
-                $updateDataPayload['credit_days'] = $request->input('credit_days');
-                $updateDataPayload['unlimited_credit'] = filter_var($request->input('unlimited_credit', false), FILTER_VALIDATE_BOOL);
-            }
+            $updateDataPayload['credit_limit'] = $request->input('credit_limit');
+            $updateDataPayload['credit_days'] = $request->input('credit_days');
+            $updateDataPayload['unlimited_credit'] = filter_var($request->input('unlimited_credit', false), FILTER_VALIDATE_BOOL);
 
             $this->userManagementCrudService->updateCustomerDetails($customerId, $updateDataPayload);
 

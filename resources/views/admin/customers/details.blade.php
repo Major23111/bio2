@@ -165,7 +165,7 @@
                         </select>
                     </div>
 
-                    <div id="customer-credit-settings" class="@if(!$isB2bCustomer) hidden @endif space-y-5">
+                    <div id="customer-credit-settings" class="space-y-5">
                         <div>
                             <label for="customer-credit-limit" class="mb-2.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500">Credit Limit (INR)</label>
                             <div class="relative">
@@ -284,14 +284,11 @@
                 const payload = {
                     internal_admin_notes: internalNotes,
                     status: activeStatus,
-                    user_type: userType
+                    user_type: userType,
+                    credit_limit: creditLimitRaw,
+                    credit_days: creditDaysValue,
+                    unlimited_credit: isUnlimited
                 };
-
-                if (userType === 'B2B') {
-                    payload.credit_limit = creditLimitRaw;
-                    payload.credit_days = creditDaysValue;
-                    payload.unlimited_credit = isUnlimited;
-                }
 
                 saveBtn.disabled = true;
                 saveBtn.innerText = 'Saving...';
@@ -321,13 +318,6 @@
                 });
             };
 
-            function syncCreditVisibility() {
-                const isB2b = categorySelect && categorySelect.value === 'B2B';
-                if (!creditSettings) return;
-
-                creditSettings.classList.toggle('hidden', !isB2b);
-                if (!isB2b) return;
-
                 syncUnlimitedCreditState();
             }
 
@@ -343,8 +333,7 @@
             }
 
             categorySelect?.addEventListener('change', function () {
-                syncCreditVisibility();
-                showToast(categorySelect.value === 'B2B' ? 'B2B credit settings enabled.' : 'B2C customer selected. Credit limit hidden.', 'info');
+                showToast(categorySelect.value === 'B2B' ? 'B2B customer category selected.' : 'B2C customer category selected.', 'info');
             });
 
             unlimitedCreditCheckbox?.addEventListener('change', syncUnlimitedCreditState);
@@ -357,7 +346,7 @@
                 }
             }
 
-            syncCreditVisibility();
+            syncUnlimitedCreditState();
         })();
     </script>
     @endpush
