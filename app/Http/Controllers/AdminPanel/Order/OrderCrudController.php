@@ -95,11 +95,14 @@ class OrderCrudController extends Controller
                 $response = redirect()->back()
                     ->with('error', 'Order not found.');
             }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Rethrow validation exception to let Laravel handle it normally.
+            throw $e;
         } catch (Throwable $exception) {
             // Redirect back to form with error message.
             $response = redirect()->back()
                 ->withInput()
-                ->with('error', 'Failed to update order. Please try again.');
+                ->with('error', 'Failed to update order: ' . $exception->getMessage());
         }
 
         return $response;

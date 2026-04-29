@@ -117,15 +117,11 @@ class ProformaCrudController extends Controller
                 'error' => $exception->getMessage(),
             ]);
 
-            $errorMessage = 'Failed to create Proforma Invoice. Please try again.';
-
-            if ($exception instanceof \RuntimeException) {
-                $errorMessage = $exception->getMessage();
-            }
+            $errorMessage = 'Failed to create Proforma Invoice: ' . $exception->getMessage();
 
             if ($createdProformaId) {
                 return redirect()->route('admin.pi-quotation.edit', $createdProformaId)
-                    ->with('error', 'Proforma Invoice was saved, but the requested action could not be completed.');
+                    ->with('error', 'Proforma Invoice was saved, but the requested action failed: ' . $exception->getMessage());
             }
 
             return redirect()->back()
@@ -227,15 +223,9 @@ class ProformaCrudController extends Controller
                 'error' => $exception->getMessage(),
             ]);
 
-            $errorMessage = 'Failed to update Proforma Invoice. Please try again.';
-
-            if ($exception instanceof \RuntimeException) {
-                $errorMessage = $exception->getMessage();
-            }
-
             return redirect()->back()
                 ->withInput()
-                ->with('error', $errorMessage);
+                ->with('error', 'Failed to update Proforma Invoice: ' . $exception->getMessage());
         }
     }
 }

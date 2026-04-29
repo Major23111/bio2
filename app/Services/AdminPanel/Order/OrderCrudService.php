@@ -349,9 +349,9 @@ class OrderCrudService
         $previousStageLabel = $this->getOrderStageLabel(
             $savedStageHistory?->to_status,
             (string) ($savedOrder->status ?? 'draft'),
-            (string) ($shipmentRow->status ?? ''),
-            (string) ($paymentRow->status ?? ''),
-            (string) ($paymentRow->method ?? ''),
+            (string) ($shipmentRow?->status ?? ''),
+            (string) ($paymentRow?->status ?? ''),
+            (string) ($paymentRow?->method ?? ''),
         );
 
         // Start with the draft order status.
@@ -813,8 +813,8 @@ class OrderCrudService
         }
 
         // Prepare the shipment times.
-        $shippedAt = $savedShipmentRow->shipped_at ?? null;
-        $deliveredAt = $savedShipmentRow->delivered_at ?? null;
+        $shippedAt = $savedShipmentRow?->shipped_at ?? null;
+        $deliveredAt = $savedShipmentRow?->delivered_at ?? null;
 
         if ($shipmentStatus === 'pending') {
             $shippedAt = null;
@@ -851,13 +851,13 @@ class OrderCrudService
         $shipmentData['order_id'] = $savedOrder->id;
         $shipmentData['shipping_address_id'] = $savedOrder->shippingAddress?->id;
         $shipmentData['shipment_number'] = $shipmentNumber;
-        $shipmentData['carrier'] = $savedShipmentRow->carrier ?? 'Manual Entry';
-        $shipmentData['tracking_number'] = $trackingNumber !== '' ? $trackingNumber : ($savedShipmentRow->tracking_number ?? null);
-        $shipmentData['tracking_url'] = $trackingUrl !== '' ? $trackingUrl : ($savedShipmentRow->tracking_url ?? null);
+        $shipmentData['carrier'] = $savedShipmentRow?->carrier ?? 'Manual Entry';
+        $shipmentData['tracking_number'] = $trackingNumber !== '' ? $trackingNumber : ($savedShipmentRow?->tracking_number ?? null);
+        $shipmentData['tracking_url'] = $trackingUrl !== '' ? $trackingUrl : ($savedShipmentRow?->tracking_url ?? null);
         $shipmentData['status'] = $shipmentStatus;
         $shipmentData['shipped_at'] = $shippedAt;
         $shipmentData['delivered_at'] = $deliveredAt;
-        $shipmentData['notes'] = $savedShipmentRow->notes ?? null;
+        $shipmentData['notes'] = $savedShipmentRow?->notes ?? null;
         $shipmentData['updated_at'] = now();
 
         // Update the saved shipment row when it exists.
@@ -904,9 +904,9 @@ class OrderCrudService
         }
 
         // Start with the current payment values.
-        $paymentMethod = $savedPaymentRow->method ?? 'prepaid';
-        $paymentStatus = $savedPaymentRow->status ?? 'pending';
-        $paidAt = $savedPaymentRow->paid_at ?? null;
+        $paymentMethod = $savedPaymentRow?->method ?? 'prepaid';
+        $paymentStatus = $savedPaymentRow?->status ?? 'pending';
+        $paidAt = $savedPaymentRow?->paid_at ?? null;
 
         if ($selectedStageLabel === 'Payment Received (Prepaid)') {
             $paymentMethod = 'prepaid';
@@ -943,14 +943,14 @@ class OrderCrudService
         $paymentData['order_id'] = $savedOrder->id;
         $paymentData['user_id'] = $savedOrder->placed_by_user_id;
         $paymentData['payment_number'] = $paymentNumber;
-        $paymentData['provider'] = $savedPaymentRow->provider ?? 'manual';
-        $paymentData['provider_reference'] = $savedPaymentRow->provider_reference ?? null;
+        $paymentData['provider'] = $savedPaymentRow?->provider ?? 'manual';
+        $paymentData['provider_reference'] = $savedPaymentRow?->provider_reference ?? null;
         $paymentData['method'] = $paymentMethod;
         $paymentData['status'] = $paymentStatus;
         $paymentData['currency'] = $savedOrder->currency ?: 'INR';
         $paymentData['amount'] = $savedOrder->total_amount;
         $paymentData['paid_at'] = $paidAt;
-        $paymentData['notes'] = $savedPaymentRow->notes ?? null;
+        $paymentData['notes'] = $savedPaymentRow?->notes ?? null;
         $paymentData['updated_at'] = now();
 
         // Update the saved payment row when it exists.
