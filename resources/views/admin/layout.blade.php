@@ -156,7 +156,7 @@
         sidebarOverlay.addEventListener('click', closeSidebar);
 
         // ─── Reusable AJAX page loader ───
-        const loadPage = async (url) => {
+        window.loadPage = async (url) => {
             // Show skeleton
             mainContent.style.position = 'relative';
             mainContent.classList.add('opacity-40');

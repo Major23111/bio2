@@ -40,7 +40,7 @@
                     $statuses = ['all' => 'All Orders', 'Pending' => 'Pending', 'Processing' => 'Processing', 'Dispatched' => 'Dispatched', 'Delivered' => 'Delivered', 'Cancelled' => 'Cancelled'];
                 @endphp
                 @foreach($statuses as $statusValue => $statusLabel)
-                    <a href="{{ route('admin.orders', array_merge(request()->query(), ['status' => $statusValue])) }}" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold {{ $currentStatus === $statusValue ? 'bg-primary-600 text-white' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100' }} transition cursor-pointer">
+                    <a href="{{ route('admin.orders', array_merge(request()->query(), ['status' => $statusValue])) }}" class="status-pill ajax-link inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold {{ $currentStatus === $statusValue ? 'bg-primary-600 text-white' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100' }} transition cursor-pointer">
                         {{ $statusLabel }}
                     </a>
                 @endforeach
@@ -53,16 +53,16 @@
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
                         <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition">
-                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'id'])) }}">Order ID <span class="sort-icon">&#8597;</span></a>
+                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'id'])) }}" class="ajax-link">Order ID <span class="sort-icon">&#8597;</span></a>
                         </th>
                         <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition">
-                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'customer'])) }}">Customer Name <span class="sort-icon">&#8597;</span></a>
+                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'customer'])) }}" class="ajax-link">Customer Name <span class="sort-icon">&#8597;</span></a>
                         </th>
                         <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition">
-                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'date'])) }}">Date <span class="sort-icon">&#8597;</span></a>
+                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'date'])) }}" class="ajax-link">Date <span class="sort-icon">&#8597;</span></a>
                         </th>
                         <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition">
-                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'amount'])) }}">Total Amount <span class="sort-icon">&#8597;</span></a>
+                            <a href="{{ route('admin.orders', array_merge(request()->query(), ['sort' => 'amount'])) }}" class="ajax-link">Total Amount <span class="sort-icon">&#8597;</span></a>
                         </th>
                         <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Payment Status</th>
                         <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Fulfillment</th>
@@ -208,7 +208,12 @@
 function navigateWithSearch() {
     const searchValue = document.getElementById('orderSearch').value;
     const currentStatus = '{{ request()->query("status", "all") }}';
-    window.location.href = '{{ route("admin.orders") }}?status=' + currentStatus + '&search=' + encodeURIComponent(searchValue);
+    const url = '{{ route("admin.orders") }}?status=' + currentStatus + '&search=' + encodeURIComponent(searchValue);
+    if (window.loadPage) {
+        window.loadPage(url);
+    } else {
+        window.location.href = url;
+    }
 }
 
 // Export CSV with current filters
