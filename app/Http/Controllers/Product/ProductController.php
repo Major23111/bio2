@@ -63,6 +63,10 @@ class ProductController extends Controller
         } catch (Throwable $exception) {
             Log::error('Failed to load product index.', ['error' => $exception->getMessage()]);
 
+            $errorMessage = config('app.debug')
+                ? 'Unable to load products right now: '.$exception->getMessage()
+                : 'Unable to load products right now.';
+
             return $this->viewWithError('product.index', [
                 'products' => new LengthAwarePaginator([], 0, 15),
                 'catalogOptions' => [
@@ -72,7 +76,7 @@ class ProductController extends Controller
                     'minPrice' => 150,
                     'maxPrice' => 2500,
                 ],
-            ], $exception, 'Unable to load products right now.');
+            ], $exception, $errorMessage);
         }
     }
 
