@@ -13,16 +13,6 @@
             <p class="text-sm text-[var(--ui-text-muted)] mt-1">Manage product categories, HSM codes, and GST rates.</p>
         </div>
         
-        <div class="flex items-center gap-4">
-            <div class="relative w-full md:w-80">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-                <input type="text" placeholder="Search database..." class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] shadow-sm text-sm rounded-xl pl-9 pr-4 py-2.5 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-[var(--ui-text)] placeholder:text-[var(--ui-text-muted)]">
-            </div>
-        </div>
     </div>
 
     <!-- Main Card Header -->
@@ -357,25 +347,6 @@
         }
     });
 
-    // Filter the category list from the search field.
-    const searchInput = document.querySelector('input[placeholder="Search database..."]');
-
-    if (searchInput && categoryNavigation) {
-        searchInput.addEventListener('input', function () {
-            const searchText = this.value.toLowerCase();
-
-            categoryNavigation.querySelectorAll('option').forEach(option => {
-                if (option.value === '') {
-                    option.hidden = false;
-
-                    return;
-                }
-
-                const optionName = option.textContent.toLowerCase();
-                option.hidden = searchText ? !optionName.includes(searchText) : false;
-            });
-        });
-    }
 
     // Update the current fields when the category changes.
     if (categoryNavigation) {

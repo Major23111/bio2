@@ -121,14 +121,53 @@
         table tbody td { padding-left: 1rem !important; padding-right: 1rem !important; font-size: 12px !important; }
     }
 
-    /* Standard Table Container with hidden scrollbar but scrollable if needed */
-    .admin-table-wrapper, .scrollbar-hide {
+    /* Standard Table Container with horizontal scroll */
+    .admin-table-wrapper, 
+    main#admin-main-content div.overflow-x-auto:not(.scrollbar-hide):not(.admin-filter-scroll) {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         -ms-overflow-style: none;
         scrollbar-width: none;
     }
-    .admin-table-wrapper::-webkit-scrollbar, .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .admin-table-wrapper::-webkit-scrollbar,
+    main#admin-main-content div.overflow-x-auto:not(.scrollbar-hide):not(.admin-filter-scroll)::-webkit-scrollbar { 
+        display: none; 
+    }
+
+    /* Show scrollbar on mobile/tablet for better visibility */
+    @media (max-width: 1023px) {
+        .admin-table-wrapper,
+        main#admin-main-content div.overflow-x-auto:not(.scrollbar-hide):not(.admin-filter-scroll) {
+            scrollbar-width: auto !important;
+            -ms-overflow-style: auto !important;
+            padding-bottom: 4px;
+        }
+        .admin-table-wrapper::-webkit-scrollbar,
+        main#admin-main-content div.overflow-x-auto:not(.scrollbar-hide):not(.admin-filter-scroll)::-webkit-scrollbar { 
+            display: block !important; 
+            height: 6px !important; 
+        }
+        .admin-table-wrapper::-webkit-scrollbar-track,
+        main#admin-main-content div.overflow-x-auto:not(.scrollbar-hide):not(.admin-filter-scroll)::-webkit-scrollbar-track { 
+            background: #f8fafc; 
+            border-radius: 10px; 
+        }
+        .admin-table-wrapper::-webkit-scrollbar-thumb,
+        main#admin-main-content div.overflow-x-auto:not(.scrollbar-hide):not(.admin-filter-scroll)::-webkit-scrollbar-thumb { 
+            background: #cbd5e1; 
+            border-radius: 10px; 
+            border: 1px solid #f8fafc;
+        }
+    }
     
-    .scrollbar-hide { cursor: grab; user-select: none; }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        cursor: grab;
+        user-select: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
     .cursor-grabbing { cursor: grabbing !important; }
 
     /* Skeleton shimmer */

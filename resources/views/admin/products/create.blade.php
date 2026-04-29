@@ -75,11 +75,11 @@
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
 
-                        <!-- Main SKU -->
+                        <!-- CAT No (Master SKU) -->
                         <div class="space-y-2">
-                             <label class="block text-[13px] font-bold text-slate-700">Master SKU <span
-                                     class="text-rose-500">*</span></label>
-                             <input id="productSku" name="main_sku" type="text" required placeholder="e.g. BGX-7700" value="{{ old('main_sku') }}"
+                             <label class="block text-[13px] font-bold text-slate-700">CAT No <span
+                                     class="text-slate-400 font-normal">(Optional)</span></label>
+                             <input id="productSku" name="main_sku" type="text" placeholder="e.g. BGX-7700" value="{{ old('main_sku') }}"
                                  class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                          </div>
                     </div>
@@ -128,7 +128,7 @@
                             <tr class="bg-slate-50/50 border-b border-slate-100">
                                 <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[25%]">Pack Size *</th>
                                 <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[20%]">MRP (₹) *</th>
-                                <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[25%]">Variant SKU *</th>
+                                <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[25%]">Variant CAT No *</th>
                                 <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[20%]">Stock *</th>
                                 <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-wider w-[10%] text-center">Action</th>
                             </tr>
@@ -187,6 +187,13 @@
                                     <option value="{{ $category->id }}" @if(old('category_id') == $category->id) selected @endif>{{ $category->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
+
+                        <!-- Subcategory -->
+                        <div class="space-y-2">
+                            <label class="block text-[13px] font-bold text-slate-700">Subcategory <span class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input name="subcategory" type="text" placeholder="e.g. Molecular Biology" value="{{ old('subcategory') }}"
+                                class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
                     </div>
                 </div>
@@ -307,7 +314,7 @@
                     </div>
                 </td>
                 <td class="px-6 py-4">
-                    <input type="text" name="variants[${variantIndex}][sku]" value="${data.sku || ''}" required placeholder="SKU-1"
+                    <input type="text" name="variants[${variantIndex}][sku]" value="${data.sku || ''}" required placeholder="CAT-1"
                         class="w-full bg-white border border-slate-200 text-[13px] rounded-lg px-3 py-2 focus:border-primary-600 outline-none transition font-medium">
                 </td>
                 <td class="px-6 py-4">
@@ -344,7 +351,6 @@
         // ─── Form Validation ───
         const requiredFields = [
             { id: 'productName', label: 'Product Name' },
-            { id: 'productSku', label: 'Master SKU' },
             { id: 'productDesc', label: 'Description' },
             { id: 'productCategory', label: 'Category' }
         ];
