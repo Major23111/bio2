@@ -82,7 +82,7 @@ class UserManagementCrudService
     {
         $user = User::findOrFail($userId);
         
-        $user->status = 'Active';
+        $user->status = 'active';
         $user->approved_at = now();
         $user->approved_by_user_id = auth()->id();
 
@@ -102,7 +102,7 @@ class UserManagementCrudService
     {
         $user = User::findOrFail($userId);
         
-        $user->status = 'Rejected';
+        $user->status = 'rejected';
         $user->save();
 
         return $user;

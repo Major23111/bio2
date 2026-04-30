@@ -312,15 +312,9 @@
                         <label for="verification-credit-limit"
                             class="mb-2 block text-[11px] font-bold uppercase tracking-widest text-slate-500">Credit
                             Limit</label>
-                        <select id="verification-credit-limit"
-                            class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
-                            <option value="">Select credit limit</option>
-                            <option value="10000">Rs. 10,000</option>
-                            <option value="25000">Rs. 25,000</option>
-                            <option value="50000">Rs. 50,000</option>
-                            <option value="100000">Rs. 1,00,000</option>
-                            <option value="250000">Rs. 2,50,000</option>
-                        </select>
+                        <input id="verification-credit-limit" type="text" inputmode="decimal"
+                            placeholder="Enter credit limit"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                     </div>
 
                     <label
@@ -515,13 +509,16 @@
                 const isB2bApproval = isApproval && applicationCategory === 'B2B';
 
                 if (isB2bApproval) {
-                    if (!unlimitedCreditCheckbox.checked && !creditLimitSelect.value) {
-                        showToast('Select a credit limit or enable Unlimited Credit Limit first.', 'info');
+                    const creditLimitValue = creditLimitSelect ? creditLimitSelect.value.trim() : '';
+                    const creditDaysValue = creditDaysSelect ? creditDaysSelect.value.trim() : '';
+
+                    if (!unlimitedCreditCheckbox.checked && !creditLimitValue) {
+                        showToast('Enter a credit limit or enable Unlimited Credit Limit first.', 'info');
                         creditLimitSelect.focus();
                         return;
                     }
 
-                    if (!creditDaysSelect.value) {
+                    if (!creditDaysValue) {
                         showToast('Select the number of days for the B2B credit period.', 'info');
                         creditDaysSelect.focus();
                         return;
@@ -537,8 +534,8 @@
                 const endpoint = isApproval ? '/adminPanel/customers/pending/approve' : '/adminPanel/customers/pending/reject';
                 const payload = {
                     user_id: id,
-                    credit_limit: creditLimitSelect ? creditLimitSelect.value : null,
-                    credit_days: creditDaysSelect ? creditDaysSelect.value : null,
+                    credit_limit: creditLimitSelect ? creditLimitSelect.value.trim() : null,
+                    credit_days: creditDaysSelect ? creditDaysSelect.value.trim() : null,
                     unlimited_credit: unlimitedCreditCheckbox ? unlimitedCreditCheckbox.checked : false
                 };
 
@@ -563,7 +560,7 @@
                         const metaText = isB2bApproval
                             ? (unlimitedCreditCheckbox.checked
                                 ? 'Unlimited credit limit for ' + creditDaysSelect.value + ' days'
-                                : 'Credit limit Rs. ' + Number(creditLimitSelect.value).toLocaleString('en-IN') + ' for ' + creditDaysSelect.value + ' days')
+                                : 'Credit limit Rs. ' + Number(creditLimitSelect.value.replace(/,/g, '')).toLocaleString('en-IN') + ' for ' + creditDaysSelect.value + ' days')
                             : '';
 
                         card.dataset.removing = 'true';

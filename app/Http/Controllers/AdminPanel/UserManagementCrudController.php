@@ -7,6 +7,7 @@ use App\Services\AdminPanel\UserManagementCrudService;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class UserManagementCrudController extends Controller
 {
@@ -94,10 +95,22 @@ class UserManagementCrudController extends Controller
     public function approvePending(Request $request)
     {
         try {
-            $userIdToApprove = $request->input('user_id');
-            $creditLimit = $request->input('credit_limit');
-            $creditDays = $request->input('credit_days');
+            $userIdToApprove = (int) $request->input('user_id');
+            $creditLimitInput = trim((string) $request->input('credit_limit', ''));
+            $creditDaysInput = trim((string) $request->input('credit_days', ''));
             $unlimitedCredit = filter_var($request->input('unlimited_credit', false), FILTER_VALIDATE_BOOL);
+            $normalizedCreditLimit = str_replace(',', '', $creditLimitInput);
+
+            if ($creditLimitInput !== '' && ! is_numeric($normalizedCreditLimit)) {
+                return response()->json(['success' => false, 'message' => 'Enter a valid credit limit amount.'], 422);
+            }
+
+            if ($creditDaysInput !== '' && ! ctype_digit($creditDaysInput)) {
+                return response()->json(['success' => false, 'message' => 'Enter a valid number of credit days.'], 422);
+            }
+
+            $creditLimit = $creditLimitInput === '' ? null : (float) $normalizedCreditLimit;
+            $creditDays = $creditDaysInput === '' ? null : (int) $creditDaysInput;
 
             $this->userManagementCrudService->approveVerification(
                 $userIdToApprove,
@@ -107,8 +120,8 @@ class UserManagementCrudController extends Controller
             );
 
             return response()->json(['success' => true, 'message' => 'Customer account successfully approved.']);
-        } catch (Exception $exception) {
-            Log::error('Error Approving Customer: ' . $exception->getMessage());
+        } catch (Throwable $exception) {
+            Log::error('Error Approving Customer: ' . $exception->getMessage(), ['exception' => $exception]);
             return response()->json(['success' => false, 'message' => 'Failed to approve customer account.'], 500);
         }
     }

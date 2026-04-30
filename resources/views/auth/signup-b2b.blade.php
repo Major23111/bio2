@@ -198,24 +198,13 @@
 
                     <div>
                         <label for="city" class="mb-1.5 block text-xs font-semibold text-slate-700">City <span class="text-rose-500">*</span></label>
-                        <select id="city" name="city" class="{{ $inputClass }}">
-                            <option value="">Select City</option>
-                            <option value="Mumbai" @selected(old('city') === 'Mumbai')>Mumbai</option>
-                            <option value="Delhi" @selected(old('city') === 'Delhi')>Delhi</option>
-                            <option value="Bangalore" @selected(old('city') === 'Bangalore')>Bangalore</option>
-                            <option value="Pune" @selected(old('city') === 'Pune')>Pune</option>
-                        </select>
+                        <input type="text" name="city" id="city" class="{{ $inputClass }}" placeholder="Enter city" value="{{ old('city') }}" required>
                         @error('city')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
                         <label for="state" class="mb-1.5 block text-xs font-semibold text-slate-700">State <span class="text-rose-500">*</span></label>
-                        <select id="state" name="state" class="{{ $inputClass }}">
-                            <option value="">Select State</option>
-                            <option value="Maharashtra" @selected(old('state') === 'Maharashtra')>Maharashtra</option>
-                            <option value="Delhi" @selected(old('state') === 'Delhi')>Delhi</option>
-                            <option value="Karnataka" @selected(old('state') === 'Karnataka')>Karnataka</option>
-                        </select>
+                        <input type="text" name="state" id="state" class="{{ $inputClass }}" placeholder="Enter state / UT" value="{{ old('state') }}" required>
                         @error('state')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
@@ -244,7 +233,7 @@
                     </div>
                 </div>
 
-                <button type="submit" id="b2bSubmitBtn" class="{{ $buttonClass }} w-full sm:w-auto">
+                <button type="submit" id="b2bSubmitBtn" class="{{ $buttonClass }} w-full cursor-not-allowed opacity-70 sm:w-auto" disabled>
                     Complete Registration
                     <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                 </button>
@@ -255,3 +244,33 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const signupForm = document.getElementById('signupForm');
+            const termsCheckbox = document.getElementById('terms');
+            const submitButton = document.getElementById('b2bSubmitBtn');
+
+            function updateSubmitState() {
+                if (!termsCheckbox || !submitButton) return;
+
+                const canSubmit = termsCheckbox.checked;
+                submitButton.disabled = !canSubmit;
+                submitButton.classList.toggle('cursor-not-allowed', !canSubmit);
+                submitButton.classList.toggle('opacity-70', !canSubmit);
+            }
+
+            updateSubmitState();
+            termsCheckbox?.addEventListener('change', updateSubmitState);
+
+            signupForm?.addEventListener('submit', function (event) {
+                if (termsCheckbox?.checked) return;
+
+                event.preventDefault();
+                updateSubmitState();
+                termsCheckbox?.focus();
+            });
+        });
+    </script>
+@endpush

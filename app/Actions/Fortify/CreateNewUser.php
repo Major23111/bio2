@@ -84,12 +84,13 @@ class CreateNewUser implements CreatesNewUsers
             'website' => ['nullable', 'url', 'max:255'],
             'phone' => ['nullable', 'required_if:user_type,b2b', 'string', 'max:20'],
             'alt_phone' => ['nullable', 'string', 'max:20'],
-            'address_1' => ['nullable', 'string', 'max:255'],
+            'address_1' => ['nullable', 'required_if:user_type,b2b', 'string', 'max:255'],
             'address_2' => ['nullable', 'string', 'max:255'],
-            'city' => ['nullable', 'string', 'max:128'],
-            'state' => ['nullable', 'string', 'max:128'],
-            'pincode' => ['nullable', 'string', 'max:20'],
+            'city' => ['nullable', 'required_if:user_type,b2b', 'string', 'max:128'],
+            'state' => ['nullable', 'required_if:user_type,b2b', 'string', 'max:128'],
+            'pincode' => ['nullable', 'required_if:user_type,b2b', 'string', 'max:20'],
             'country' => ['nullable', 'string', 'max:128'],
+            'terms' => ['accepted_if:user_type,b2b'],
             'password' => $this->passwordRules(),
         ]);
 

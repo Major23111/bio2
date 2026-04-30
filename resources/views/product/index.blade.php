@@ -2,6 +2,221 @@
 
 @section('title', 'Product Catalog')
 
+@push('styles')
+    <style>
+        @media (max-width: 640px) {
+            [data-catalog-product-grid] {
+                gap: 0.75rem !important;
+            }
+
+            [data-catalog-product-card] {
+                border-radius: 1rem !important;
+                box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08) !important;
+            }
+
+            [data-catalog-product-card] > .relative {
+                padding: 0.45rem 0.45rem 0 !important;
+            }
+
+            [data-catalog-product-card] .group\/image {
+                border-radius: 0.9rem !important;
+            }
+
+            [data-catalog-product-card] [data-catalog-hover-image],
+            [data-catalog-product-card] .group\/image > a > div {
+                height: 6.5rem !important;
+            }
+
+            [data-catalog-product-card] [data-catalog-placeholder-visual] {
+                justify-content: flex-end !important;
+                padding: 0 0.5rem 0.65rem !important;
+            }
+
+            [data-catalog-product-card] [data-catalog-placeholder-visual] svg:first-child {
+                width: 1.65rem !important;
+                height: 1.65rem !important;
+                margin-bottom: 0.15rem !important;
+                transform: translateY(0.1rem);
+            }
+
+            [data-catalog-product-card] [data-catalog-placeholder-visual] span {
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-size: 0.55rem !important;
+                line-height: 0.75rem !important;
+                letter-spacing: 0.06em !important;
+            }
+
+            [data-catalog-product-card] .absolute.left-6.top-6 {
+                left: 0.65rem !important;
+                top: 0.65rem !important;
+                max-width: calc(100% - 1.3rem);
+                gap: 0.25rem !important;
+            }
+
+            [data-catalog-product-card] .absolute.left-6.top-6 > :nth-child(n+2) {
+                display: none !important;
+            }
+
+            [data-catalog-product-card] .absolute.left-6.top-6 span,
+            [data-catalog-product-card] .absolute.left-6.top-6 * {
+                max-width: 5.75rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                padding: 0.2rem 0.45rem !important;
+                font-size: 0.62rem !important;
+                line-height: 1rem !important;
+            }
+
+            [data-catalog-product-card] [data-catalog-quantity-control] {
+                bottom: 0.45rem !important;
+                right: 0.45rem !important;
+                height: 1.55rem !important;
+                min-width: 4rem !important;
+                padding: 0 0.18rem !important;
+            }
+
+            [data-catalog-product-card] [data-catalog-qty-button] {
+                height: 1.15rem !important;
+                width: 1.15rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            [data-catalog-product-card] [data-catalog-quantity-value] {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
+                font-size: 0.68rem !important;
+            }
+
+            [data-catalog-product-card] > .flex.flex-1 {
+                gap: 0.45rem !important;
+                padding: 0.6rem 0.55rem 0.65rem !important;
+            }
+
+            [data-catalog-product-card] p.uppercase {
+                font-size: 0.58rem !important;
+                letter-spacing: 0.08em !important;
+            }
+
+            [data-catalog-product-card] h3 {
+                font-size: 0.76rem !important;
+                line-height: 1rem !important;
+                min-height: 2rem;
+            }
+
+            [data-catalog-product-card] h3 a {
+                overflow-wrap: anywhere;
+            }
+
+            [data-catalog-product-card] h3 + div p {
+                font-size: 0.64rem !important;
+                line-height: 0.9rem !important;
+                overflow-wrap: anywhere;
+            }
+
+            [data-catalog-product-card] h3 + div p:nth-child(2) {
+                display: none !important;
+            }
+
+            [data-catalog-product-card] .rounded-3xl {
+                border-radius: 0.8rem !important;
+            }
+
+            [data-catalog-product-card] .rounded-3xl:has([data-catalog-pack-size-select]) {
+                padding: 0.45rem !important;
+            }
+
+            [data-catalog-product-card] label[for^="packSize"] {
+                margin-bottom: 0.25rem !important;
+                font-size: 0.55rem !important;
+                letter-spacing: 0.06em !important;
+                white-space: nowrap;
+            }
+
+            [data-catalog-product-card] [data-catalog-pack-size-select] {
+                display: block;
+                width: 100%;
+                min-width: 0;
+                height: 2rem;
+                padding: 0.3rem 1.65rem 0.3rem 0.5rem !important;
+                overflow: hidden;
+                border-radius: 0.55rem !important;
+                font-family: inherit;
+                font-size: 0.72rem !important;
+                font-weight: 600 !important;
+                line-height: 1rem !important;
+                letter-spacing: 0;
+                text-overflow: ellipsis;
+                text-transform: none;
+                white-space: nowrap;
+            }
+
+            [data-catalog-product-card] .mt-auto {
+                gap: 0.45rem !important;
+            }
+
+            [data-catalog-product-card] .mt-auto > .rounded-3xl {
+                padding: 0.45rem 0.5rem !important;
+            }
+
+            [data-catalog-product-card] .mt-auto > .rounded-3xl > div {
+                display: block !important;
+                white-space: normal !important;
+            }
+
+            [data-catalog-product-card] .mt-auto > .rounded-3xl span:first-child {
+                display: block;
+                font-size: 0.55rem !important;
+                line-height: 0.75rem !important;
+            }
+
+            [data-catalog-product-card] [data-catalog-price-value] {
+                display: block;
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-size: 0.78rem !important;
+                line-height: 1rem !important;
+            }
+
+            [data-catalog-product-card] [data-catalog-action-group] {
+                gap: 0.4rem !important;
+            }
+
+            [data-catalog-product-card] [data-catalog-action-group] > div:first-child {
+                width: calc(100% - 2.35rem) !important;
+            }
+
+            [data-catalog-product-card] [data-catalog-action-group] > div:last-child {
+                width: 1.95rem !important;
+                flex: 0 0 1.95rem;
+            }
+
+            [data-catalog-product-card] [data-catalog-buy-now] {
+                height: 2.15rem !important;
+                border-radius: 0.7rem !important;
+                padding: 0 0.45rem !important;
+                font-size: 0.66rem !important;
+                letter-spacing: 0 !important;
+            }
+
+            [data-catalog-product-card] .js-add-to-cart {
+                height: 2.15rem !important;
+                border-radius: 0.7rem !important;
+            }
+
+            [data-catalog-product-card] .js-add-to-cart svg {
+                height: 1rem !important;
+                width: 1rem !important;
+            }
+        }
+    </style>
+@endpush
+
 @section('content')
 @php
     use Illuminate\Support\Str;
@@ -196,7 +411,7 @@
 @endphp
 
 <div class="mx-auto w-full max-w-none bg-gradient-to-b from-white via-primary-50/15 to-white md:mt-0">
-    <div class="w-full max-w-none box-border px-4 sm:px-6 lg:px-8 xl:px-10">
+    <div class="w-full max-w-none box-border px-3 sm:px-6 lg:px-8 xl:px-10">
         <div id="catalogMobileBackdrop" class="pointer-events-none fixed inset-0 z-[60] bg-primary-950/45 opacity-0 transition-opacity duration-200 xl:hidden" aria-hidden="true"></div>
         <div id="catalogLoadingOverlay" class="pointer-events-none fixed inset-0 z-[75] flex items-center justify-center bg-primary-950/18 px-4 opacity-0 transition-opacity duration-200" aria-hidden="true">
             <div class="w-full max-w-sm rounded-[var(--ui-radius-card)] border border-white/80 bg-white/95 p-6 shadow-[var(--ui-shadow-panel)] backdrop-blur">
@@ -490,7 +705,7 @@
                             class="rounded-[28px] border border-slate-200 bg-white px-6 py-16 shadow-sm"
                         />
                     @else
-                        <div data-catalog-product-grid class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+                        <div data-catalog-product-grid class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:gap-5">
                             @foreach ($productCollection as $product)
                                 @php
                                     $badgeRow = $badgeSets[$loop->index % count($badgeSets)];
@@ -521,9 +736,9 @@
                                         <div class="group/image relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-50/70 via-white to-slate-50" @if ($imageUrl) data-catalog-hover-card @endif>
                                             <a href="{{ $detailUrl }}" data-catalog-detail-link data-base-url="{{ $detailUrl }}" class="block cursor-pointer">
                                                 @if ($imageUrl)
-                                                    <img src="{{ $imageUrl }}" alt="{{ $product->name }}" data-catalog-hover-image data-hover-images='@json($catalogHoverImages->all())' data-hover-alt="{{ $product->name }}" class="h-[clamp(13.5rem,18vw,15rem)] w-full object-cover transition duration-300 group-hover/image:scale-[1.04]" loading="lazy" decoding="async">
+                                                    <img src="{{ $imageUrl }}" alt="{{ $product->name }}" data-catalog-hover-image data-hover-images='@json($catalogHoverImages->all())' data-hover-alt="{{ $product->name }}" class="h-36 w-full object-cover transition duration-300 group-hover/image:scale-[1.04] sm:h-44 md:h-[clamp(12rem,18vw,15rem)]" loading="lazy" decoding="async">
                                                 @else
-                                                    @include('customer.partials.product-visual', ['variant' => $visualVariant, 'class' => 'h-[clamp(13.5rem,18vw,15rem)] w-full rounded-2xl transition duration-300 group-hover/image:scale-[1.04]'])
+                                                    @include('customer.partials.product-visual', ['variant' => $visualVariant, 'class' => 'h-36 w-full rounded-2xl transition duration-300 group-hover/image:scale-[1.04] sm:h-44 md:h-[clamp(12rem,18vw,15rem)]'])
                                                 @endif
                                             </a>
                                             {{-- Step 3: keep a single compact quantity stepper pinned inside the image itself so it never drops below the media block. --}}
@@ -1420,4 +1635,3 @@
     </script>
 @endpush
 @endsection
-

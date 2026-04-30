@@ -57,7 +57,7 @@
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h2 class="text-lg font-semibold text-slate-900">8. How to Request a Refund or Cancellation</h2>
                 <p class="mt-3 text-sm leading-7 text-slate-600">Share: Full Name, Registered Email Address, Transaction ID / Order ID, and reason for request.</p>
-                <p class="mt-3 text-sm leading-7 text-slate-600">Contact Details:<br>Email:<br>Phone:<br>Address:</p>
+                <p class="mt-3 text-sm leading-7 text-slate-600">Contact Details:<br>Email: support@biogenix.in, info@biogenix.in, biogenix2007@yahoo.com<br>Phone: +91-9140971443, +91-9889485222, +91-9616105666<br>Address: B19/A, S.I.L Ancillary Estate Amausi Industrial Area, Nadarganj, Lucknow-226008, Uttar Pradesh, India</p>
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
