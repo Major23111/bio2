@@ -30,4 +30,12 @@ class DatabaseSchemaTest extends TestCase
             );
         }
     }
+
+    public function test_shipments_tracking_url_column_exists_after_migrations(): void
+    {
+        $this->assertTrue(
+            Schema::hasColumn('shipments', 'tracking_url'),
+            'Missing shipments.tracking_url; admin order updates write tracking URLs to this column.'
+        );
+    }
 }
