@@ -34,6 +34,7 @@ class QuizeService
     {
         $quizQuestions = QuizeQuestion::query()
             ->where('user_type', 'common')
+            ->where('is_active', true)
             ->with(['answerOptions' => function ($query): void {
                 $query->orderBy('display_order')->orderBy('id');
             }])
@@ -55,6 +56,7 @@ class QuizeService
 
         $quizQuestions = QuizeQuestion::query()
             ->whereIn('user_type', $userTypeList)
+            ->where('is_active', true)
             ->with(['answerOptions' => function ($query): void {
                 $query->orderBy('display_order')->orderBy('id');
             }])

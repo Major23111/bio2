@@ -184,33 +184,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'show'])->name('admin.orders.view');
     Route::put('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'update'])->name('admin.orders.update');
     Route::post('/adminPanel/orders/{orderId}/cancel', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'cancel'])->name('admin.orders.cancel');
-//TODO: Under development - Admin panel routes pointing to view directly for now, will connect to controllers after the views are ready.
-Route::get('/adminPanel/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-Route::get('/adminPanel/categories', [CategoryCrudController::class, 'index'])->name('admin.categories');
-Route::post('/adminPanel/categories', [CategoryCrudController::class, 'store'])->name('admin.categories.store');
-Route::post('/adminPanel/categories/update', [CategoryCrudController::class, 'update'])->name('admin.categories.update');
-Route::get('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'index'])->name('admin.products');
-Route::get('/adminPanel/products/create', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'create'])->name('admin.products.create');
-Route::post('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'store'])->name('admin.products.store');
-Route::get('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'edit'])->name('admin.products.edit');
-Route::put('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'update'])->name('admin.products.update');
-Route::delete('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'destroy'])->name('admin.products.destroy');
-Route::get('/adminPanel/pricing', [PricingCrudController::class, 'index'])->name('admin.pricing.index');
-Route::get('/adminPanel/pricing/map-price', [PricingCrudController::class, 'showMapPricingForm'])->name('admin.pricing.map-price.form');
-Route::post('/adminPanel/pricing/map-price', [PricingCrudController::class, 'saveMappedPricing'])->name('admin.pricing.map-price.save');
-Route::post('/adminPanel/pricing/edit-price', [PricingCrudController::class, 'updatePricing'])->name('admin.pricing.edit-price.update');
-Route::post('/adminPanel/pricing/company-price', [PricingCrudController::class, 'saveCompanyPricing'])->name('admin.pricing.company-price.save');
-Route::post('/adminPanel/pricing/bulk-price', [PricingCrudController::class, 'saveBulkPricingSlabs'])->name('admin.pricing.bulk-price.save');
-Route::get('/adminPanel/pi-quotation', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'index'])->name('admin.pi-quotation.index');
-Route::get('/adminPanel/pi-quotation/create', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'create'])->name('admin.pi-quotation.create');
-Route::post('/adminPanel/pi-quotation', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'store'])->name('admin.pi-quotation.store');
-Route::get('/adminPanel/pi-quotation/{proformaId}', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'show'])->name('admin.pi-quotation.edit');
-Route::put('/adminPanel/pi-quotation/{proformaId}', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'update'])->name('admin.pi-quotation.update');
-Route::get('/adminPanel/orders', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'index'])->name('admin.orders');
-Route::get('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'show'])->name('admin.orders.view');
-Route::put('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'update'])->name('admin.orders.update');
-Route::post('/adminPanel/orders/{orderId}/cancel', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'cancel'])->name('admin.orders.cancel');
-Route::get('/adminPanel/orders/export/csv', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'exportCsv'])->name('admin.orders.export');
+    Route::get('/adminPanel/orders/export/csv', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'exportCsv'])->name('admin.orders.export');
     Route::get('/adminPanel/customers', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'index'])->name('admin.customers');
     Route::get('/adminPanel/customers/details/{customerId}', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'details'])->name('admin.customers.details');
     Route::put('/adminPanel/customers/details/{customerId}', [\App\Http\Controllers\AdminPanel\UserManagementCrudController::class, 'updateDetails'])->name('admin.customers.details.update');
@@ -257,4 +231,3 @@ Route::get('/adminPanel/orders/export/csv', [App\Http\Controllers\AdminPanel\Ord
     });
 
 }); // End admin middleware group
-

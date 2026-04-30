@@ -156,6 +156,7 @@ class SupportTicketController extends Controller
         return [
             'category' => $validated['category'],
             'priority' => $priority,
+            'subject' => $subject,
             'description' => $storedDescription,
         ];
     }

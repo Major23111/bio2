@@ -154,6 +154,7 @@ class SupportTicketService
                 'created_by_user_id' => $user->id,
                 'category' => $ticketData['category'],
                 'priority' => $ticketData['priority'],
+                'subject' => $ticketData['subject'] ?? 'Support request',
                 'description' => $ticketData['description'],
                 'status' => 'open',
                 'last_activity_at' => now(),
